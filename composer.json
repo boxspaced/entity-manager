@@ -1,3 +1,8 @@
 {
-    "name": "rw0600/entity-manager"
+    "name": "rw0600/entity-manager",
+    "autoload": {
+        "psr-0": {
+            "EntityManager_": "src/"
+        }
+    }
 }
