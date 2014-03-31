@@ -1,0 +1,251 @@
+<?php
+
+abstract class EntityManager_Collection_AbstractCollection implements
+    Countable,
+    IteratorAggregate
+{
+
+    /**
+     * @var array
+     */
+    protected $elements;
+
+    /**
+     * @var EntityManager_Builder_AbstractBuilder
+     */
+    protected $builder;
+
+    /**
+     * @var Closure
+     */
+    protected $rowsetCallback;
+
+    /**
+     * @return string
+     */
+    abstract protected function getEntityClassName();
+
+    /**
+     * @param EntityManager_Builder_AbstractBuilder $builder
+     * @param Closure $rowsetCallback
+     */
+    public function __construct(
+        EntityManager_Builder_AbstractBuilder $builder,
+        Closure $rowsetCallback = null
+    )
+    {
+        $this->builder = $builder;
+        $this->rowsetCallback = $rowsetCallback;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getElements()
+    {
+        if ($this->elements === null) {
+            $this->elements = array();
+            $rowsetCallback = $this->rowsetCallback;
+            if (is_callable($rowsetCallback)) {
+                $this->elements = $rowsetCallback();
+            }
+        }
+        return $this->elements;
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        $this->loadAllRows();
+        return new ArrayIterator($this->getElements());
+    }
+
+    /**
+     *
+     * @param EntityManager_EntityInterface $entity
+     * @return EntityManager_Collection_AbstractCollection
+     */
+    public function add(EntityManager_EntityInterface $entity)
+    {
+        $this->entityTypeCheck($entity);
+        $this->getElements();
+        $this->elements[] = $entity;
+        return $this;
+    }
+
+    /**
+     * @param int $key
+     * @return EntityManager_Collection_AbstractCollection
+     */
+    public function remove($key)
+    {
+        $this->getElements();
+        unset($this->elements[$key]);
+        return $this;
+    }
+
+    /**
+     * @return EntityManager_Collection_AbstractCollection
+     */
+    public function clear()
+    {
+        $this->elements = array();
+        return $this;
+    }
+
+    /**
+     * @return EntityManager_EntityInterface|null
+     */
+    public function first()
+    {
+        $this->getElements();
+        reset($this->elements);
+        return $this->getRow($this->key());
+    }
+
+    /**
+     * @return EntityManager_EntityInterface|null
+     */
+    public function last()
+    {
+        $this->getElements();
+        end($this->elements);
+        return $this->getRow($this->key());
+    }
+
+    /**
+     * @return EntityManager_Collection_AbstractCollection
+     */
+    public function rewind()
+    {
+        $this->getElements();
+        reset($this->elements);
+        return $this;
+    }
+
+    /**
+     * @return EntityManager_EntityInterface|null
+     */
+    public function current()
+    {
+        $this->getElements();
+        return $this->getRow($this->key());
+    }
+
+    /**
+     * @return int
+     */
+    public function key()
+    {
+        $this->getElements();
+        return key($this->elements);
+    }
+
+    /**
+     * @return EntityManager_EntityInterface|null
+     */
+    public function next()
+    {
+        $this->getElements();
+        next($this->elements);
+        return $this->getRow($this->key());
+    }
+
+    /**
+     * @return EntityManager_EntityInterface|null
+     */
+    public function prev()
+    {
+        $this->getElements();
+        prev($this->elements);
+        return $this->getRow($this->key());
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid()
+    {
+        return !is_null($this->current());
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        $this->getElements();
+        return count($this->elements);
+    }
+
+    /**
+     * @param Closure $callback
+     * @return EntityManager_Collection_AbstractCollection
+     */
+    public function filter(Closure $callback)
+    {
+        $this->loadAllRows();
+        $filtered = array_filter($this->elements, $callback);
+
+        $return = $this->builder->createCollection();
+        foreach ($filtered as $entity) {
+            $return->add($entity);
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return array
+     */
+    public function getKeys()
+    {
+        $this->getElements();
+        return array_keys($this->elements);
+    }
+
+    /**
+     * @param int $key
+     * @return EntityManager_EntityInterface|null
+     */
+    protected function getRow($key)
+    {
+        $this->getElements();
+        if (isset($this->elements[$key])) {
+            if (is_array($this->elements[$key])) {
+                $this->elements[$key] = $this->builder->build($this->elements[$key]);
+            }
+            return $this->elements[$key];
+        }
+        return null;
+    }
+
+    /**
+     * @return EntityManager_Collection_AbstractCollection
+     */
+    protected function loadAllRows()
+    {
+        $this->getElements();
+        foreach ($this->elements as $key => $element) {
+            $this->getRow($key);
+        }
+        return $this;
+    }
+
+    /**
+     * @param EntityManager_EntityInterface $entity
+     * @return EntityManager_Collection_AbstractCollection
+     * @throws EntityManager_Collection_Exception
+     */
+    protected function entityTypeCheck(EntityManager_EntityInterface $entity)
+    {
+        if (!is_a($entity, $this->getEntityClassName())) {
+            throw new EntityManager_Collection_Exception('Entities passed to this collection must be of type: '
+                    . $this->getEntityClassName() . ' (' . get_class($entity) .') provided');
+        }
+        return $this;
+    }
+
+}
