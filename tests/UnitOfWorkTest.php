@@ -17,9 +17,9 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testEntitiesStoredInternally()
     {
-        $entityNew = $this->createEntityStub();
-        $entityDirty = $this->createEntityStub();
-        $entityDelete = $this->createEntityStub();
+        $entityNew = $this->_createEntityStub();
+        $entityDirty = $this->_createEntityStub();
+        $entityDelete = $this->_createEntityStub();
 
         $this->unitOfWork->persist($entityNew);
         $this->unitOfWork->dirty($entityDirty);
@@ -36,7 +36,7 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testAddingNewEntityMoreThanOnceDoesntDuplicate()
     {
-        $entity = $this->createEntityStub();
+        $entity = $this->_createEntityStub();
 
         $this->unitOfWork->persist($entity);
         $this->unitOfWork->persist($entity);
@@ -47,7 +47,7 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testNewEntityCannotBeMadeDirty()
     {
-        $entity = $this->createEntityStub();
+        $entity = $this->_createEntityStub();
 
         $this->unitOfWork->persist($entity);
         $this->unitOfWork->dirty($entity);
@@ -58,9 +58,9 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testCleanRemovesAllFromInternalStorage()
     {
-        $entityNew = $this->createEntityStub();
-        $entityDirty = $this->createEntityStub();
-        $entityDelete = $this->createEntityStub();
+        $entityNew = $this->_createEntityStub();
+        $entityDirty = $this->_createEntityStub();
+        $entityDelete = $this->_createEntityStub();
 
         $this->unitOfWork->persist($entityNew);
         $this->unitOfWork->dirty($entityDirty);
@@ -77,9 +77,9 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testFlushClearsInternalStorageAfterProcessing()
     {
-        $entityNew = $this->createEntityStub();
-        $entityDirty = $this->createEntityStub();
-        $entityDelete = $this->createEntityStub();
+        $entityNew = $this->_createEntityStub();
+        $entityDirty = $this->_createEntityStub();
+        $entityDelete = $this->_createEntityStub();
 
         $this->unitOfWork->persist($entityNew);
         $this->unitOfWork->dirty($entityDirty);
@@ -92,7 +92,7 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $this->processorSpy->delete);
     }
 
-    protected function createEntityStub()
+    protected function _createEntityStub()
     {
         $stub = new EntityStub();
         return $stub;

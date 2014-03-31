@@ -15,45 +15,45 @@ class Mapper extends EntityManager_Mapper_AbstractMapper
         $this->adapter = $adapter;
     }
 
-    protected function getEntityClassName()
+    protected function _getEntityClassName()
     {
         return 'Entity';
     }
 
-    protected function doFind($id)
+    protected function _find($id)
     {
         $select = '';
         $row = $this->adapter->fetchRow($select);
         return $row;
     }
 
-    protected function doFindOne(EntityManager_Mapper_Conditions_Conditions $conditions = null)
+    protected function _findOne(EntityManager_Mapper_Conditions_Conditions $conditions = null)
     {
         $select = '';
         $row = $this->adapter->fetchRow($select);
         return $row;
     }
 
-    protected function doFindAll(EntityManager_Mapper_Conditions_Conditions $conditions = null)
+    protected function _findAll(EntityManager_Mapper_Conditions_Conditions $conditions = null)
     {
         $select = '';
         $rows = $this->adapter->fetchAll($select);
         return $rows;
     }
 
-    protected function doInsert(EntityManager_EntityInterface $entity)
+    protected function _insert(EntityManager_EntityInterface $entity)
     {
         $id = $this->adapter->lastInsertId();
         $entity->setId($id);
         return $this;
     }
 
-    protected function doUpdate(EntityManager_EntityInterface $entity)
+    protected function _update(EntityManager_EntityInterface $entity)
     {
         return $this;
     }
 
-    protected function doDelete(EntityManager_EntityInterface $entity)
+    protected function _delete(EntityManager_EntityInterface $entity)
     {
         return $this;
     }

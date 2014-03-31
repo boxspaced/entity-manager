@@ -14,7 +14,7 @@ class EntityManager_IdentityMap
      */
     public function add(EntityManager_EntityInterface $entity)
     {
-        $this->map[$this->globalKey($entity)] = $entity;
+        $this->map[$this->_globalKey($entity)] = $entity;
         return $this;
     }
 
@@ -36,7 +36,7 @@ class EntityManager_IdentityMap
      * @param EntityManager_EntityInterface $entity
      * @return string
      */
-    protected function globalKey(EntityManager_EntityInterface $entity)
+    protected function _globalKey(EntityManager_EntityInterface $entity)
     {
         $key = get_class($entity) . '.' . $entity->getId();
         return $key;

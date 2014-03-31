@@ -12,7 +12,7 @@ abstract class EntityManager_Builder_AbstractBuilder
      * @param array $row
      * @return EntityManager_EntityInterface
      */
-    abstract protected function buildEntity(array $row);
+    abstract protected function _buildEntity(array $row);
 
     /**
      * @param Closure $rowsetCallback
@@ -23,7 +23,7 @@ abstract class EntityManager_Builder_AbstractBuilder
     /**
      * @return string
      */
-    abstract protected function getEntityClassName();
+    abstract protected function _getEntityClassName();
 
     /**
      * @param EntityManager_IdentityMap $identityMap
@@ -52,13 +52,13 @@ abstract class EntityManager_Builder_AbstractBuilder
             );
         }
 
-        $existing = $this->getFromIdentityMap($row['id']);
+        $existing = $this->_getFromIdentityMap($row['id']);
         if ($existing) {
             return $existing;
         }
 
-        $entity = $this->buildEntity($row);
-        $this->addToIdentityMap($entity);
+        $entity = $this->_buildEntity($row);
+        $this->_addToIdentityMap($entity);
 
         return $entity;
     }
@@ -67,9 +67,9 @@ abstract class EntityManager_Builder_AbstractBuilder
      * @param int $id
      * @return EntityManager_EntityInterface|bool
      */
-    protected function getFromIdentityMap($id)
+    protected function _getFromIdentityMap($id)
     {
-        $entityClassName = $this->getEntityClassName();
+        $entityClassName = $this->_getEntityClassName();
         return $this->identityMap->exists($entityClassName, $id);
     }
 
@@ -77,7 +77,7 @@ abstract class EntityManager_Builder_AbstractBuilder
      * @param EntityManager_EntityInterface $entity
      * @return EntityManager_Builder_AbstractBuilder
      */
-    protected function addToIdentityMap(EntityManager_EntityInterface $entity)
+    protected function _addToIdentityMap(EntityManager_EntityInterface $entity)
     {
         $this->identityMap->add($entity);
         return $this;

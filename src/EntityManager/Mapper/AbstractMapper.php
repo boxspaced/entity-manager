@@ -16,43 +16,43 @@ abstract class EntityManager_Mapper_AbstractMapper
     /**
      * @return string
      */
-    abstract protected function getEntityClassName();
+    abstract protected function _getEntityClassName();
 
     /**
      * @param int $id
      * @return array
      */
-    abstract protected function doFind($id);
+    abstract protected function _find($id);
 
     /**
      * @param EntityManager_Mapper_Conditions_Conditions $conditions
      * @return array
      */
-    abstract protected function doFindOne(EntityManager_Mapper_Conditions_Conditions $conditions = null);
+    abstract protected function _findOne(EntityManager_Mapper_Conditions_Conditions $conditions = null);
 
     /**
      * @param EntityManager_Mapper_Conditions_Conditions $conditions
      * @return array
      */
-    abstract protected function doFindAll(EntityManager_Mapper_Conditions_Conditions $conditions = null);
+    abstract protected function _findAll(EntityManager_Mapper_Conditions_Conditions $conditions = null);
 
     /**
      * @param EntityManager_EntityInterface $entity
      * @return EntityManager_Mapper_AbstractMapper
      */
-    abstract protected function doInsert(EntityManager_EntityInterface $entity);
+    abstract protected function _insert(EntityManager_EntityInterface $entity);
 
     /**
      * @param EntityManager_EntityInterface $entity
      * @return EntityManager_Mapper_AbstractMapper
      */
-    abstract protected function doUpdate(EntityManager_EntityInterface $entity);
+    abstract protected function _update(EntityManager_EntityInterface $entity);
 
     /**
      * @param EntityManager_EntityInterface $entity
      * @return EntityManager_Mapper_AbstractMapper
      */
-    abstract protected function doDelete(EntityManager_EntityInterface $entity);
+    abstract protected function _delete(EntityManager_EntityInterface $entity);
 
     /**
      * @param EntityManager_IdentityMap $identityMap
@@ -72,11 +72,11 @@ abstract class EntityManager_Mapper_AbstractMapper
      */
     public function find($id)
     {
-        $existing = $this->getFromIdentityMap($id);
+        $existing = $this->_getFromIdentityMap($id);
         if ($existing) {
             return $existing;
         }
-        $row = $this->doFind($id);
+        $row = $this->_find($id);
         if (!$row) {
             return false;
         }
@@ -89,7 +89,7 @@ abstract class EntityManager_Mapper_AbstractMapper
      */
     public function findOne(EntityManager_Mapper_Conditions_Conditions $conditions = null)
     {
-        $row = $this->doFindOne($conditions);
+        $row = $this->_findOne($conditions);
         if (!$row) {
             return false;
         }
@@ -103,7 +103,7 @@ abstract class EntityManager_Mapper_AbstractMapper
     public function findAll(EntityManager_Mapper_Conditions_Conditions $conditions = null)
     {
         $rowsetCallback = function() use ($conditions) {
-            return $this->doFindAll($conditions);
+            return $this->_findAll($conditions);
         };
         $rowsetCallback->bindTo($this);
         return $this->builder->createCollection($rowsetCallback);
@@ -115,9 +115,9 @@ abstract class EntityManager_Mapper_AbstractMapper
      */
     public function insert(EntityManager_EntityInterface $entity)
     {
-        $this->entityTypeCheck($entity);
-        $this->doInsert($entity);
-        $this->addToIdentityMap($entity);
+        $this->_entityTypeCheck($entity);
+        $this->_insert($entity);
+        $this->_addToIdentityMap($entity);
         return $this;
     }
 
@@ -127,8 +127,8 @@ abstract class EntityManager_Mapper_AbstractMapper
      */
     public function update(EntityManager_EntityInterface $entity)
     {
-        $this->entityTypeCheck($entity);
-        $this->doUpdate($entity);
+        $this->_entityTypeCheck($entity);
+        $this->_update($entity);
         return $this;
     }
 
@@ -138,8 +138,8 @@ abstract class EntityManager_Mapper_AbstractMapper
      */
     public function delete(EntityManager_EntityInterface $entity)
     {
-        $this->entityTypeCheck($entity);
-        $this->doDelete($entity);
+        $this->_entityTypeCheck($entity);
+        $this->_delete($entity);
         return $this;
     }
 
@@ -148,7 +148,7 @@ abstract class EntityManager_Mapper_AbstractMapper
      * @param EntityManager_EntityInterface $entity
      * @return int|null
      */
-    protected function returnEntityIdOrNull(EntityManager_EntityInterface $entity = null)
+    protected function _returnEntityIdOrNull(EntityManager_EntityInterface $entity = null)
     {
         return ($entity) ? $entity->getId() : null;
     }
@@ -158,11 +158,11 @@ abstract class EntityManager_Mapper_AbstractMapper
      * @return EntityManager_Mapper_AbstractMapper
      * @throws EntityManager_Mapper_Exception
      */
-    protected function entityTypeCheck(EntityManager_EntityInterface $entity)
+    protected function _entityTypeCheck(EntityManager_EntityInterface $entity)
     {
-        if (!is_a($entity, $this->getEntityClassName())) {
+        if (!is_a($entity, $this->_getEntityClassName())) {
             throw new EntityManager_Mapper_Exception('Entities passed to this mapper must be of type: '
-                    . $this->getEntityClassName() . ' (' . get_class($entity) .') provided');
+                    . $this->_getEntityClassName() . ' (' . get_class($entity) .') provided');
         }
         return $this;
     }
@@ -171,9 +171,9 @@ abstract class EntityManager_Mapper_AbstractMapper
      * @param int $id
      * @return EntityManager_EntityInterface|bool
      */
-    private function getFromIdentityMap($id)
+    private function _getFromIdentityMap($id)
     {
-        $entityClassName = $this->getEntityClassName();
+        $entityClassName = $this->_getEntityClassName();
         return $this->identityMap->exists($entityClassName, $id);
     }
 
@@ -181,7 +181,7 @@ abstract class EntityManager_Mapper_AbstractMapper
      * @param EntityManager_EntityInterface $entity
      * @return EntityManager_Mapper_AbstractMapper
      */
-    private function addToIdentityMap(EntityManager_EntityInterface $entity)
+    private function _addToIdentityMap(EntityManager_EntityInterface $entity)
     {
         $this->identityMap->add($entity);
         return $this;

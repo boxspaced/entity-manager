@@ -52,7 +52,7 @@ class EntityManager_UnitOfWork
     public function dirty(EntityManager_EntityInterface $entity)
     {
         if (!in_array($entity, $this->new, true)) {
-            $this->dirty[$this->globalKey($entity)] = $entity;
+            $this->dirty[$this->_globalKey($entity)] = $entity;
         }
         return $this;
     }
@@ -63,7 +63,7 @@ class EntityManager_UnitOfWork
      */
     public function delete(EntityManager_EntityInterface $entity)
     {
-        $this->delete[$this->globalKey($entity)] = $entity;
+        $this->delete[$this->_globalKey($entity)] = $entity;
         return $this;
     }
 
@@ -73,8 +73,8 @@ class EntityManager_UnitOfWork
      */
     public function clean(EntityManager_EntityInterface $entity)
     {
-        unset($this->delete[$this->globalKey($entity)]);
-        unset($this->dirty[$this->globalKey($entity)]);
+        unset($this->delete[$this->_globalKey($entity)]);
+        unset($this->dirty[$this->_globalKey($entity)]);
         foreach ($this->new as $key => $value) {
             if ($value === $entity) {
                 unset($this->new[$key]);
@@ -99,7 +99,7 @@ class EntityManager_UnitOfWork
      * @param EntityManager_EntityInterface $entity
      * @return string
      */
-    protected function globalKey(EntityManager_EntityInterface $entity)
+    protected function _globalKey(EntityManager_EntityInterface $entity)
     {
         $key = get_class($entity) . '.' . $entity->getId();
         return $key;

@@ -23,7 +23,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     /**
      * @return string
      */
-    abstract protected function getEntityClassName();
+    abstract protected function _getEntityClassName();
 
     /**
      * @param EntityManager_Builder_AbstractBuilder $builder
@@ -41,7 +41,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     /**
      * @return array
      */
-    protected function getElements()
+    protected function _getElements()
     {
         if ($this->elements === null) {
             $this->elements = array();
@@ -58,8 +58,8 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function getIterator()
     {
-        $this->loadAllRows();
-        return new ArrayIterator($this->getElements());
+        $this->_loadAllRows();
+        return new ArrayIterator($this->_getElements());
     }
 
     /**
@@ -69,8 +69,8 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function add(EntityManager_EntityInterface $entity)
     {
-        $this->entityTypeCheck($entity);
-        $this->getElements();
+        $this->_entityTypeCheck($entity);
+        $this->_getElements();
         $this->elements[] = $entity;
         return $this;
     }
@@ -81,7 +81,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function remove($key)
     {
-        $this->getElements();
+        $this->_getElements();
         unset($this->elements[$key]);
         return $this;
     }
@@ -100,9 +100,9 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function first()
     {
-        $this->getElements();
+        $this->_getElements();
         reset($this->elements);
-        return $this->getRow($this->key());
+        return $this->_getRow($this->key());
     }
 
     /**
@@ -110,9 +110,9 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function last()
     {
-        $this->getElements();
+        $this->_getElements();
         end($this->elements);
-        return $this->getRow($this->key());
+        return $this->_getRow($this->key());
     }
 
     /**
@@ -120,7 +120,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function rewind()
     {
-        $this->getElements();
+        $this->_getElements();
         reset($this->elements);
         return $this;
     }
@@ -130,8 +130,8 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function current()
     {
-        $this->getElements();
-        return $this->getRow($this->key());
+        $this->_getElements();
+        return $this->_getRow($this->key());
     }
 
     /**
@@ -139,7 +139,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function key()
     {
-        $this->getElements();
+        $this->_getElements();
         return key($this->elements);
     }
 
@@ -148,9 +148,9 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function next()
     {
-        $this->getElements();
+        $this->_getElements();
         next($this->elements);
-        return $this->getRow($this->key());
+        return $this->_getRow($this->key());
     }
 
     /**
@@ -158,9 +158,9 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function prev()
     {
-        $this->getElements();
+        $this->_getElements();
         prev($this->elements);
-        return $this->getRow($this->key());
+        return $this->_getRow($this->key());
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function count()
     {
-        $this->getElements();
+        $this->_getElements();
         return count($this->elements);
     }
 
@@ -186,7 +186,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function filter(Closure $callback)
     {
-        $this->loadAllRows();
+        $this->_loadAllRows();
         $filtered = array_filter($this->elements, $callback);
 
         $return = $this->builder->createCollection();
@@ -202,7 +202,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function getKeys()
     {
-        $this->getElements();
+        $this->_getElements();
         return array_keys($this->elements);
     }
 
@@ -210,9 +210,9 @@ abstract class EntityManager_Collection_AbstractCollection implements
      * @param int $key
      * @return EntityManager_EntityInterface|null
      */
-    protected function getRow($key)
+    protected function _getRow($key)
     {
-        $this->getElements();
+        $this->_getElements();
         if (isset($this->elements[$key])) {
             if (is_array($this->elements[$key])) {
                 $this->elements[$key] = $this->builder->build($this->elements[$key]);
@@ -225,11 +225,11 @@ abstract class EntityManager_Collection_AbstractCollection implements
     /**
      * @return EntityManager_Collection_AbstractCollection
      */
-    protected function loadAllRows()
+    protected function _loadAllRows()
     {
-        $this->getElements();
+        $this->_getElements();
         foreach ($this->elements as $key => $element) {
-            $this->getRow($key);
+            $this->_getRow($key);
         }
         return $this;
     }
@@ -239,11 +239,11 @@ abstract class EntityManager_Collection_AbstractCollection implements
      * @return EntityManager_Collection_AbstractCollection
      * @throws EntityManager_Collection_Exception
      */
-    protected function entityTypeCheck(EntityManager_EntityInterface $entity)
+    protected function _entityTypeCheck(EntityManager_EntityInterface $entity)
     {
-        if (!is_a($entity, $this->getEntityClassName())) {
+        if (!is_a($entity, $this->_getEntityClassName())) {
             throw new EntityManager_Collection_Exception('Entities passed to this collection must be of type: '
-                    . $this->getEntityClassName() . ' (' . get_class($entity) .') provided');
+                    . $this->_getEntityClassName() . ' (' . get_class($entity) .') provided');
         }
         return $this;
     }

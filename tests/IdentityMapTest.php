@@ -14,7 +14,7 @@ class IdentityMapTest extends PHPUnit_Framework_TestCase
 
     public function testEntityNotExistsWhenMapEmpty()
     {
-        $entity = $this->createEntityStub();
+        $entity = $this->_createEntityStub();
 
         $result = $this->identityMap->exists(get_class($entity), $entity->getId());
 
@@ -23,10 +23,10 @@ class IdentityMapTest extends PHPUnit_Framework_TestCase
 
     public function testEntityNotExistsWhenMapNotEmpty()
     {
-        $entity1 = $this->createEntityStub();
-        $entity2 = $this->createEntityStub();
-        $entity3 = $this->createEntityStub();
-        $entity = $this->createEntityStub();
+        $entity1 = $this->_createEntityStub();
+        $entity2 = $this->_createEntityStub();
+        $entity3 = $this->_createEntityStub();
+        $entity = $this->_createEntityStub();
 
         $this->identityMap->add($entity1);
         $this->identityMap->add($entity2);
@@ -38,10 +38,10 @@ class IdentityMapTest extends PHPUnit_Framework_TestCase
 
     public function testEntityExistsWhenHasBeenAddedAndMapNotEmpty()
     {
-        $entity1 = $this->createEntityStub();
-        $entity2 = $this->createEntityStub();
-        $entity3 = $this->createEntityStub();
-        $entity = $this->createEntityStub();
+        $entity1 = $this->_createEntityStub();
+        $entity2 = $this->_createEntityStub();
+        $entity3 = $this->_createEntityStub();
+        $entity = $this->_createEntityStub();
 
         $this->identityMap->add($entity1);
         $this->identityMap->add($entity2);
@@ -52,7 +52,7 @@ class IdentityMapTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($entity, $result);
     }
 
-    protected function createEntityStub()
+    protected function _createEntityStub()
     {
         $stub = new EntityStub();
         return $stub;

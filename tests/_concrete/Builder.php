@@ -11,7 +11,7 @@ class Builder extends EntityManager_Builder_AbstractBuilder
         return new Collection($this, $rowsetCallback);
     }
 
-    protected function buildEntity(array $row)
+    protected function _buildEntity(array $row)
     {
         $entity = new Entity($this->entityManager);
         $entity->setId($row['id']);
@@ -21,7 +21,7 @@ class Builder extends EntityManager_Builder_AbstractBuilder
         return $entity;
     }
 
-    protected function getEntityClassName()
+    protected function _getEntityClassName()
     {
         return 'Entity';
     }

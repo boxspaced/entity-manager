@@ -105,7 +105,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function getForeignPath()
     {
-        $parsed = $this->parseForeignFieldName();
+        $parsed = $this->_parseForeignFieldName();
         return $parsed['path'];
     }
 
@@ -114,7 +114,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function getForeignField()
     {
-        $parsed = $this->parseForeignFieldName();
+        $parsed = $this->_parseForeignFieldName();
         return $parsed['field'];
     }
 
@@ -122,7 +122,7 @@ class EntityManager_Mapper_Conditions_Field
      * @return array
      * @throws EntityManager_Mapper_Conditions_Exception
      */
-    protected function parseForeignFieldName()
+    protected function _parseForeignFieldName()
     {
         if (!$this->isForeign($this->name)) {
             throw new EntityManager_Mapper_Conditions_Exception('Field is not recognised as foreign');

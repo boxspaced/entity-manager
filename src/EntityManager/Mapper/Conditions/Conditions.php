@@ -50,7 +50,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function eq($value)
     {
-        $this->addOperatorAndValueToLastField(self::OPERATOR_EQUALS, $value);
+        $this->_addOperatorAndValueToLastField(self::OPERATOR_EQUALS, $value);
         return $this;
     }
 
@@ -60,7 +60,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function notEq($value)
     {
-        $this->addOperatorAndValueToLastField(self::OPERATOR_NOT_EQUALS, $value);
+        $this->_addOperatorAndValueToLastField(self::OPERATOR_NOT_EQUALS, $value);
         return $this;
     }
 
@@ -69,7 +69,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function isNull()
     {
-        $this->addOperatorAndValueToLastField(self::OPERATOR_IS, new EntityManager_Mapper_Conditions_Expr(self::VALUE_NULL));
+        $this->_addOperatorAndValueToLastField(self::OPERATOR_IS, new EntityManager_Mapper_Conditions_Expr(self::VALUE_NULL));
         return $this;
     }
 
@@ -78,7 +78,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function isNotNull()
     {
-        $this->addOperatorAndValueToLastField(self::OPERATOR_IS_NOT, new EntityManager_Mapper_Conditions_Expr(self::VALUE_NULL));
+        $this->_addOperatorAndValueToLastField(self::OPERATOR_IS_NOT, new EntityManager_Mapper_Conditions_Expr(self::VALUE_NULL));
         return $this;
     }
 
@@ -88,7 +88,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function gt($value)
     {
-        $this->addOperatorAndValueToLastField(self::OPERATOR_GREATER_THAN, $value);
+        $this->_addOperatorAndValueToLastField(self::OPERATOR_GREATER_THAN, $value);
         return $this;
     }
 
@@ -98,7 +98,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function lt($value)
     {
-        $this->addOperatorAndValueToLastField(self::OPERATOR_LESS_THAN, $value);
+        $this->_addOperatorAndValueToLastField(self::OPERATOR_LESS_THAN, $value);
         return $this;
     }
 
@@ -108,7 +108,7 @@ class EntityManager_Mapper_Conditions_Conditions
      * @return EntityManager_Mapper_Conditions_Conditions
      * @throws EntityManager_Mapper_Conditions_Exception
      */
-    protected function addOperatorAndValueToLastField($operator, $value)
+    protected function _addOperatorAndValueToLastField($operator, $value)
     {
         $field = end($this->fields);
         if ($field) {

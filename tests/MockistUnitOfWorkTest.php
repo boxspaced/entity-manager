@@ -5,9 +5,9 @@ class MockistUnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testEntitiesStoredInternally()
     {
-        $stubEntityNew = $this->createEntityStub(1);
-        $stubEntityDirty = $this->createEntityStub(2);
-        $stubEntityDelete = $this->createEntityStub(3);
+        $stubEntityNew = $this->_createEntityStub(1);
+        $stubEntityDirty = $this->_createEntityStub(2);
+        $stubEntityDelete = $this->_createEntityStub(3);
 
         $mockProcessor = $this->getMock(
                 'EntityManager_UnitOfWorkProcessorInterface',
@@ -30,7 +30,7 @@ class MockistUnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testAddingNewEntityMoreThanOnceDoesntDuplicate()
     {
-        $stubEntity = $this->createEntityStub(1);
+        $stubEntity = $this->_createEntityStub(1);
 
         $mockProcessor = $this->getMock(
                 'EntityManager_UnitOfWorkProcessorInterface',
@@ -52,7 +52,7 @@ class MockistUnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testNewEntityCannotBeMadeDirty()
     {
-        $stubEntity = $this->createEntityStub(1);
+        $stubEntity = $this->_createEntityStub(1);
 
         $mockProcessor = $this->getMock(
                 'EntityManager_UnitOfWorkProcessorInterface',
@@ -74,9 +74,9 @@ class MockistUnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testCleanRemovesAllFromInternalStorage()
     {
-        $stubEntityNew = $this->createEntityStub(1);
-        $stubEntityDirty = $this->createEntityStub(2);
-        $stubEntityDelete = $this->createEntityStub(3);
+        $stubEntityNew = $this->_createEntityStub(1);
+        $stubEntityDirty = $this->_createEntityStub(2);
+        $stubEntityDelete = $this->_createEntityStub(3);
 
         $mockProcessor = $this->getMock(
                 'EntityManager_UnitOfWorkProcessorInterface',
@@ -102,9 +102,9 @@ class MockistUnitOfWorkTest extends PHPUnit_Framework_TestCase
 
     public function testFlushClearsInternalStorageAfterProcessing()
     {
-        $stubEntityNew = $this->createEntityStub(1);
-        $stubEntityDirty = $this->createEntityStub(2);
-        $stubEntityDelete = $this->createEntityStub(3);
+        $stubEntityNew = $this->_createEntityStub(1);
+        $stubEntityDirty = $this->_createEntityStub(2);
+        $stubEntityDelete = $this->_createEntityStub(3);
 
         $mockProcessor = $this->getMock(
                 'EntityManager_UnitOfWorkProcessorInterface',
@@ -126,7 +126,7 @@ class MockistUnitOfWorkTest extends PHPUnit_Framework_TestCase
         $unitOfWork->flush();
     }
 
-    protected function createEntityStub($id)
+    protected function _createEntityStub($id)
     {
         $stub = $this->getMock('EntityManager_EntityInterface');
         $stub->expects($this->any())
