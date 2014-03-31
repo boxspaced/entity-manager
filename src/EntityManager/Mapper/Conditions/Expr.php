@@ -6,14 +6,14 @@ class EntityManager_Mapper_Conditions_Expr
     /**
      * @var string
      */
-    protected $expression;
+    protected $_expression;
 
     /**
      * @param string $expression
      */
     public function __construct($expression)
     {
-        $this->expression = (string) $expression;
+        $this->_expression = (string) $expression;
     }
 
     /**
@@ -21,7 +21,7 @@ class EntityManager_Mapper_Conditions_Expr
      */
     public function __toString()
     {
-        return $this->expression;
+        return $this->_expression;
     }
 
 }

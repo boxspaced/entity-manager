@@ -6,12 +6,12 @@ abstract class EntityManager_Mapper_AbstractMapper
     /**
      * @var EntityManager_IdentityMap
      */
-    private $identityMap;
+    private $_identityMap;
 
     /**
      * @var EntityManager_Builder_AbstractBuilder
      */
-    private $builder;
+    private $_builder;
 
     /**
      * @return string
@@ -62,8 +62,8 @@ abstract class EntityManager_Mapper_AbstractMapper
         EntityManager_IdentityMap $identityMap,
         EntityManager_Builder_AbstractBuilder $builder)
     {
-        $this->identityMap = $identityMap;
-        $this->builder = $builder;
+        $this->_identityMap = $identityMap;
+        $this->_builder = $builder;
     }
 
     /**
@@ -80,7 +80,7 @@ abstract class EntityManager_Mapper_AbstractMapper
         if (!$row) {
             return false;
         }
-        return $this->builder->build($row);
+        return $this->_builder->build($row);
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class EntityManager_Mapper_AbstractMapper
         if (!$row) {
             return false;
         }
-        return $this->builder->build($row);
+        return $this->_builder->build($row);
     }
 
     /**
@@ -106,7 +106,7 @@ abstract class EntityManager_Mapper_AbstractMapper
             return $this->_findAll($conditions);
         };
         $rowsetCallback->bindTo($this);
-        return $this->builder->createCollection($rowsetCallback);
+        return $this->_builder->createCollection($rowsetCallback);
     }
 
     /**
@@ -174,7 +174,7 @@ abstract class EntityManager_Mapper_AbstractMapper
     private function _getFromIdentityMap($id)
     {
         $entityClassName = $this->_getEntityClassName();
-        return $this->identityMap->exists($entityClassName, $id);
+        return $this->_identityMap->exists($entityClassName, $id);
     }
 
     /**
@@ -183,7 +183,7 @@ abstract class EntityManager_Mapper_AbstractMapper
      */
     private function _addToIdentityMap(EntityManager_EntityInterface $entity)
     {
-        $this->identityMap->add($entity);
+        $this->_identityMap->add($entity);
         return $this;
     }
 

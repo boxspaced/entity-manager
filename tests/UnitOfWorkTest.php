@@ -6,13 +6,13 @@ require_once '_doubles/EntityStub.php';
 class UnitOfWorkTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $processorSpy;
-    protected $unitOfWork;
+    protected $_processorSpy;
+    protected $_unitOfWork;
 
     public function setUp()
     {
-        $this->processorSpy = new UnitOfWorkProcessorSpy();
-        $this->unitOfWork = new EntityManager_UnitOfWork($this->processorSpy);
+        $this->_processorSpy = new UnitOfWorkProcessorSpy();
+        $this->_unitOfWork = new EntityManager_UnitOfWork($this->_processorSpy);
     }
 
     public function testEntitiesStoredInternally()
@@ -21,39 +21,39 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
         $entityDirty = $this->_createEntityStub();
         $entityDelete = $this->_createEntityStub();
 
-        $this->unitOfWork->persist($entityNew);
-        $this->unitOfWork->dirty($entityDirty);
-        $this->unitOfWork->delete($entityDelete);
-        $this->unitOfWork->flush();
+        $this->_unitOfWork->persist($entityNew);
+        $this->_unitOfWork->dirty($entityDirty);
+        $this->_unitOfWork->delete($entityDelete);
+        $this->_unitOfWork->flush();
 
-        $this->assertContains($entityNew, $this->processorSpy->new);
-        $this->assertContains($entityDirty, $this->processorSpy->dirty);
-        $this->assertContains($entityDelete, $this->processorSpy->delete);
-        $this->assertEquals(1, count($this->processorSpy->new));
-        $this->assertEquals(1, count($this->processorSpy->dirty));
-        $this->assertEquals(1, count($this->processorSpy->delete));
+        $this->assertContains($entityNew, $this->_processorSpy->new);
+        $this->assertContains($entityDirty, $this->_processorSpy->dirty);
+        $this->assertContains($entityDelete, $this->_processorSpy->delete);
+        $this->assertEquals(1, count($this->_processorSpy->new));
+        $this->assertEquals(1, count($this->_processorSpy->dirty));
+        $this->assertEquals(1, count($this->_processorSpy->delete));
     }
 
     public function testAddingNewEntityMoreThanOnceDoesntDuplicate()
     {
         $entity = $this->_createEntityStub();
 
-        $this->unitOfWork->persist($entity);
-        $this->unitOfWork->persist($entity);
-        $this->unitOfWork->flush();
+        $this->_unitOfWork->persist($entity);
+        $this->_unitOfWork->persist($entity);
+        $this->_unitOfWork->flush();
 
-        $this->assertEquals(array($entity), $this->processorSpy->new);
+        $this->assertEquals(array($entity), $this->_processorSpy->new);
     }
 
     public function testNewEntityCannotBeMadeDirty()
     {
         $entity = $this->_createEntityStub();
 
-        $this->unitOfWork->persist($entity);
-        $this->unitOfWork->dirty($entity);
-        $this->unitOfWork->flush();
+        $this->_unitOfWork->persist($entity);
+        $this->_unitOfWork->dirty($entity);
+        $this->_unitOfWork->flush();
 
-        $this->assertEquals(array(), $this->processorSpy->dirty);
+        $this->assertEquals(array(), $this->_processorSpy->dirty);
     }
 
     public function testCleanRemovesAllFromInternalStorage()
@@ -62,17 +62,17 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
         $entityDirty = $this->_createEntityStub();
         $entityDelete = $this->_createEntityStub();
 
-        $this->unitOfWork->persist($entityNew);
-        $this->unitOfWork->dirty($entityDirty);
-        $this->unitOfWork->delete($entityDelete);
-        $this->unitOfWork->clean($entityNew);
-        $this->unitOfWork->clean($entityDirty);
-        $this->unitOfWork->clean($entityDelete);
-        $this->unitOfWork->flush();
+        $this->_unitOfWork->persist($entityNew);
+        $this->_unitOfWork->dirty($entityDirty);
+        $this->_unitOfWork->delete($entityDelete);
+        $this->_unitOfWork->clean($entityNew);
+        $this->_unitOfWork->clean($entityDirty);
+        $this->_unitOfWork->clean($entityDelete);
+        $this->_unitOfWork->flush();
 
-        $this->assertEquals(array(), $this->processorSpy->new);
-        $this->assertEquals(array(), $this->processorSpy->dirty);
-        $this->assertEquals(array(), $this->processorSpy->delete);
+        $this->assertEquals(array(), $this->_processorSpy->new);
+        $this->assertEquals(array(), $this->_processorSpy->dirty);
+        $this->assertEquals(array(), $this->_processorSpy->delete);
     }
 
     public function testFlushClearsInternalStorageAfterProcessing()
@@ -81,15 +81,15 @@ class UnitOfWorkTest extends PHPUnit_Framework_TestCase
         $entityDirty = $this->_createEntityStub();
         $entityDelete = $this->_createEntityStub();
 
-        $this->unitOfWork->persist($entityNew);
-        $this->unitOfWork->dirty($entityDirty);
-        $this->unitOfWork->delete($entityDelete);
-        $this->unitOfWork->flush(); // Should clear internal storage
-        $this->unitOfWork->flush();
+        $this->_unitOfWork->persist($entityNew);
+        $this->_unitOfWork->dirty($entityDirty);
+        $this->_unitOfWork->delete($entityDelete);
+        $this->_unitOfWork->flush(); // Should clear internal storage
+        $this->_unitOfWork->flush();
 
-        $this->assertEquals(array(), $this->processorSpy->new);
-        $this->assertEquals(array(), $this->processorSpy->dirty);
-        $this->assertEquals(array(), $this->processorSpy->delete);
+        $this->assertEquals(array(), $this->_processorSpy->new);
+        $this->assertEquals(array(), $this->_processorSpy->dirty);
+        $this->assertEquals(array(), $this->_processorSpy->delete);
     }
 
     protected function _createEntityStub()

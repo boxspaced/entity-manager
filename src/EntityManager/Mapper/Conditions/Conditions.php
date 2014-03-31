@@ -16,17 +16,17 @@ class EntityManager_Mapper_Conditions_Conditions
     /**
      * @var EntityManager_Mapper_Conditions_Field[]
      */
-    protected $fields = array();
+    protected $_fields = array();
 
     /**
      * @var EntityManager_Mapper_Conditions_Order[]
      */
-    protected $order = array();
+    protected $_order = array();
 
     /**
      * @var EntityManager_Mapper_Conditions_Paging
      */
-    protected $paging;
+    protected $_paging;
 
     /**
      * @param string $fieldName
@@ -35,12 +35,12 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function field($fieldName)
     {
-        $field = end($this->fields);
+        $field = end($this->_fields);
         if ($field && !$field->isComplete()) {
             throw new EntityManager_Mapper_Conditions_Exception('Last field not completed');
         }
         $field = new EntityManager_Mapper_Conditions_Field($fieldName);
-        $this->fields[] = $field;
+        $this->_fields[] = $field;
         return $this;
     }
 
@@ -110,7 +110,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     protected function _addOperatorAndValueToLastField($operator, $value)
     {
-        $field = end($this->fields);
+        $field = end($this->_fields);
         if ($field) {
             if ($field->isComplete()) {
                 throw new EntityManager_Mapper_Conditions_Exception('Field already completed');
@@ -136,7 +136,7 @@ class EntityManager_Mapper_Conditions_Conditions
         }
 
         $field = new EntityManager_Mapper_Conditions_Field($fieldName);
-        $this->order[] = new EntityManager_Mapper_Conditions_Order($field, $direction);
+        $this->_order[] = new EntityManager_Mapper_Conditions_Order($field, $direction);
         return $this;
     }
 
@@ -149,7 +149,7 @@ class EntityManager_Mapper_Conditions_Conditions
     {
         $offset = intval($offset);
         $showPerPage = intval($showPerPage) ?: 10;
-        $this->paging = new EntityManager_Mapper_Conditions_Paging($offset, $showPerPage);
+        $this->_paging = new EntityManager_Mapper_Conditions_Paging($offset, $showPerPage);
         return $this;
     }
 
@@ -158,7 +158,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function getFields()
     {
-        return $this->fields;
+        return $this->_fields;
     }
 
     /**
@@ -166,7 +166,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function getOrder()
     {
-        return $this->order;
+        return $this->_order;
     }
 
     /**
@@ -174,7 +174,7 @@ class EntityManager_Mapper_Conditions_Conditions
      */
     public function getPaging()
     {
-        return $this->paging;
+        return $this->_paging;
     }
 
 }

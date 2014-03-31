@@ -8,17 +8,17 @@ abstract class EntityManager_Collection_AbstractCollection implements
     /**
      * @var array
      */
-    protected $elements;
+    protected $_elements;
 
     /**
      * @var EntityManager_Builder_AbstractBuilder
      */
-    protected $builder;
+    protected $_builder;
 
     /**
      * @var Closure
      */
-    protected $rowsetCallback;
+    protected $_rowsetCallback;
 
     /**
      * @return string
@@ -34,8 +34,8 @@ abstract class EntityManager_Collection_AbstractCollection implements
         Closure $rowsetCallback = null
     )
     {
-        $this->builder = $builder;
-        $this->rowsetCallback = $rowsetCallback;
+        $this->_builder = $builder;
+        $this->_rowsetCallback = $rowsetCallback;
     }
 
     /**
@@ -43,14 +43,14 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     protected function _getElements()
     {
-        if ($this->elements === null) {
-            $this->elements = array();
-            $rowsetCallback = $this->rowsetCallback;
+        if ($this->_elements === null) {
+            $this->_elements = array();
+            $rowsetCallback = $this->_rowsetCallback;
             if (is_callable($rowsetCallback)) {
-                $this->elements = $rowsetCallback();
+                $this->_elements = $rowsetCallback();
             }
         }
-        return $this->elements;
+        return $this->_elements;
     }
 
     /**
@@ -71,7 +71,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     {
         $this->_entityTypeCheck($entity);
         $this->_getElements();
-        $this->elements[] = $entity;
+        $this->_elements[] = $entity;
         return $this;
     }
 
@@ -82,7 +82,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function remove($key)
     {
         $this->_getElements();
-        unset($this->elements[$key]);
+        unset($this->_elements[$key]);
         return $this;
     }
 
@@ -91,7 +91,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
      */
     public function clear()
     {
-        $this->elements = array();
+        $this->_elements = array();
         return $this;
     }
 
@@ -101,7 +101,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function first()
     {
         $this->_getElements();
-        reset($this->elements);
+        reset($this->_elements);
         return $this->_getRow($this->key());
     }
 
@@ -111,7 +111,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function last()
     {
         $this->_getElements();
-        end($this->elements);
+        end($this->_elements);
         return $this->_getRow($this->key());
     }
 
@@ -121,7 +121,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function rewind()
     {
         $this->_getElements();
-        reset($this->elements);
+        reset($this->_elements);
         return $this;
     }
 
@@ -140,7 +140,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function key()
     {
         $this->_getElements();
-        return key($this->elements);
+        return key($this->_elements);
     }
 
     /**
@@ -149,7 +149,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function next()
     {
         $this->_getElements();
-        next($this->elements);
+        next($this->_elements);
         return $this->_getRow($this->key());
     }
 
@@ -159,7 +159,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function prev()
     {
         $this->_getElements();
-        prev($this->elements);
+        prev($this->_elements);
         return $this->_getRow($this->key());
     }
 
@@ -177,7 +177,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function count()
     {
         $this->_getElements();
-        return count($this->elements);
+        return count($this->_elements);
     }
 
     /**
@@ -187,9 +187,9 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function filter(Closure $callback)
     {
         $this->_loadAllRows();
-        $filtered = array_filter($this->elements, $callback);
+        $filtered = array_filter($this->_elements, $callback);
 
-        $return = $this->builder->createCollection();
+        $return = $this->_builder->createCollection();
         foreach ($filtered as $entity) {
             $return->add($entity);
         }
@@ -203,7 +203,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     public function getKeys()
     {
         $this->_getElements();
-        return array_keys($this->elements);
+        return array_keys($this->_elements);
     }
 
     /**
@@ -213,11 +213,11 @@ abstract class EntityManager_Collection_AbstractCollection implements
     protected function _getRow($key)
     {
         $this->_getElements();
-        if (isset($this->elements[$key])) {
-            if (is_array($this->elements[$key])) {
-                $this->elements[$key] = $this->builder->build($this->elements[$key]);
+        if (isset($this->_elements[$key])) {
+            if (is_array($this->_elements[$key])) {
+                $this->_elements[$key] = $this->_builder->build($this->_elements[$key]);
             }
-            return $this->elements[$key];
+            return $this->_elements[$key];
         }
         return null;
     }
@@ -228,7 +228,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     protected function _loadAllRows()
     {
         $this->_getElements();
-        foreach ($this->elements as $key => $element) {
+        foreach ($this->_elements as $key => $element) {
             $this->_getRow($key);
         }
         return $this;

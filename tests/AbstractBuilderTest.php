@@ -7,29 +7,29 @@ require_once '_concrete/Entity.php';
 class AbstractBuilderTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $processorSpy;
-    protected $unitOfWork;
-    protected $builder;
-    protected $identityMap;
+    protected $_processorSpy;
+    protected $_unitOfWork;
+    protected $_builder;
+    protected $_identityMap;
 
     public function setUp()
     {
-        $this->processorSpy = new UnitOfWorkProcessorSpy();
-        $this->unitOfWork = new EntityManager_UnitOfWork($this->processorSpy);
-        $this->identityMap = new EntityManager_IdentityMap();
-        $this->builder = new Builder($this->identityMap, $this->unitOfWork);
+        $this->_processorSpy = new UnitOfWorkProcessorSpy();
+        $this->_unitOfWork = new EntityManager_UnitOfWork($this->_processorSpy);
+        $this->_identityMap = new EntityManager_IdentityMap();
+        $this->_builder = new Builder($this->_identityMap, $this->_unitOfWork);
     }
 
     public function testBuildGetsFromIdentityMapWhenExists()
     {
         $id = 3;
 
-        $entity = new Entity($this->unitOfWork);
+        $entity = new Entity($this->_unitOfWork);
         $entity->setId($id);
-        $this->identityMap->add($entity);
+        $this->_identityMap->add($entity);
 
         $row = array('id' => $id, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert');
-        $result = $this->builder->build($row);
+        $result = $this->_builder->build($row);
 
         $this->assertEquals($entity, $result);
     }
@@ -37,7 +37,7 @@ class AbstractBuilderTest extends PHPUnit_Framework_TestCase
     public function testBuildReturnsNewEntityWhenNotInIdentityMap()
     {
         $row = array('id' => 49, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert');
-        $result = $this->builder->build($row);
+        $result = $this->_builder->build($row);
 
         $this->assertInstanceOf('Entity', $result);
     }
@@ -45,9 +45,9 @@ class AbstractBuilderTest extends PHPUnit_Framework_TestCase
     public function testBuildAddsToIdentityMapWhenRowFromPersistantStorage()
     {
         $row = array('id' => 33, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert');
-        $entity = $this->builder->build($row);
+        $entity = $this->_builder->build($row);
 
-        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
+        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertEquals($entity, $result);
     }
@@ -57,7 +57,7 @@ class AbstractBuilderTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('EntityManager_Builder_Exception');
 
         $row = array();
-        $this->builder->build($row);
+        $this->_builder->build($row);
     }
 
     public function testBuildWillNotAcceptRowWithoutId()
@@ -65,7 +65,7 @@ class AbstractBuilderTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('EntityManager_Builder_Exception');
 
         $row = array('title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert');
-        $this->builder->build($row);
+        $this->_builder->build($row);
     }
 
 }

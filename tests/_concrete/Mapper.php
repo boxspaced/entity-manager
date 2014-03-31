@@ -3,7 +3,7 @@
 class Mapper extends EntityManager_Mapper_AbstractMapper
 {
 
-    protected $adapter;
+    protected $_adapter;
 
     public function __construct(
         EntityManager_IdentityMap $identityMap,
@@ -12,7 +12,7 @@ class Mapper extends EntityManager_Mapper_AbstractMapper
     )
     {
         parent::__construct($identityMap, $builder);
-        $this->adapter = $adapter;
+        $this->_adapter = $adapter;
     }
 
     protected function _getEntityClassName()
@@ -23,27 +23,27 @@ class Mapper extends EntityManager_Mapper_AbstractMapper
     protected function _find($id)
     {
         $select = '';
-        $row = $this->adapter->fetchRow($select);
+        $row = $this->_adapter->fetchRow($select);
         return $row;
     }
 
     protected function _findOne(EntityManager_Mapper_Conditions_Conditions $conditions = null)
     {
         $select = '';
-        $row = $this->adapter->fetchRow($select);
+        $row = $this->_adapter->fetchRow($select);
         return $row;
     }
 
     protected function _findAll(EntityManager_Mapper_Conditions_Conditions $conditions = null)
     {
         $select = '';
-        $rows = $this->adapter->fetchAll($select);
+        $rows = $this->_adapter->fetchAll($select);
         return $rows;
     }
 
     protected function _insert(EntityManager_EntityInterface $entity)
     {
-        $id = $this->adapter->lastInsertId();
+        $id = $this->_adapter->lastInsertId();
         $entity->setId($id);
         return $this;
     }

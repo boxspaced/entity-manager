@@ -6,12 +6,12 @@ class EntityManager_Mapper_Conditions_Order
     /**
      * @var string
      */
-    protected $field;
+    protected $_field;
 
     /**
      * @var string
      */
-    protected $direction;
+    protected $_direction;
 
     /**
      * @param EntityManager_Mapper_Conditions_Field $field
@@ -22,8 +22,8 @@ class EntityManager_Mapper_Conditions_Order
         $direction
     )
     {
-        $this->field = $field;
-        $this->direction = $direction;
+        $this->_field = $field;
+        $this->_direction = $direction;
     }
 
     /**
@@ -31,7 +31,7 @@ class EntityManager_Mapper_Conditions_Order
      */
     public function getField()
     {
-        return $this->field;
+        return $this->_field;
     }
 
     /**
@@ -39,7 +39,7 @@ class EntityManager_Mapper_Conditions_Order
      */
     public function getDirection()
     {
-        return $this->direction;
+        return $this->_direction;
     }
 
 }

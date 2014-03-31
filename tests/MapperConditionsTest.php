@@ -3,25 +3,25 @@
 class MapperConditionsTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $conditions;
+    protected $_conditions;
 
     public function setUp()
     {
-        $this->conditions = new EntityManager_Mapper_Conditions_Conditions();
+        $this->_conditions = new EntityManager_Mapper_Conditions_Conditions();
     }
 
     public function testCannotStartNewFieldUntilLastIsCompleted()
     {
         $this->setExpectedException('EntityManager_Mapper_Conditions_Exception');
 
-        $this->conditions->field('test')->field('test2');
+        $this->_conditions->field('test')->field('test2');
     }
 
     public function testCannotAddOperatorAndValueUnlessLastFieldIsIncomplete()
     {
         $this->setExpectedException('EntityManager_Mapper_Conditions_Exception');
 
-        $this->conditions->field('test')->eq('value')->eq('value');
+        $this->_conditions->field('test')->eq('value')->eq('value');
     }
 
     public function testAddValidEqualsField()
@@ -29,8 +29,8 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field = 'field';
         $value = 'value';
 
-        $this->conditions->field($field)->eq($value);
-        $fields = $this->conditions->getFields();
+        $this->_conditions->field($field)->eq($value);
+        $fields = $this->_conditions->getFields();
 
         $this->assertEquals($field, $fields[0]->getName());
         $this->assertEquals(
@@ -45,8 +45,8 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field = 'field';
         $value = 'value';
 
-        $this->conditions->field($field)->notEq($value);
-        $fields = $this->conditions->getFields();
+        $this->_conditions->field($field)->notEq($value);
+        $fields = $this->_conditions->getFields();
 
         $this->assertEquals($field, $fields[0]->getName());
         $this->assertEquals(
@@ -61,8 +61,8 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field = 'field';
         $value = 'value';
 
-        $this->conditions->field($field)->isNull();
-        $fields = $this->conditions->getFields();
+        $this->_conditions->field($field)->isNull();
+        $fields = $this->_conditions->getFields();
 
         $this->assertEquals($field, $fields[0]->getName());
         $this->assertEquals(
@@ -78,8 +78,8 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field = 'field';
         $value = 'value';
 
-        $this->conditions->field($field)->isNotNull();
-        $fields = $this->conditions->getFields();
+        $this->_conditions->field($field)->isNotNull();
+        $fields = $this->_conditions->getFields();
 
         $this->assertEquals($field, $fields[0]->getName());
         $this->assertEquals(
@@ -95,8 +95,8 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field = 'field';
         $value = 'value';
 
-        $this->conditions->field($field)->gt($value);
-        $fields = $this->conditions->getFields();
+        $this->_conditions->field($field)->gt($value);
+        $fields = $this->_conditions->getFields();
 
         $this->assertEquals($field, $fields[0]->getName());
         $this->assertEquals(
@@ -111,8 +111,8 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field = 'field';
         $value = 'value';
 
-        $this->conditions->field($field)->lt($value);
-        $fields = $this->conditions->getFields();
+        $this->_conditions->field($field)->lt($value);
+        $fields = $this->_conditions->getFields();
 
         $this->assertEquals($field, $fields[0]->getName());
         $this->assertEquals(
@@ -126,7 +126,7 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('EntityManager_Mapper_Conditions_Exception');
 
-        $this->conditions->order('test', 'BAD_DIR');
+        $this->_conditions->order('test', 'BAD_DIR');
     }
 
     public function testAddValidOrderClause()
@@ -136,10 +136,10 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $field2 = 'field2';
         $dir2 = EntityManager_Mapper_Conditions_Conditions::ORDER_DESC;
 
-        $this->conditions->order($field1, $dir1);
-        $this->conditions->order($field2, $dir2);
+        $this->_conditions->order($field1, $dir1);
+        $this->_conditions->order($field2, $dir2);
 
-        $order = $this->conditions->getOrder();
+        $order = $this->_conditions->getOrder();
         $this->assertEquals($field1, $order[0]->getField()->getName());
         $this->assertEquals($dir1, $order[0]->getDirection());
         $this->assertEquals($field2, $order[1]->getField()->getName());
@@ -148,9 +148,9 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
 
     public function testInvalidPagingArgsDefaultToValidValues()
     {
-        $this->conditions->paging('gg', 'jj');
+        $this->_conditions->paging('gg', 'jj');
 
-        $paging = $this->conditions->getPaging();
+        $paging = $this->_conditions->getPaging();
         $this->assertEquals(0, $paging->getOffset());
         $this->assertEquals(10, $paging->getShowPerPage());
     }
@@ -160,9 +160,9 @@ class MapperConditionsTest extends PHPUnit_Framework_TestCase
         $page = 2;
         $rowCount = 10;
 
-        $this->conditions->paging($page, $rowCount);
+        $this->_conditions->paging($page, $rowCount);
 
-        $paging = $this->conditions->getPaging();
+        $paging = $this->_conditions->getPaging();
         $this->assertEquals($page, $paging->getOffset());
         $this->assertEquals($rowCount, $paging->getShowPerPage());
     }

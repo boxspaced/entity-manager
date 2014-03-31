@@ -6,7 +6,7 @@ class EntityManager_IdentityMap
     /**
      * @var array
      */
-    private $map = array();
+    private $_map = array();
 
     /**
      * @param EntityManager_EntityInterface $entity
@@ -14,7 +14,7 @@ class EntityManager_IdentityMap
      */
     public function add(EntityManager_EntityInterface $entity)
     {
-        $this->map[$this->_globalKey($entity)] = $entity;
+        $this->_map[$this->_globalKey($entity)] = $entity;
         return $this;
     }
 
@@ -26,8 +26,8 @@ class EntityManager_IdentityMap
     public function exists($classname, $id)
     {
         $key = $classname . '.' . $id;
-        if (isset($this->map[$key])) {
-            return $this->map[$key];
+        if (isset($this->_map[$key])) {
+            return $this->_map[$key];
         }
         return false;
     }

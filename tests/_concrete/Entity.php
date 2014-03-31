@@ -3,52 +3,52 @@
 class Entity implements EntityManager_EntityInterface
 {
 
-    protected $id;
-    protected $title;
-    protected $fname;
-    protected $lname;
+    protected $_id;
+    protected $_title;
+    protected $_fname;
+    protected $_lname;
 
     public function getId()
     {
-        return $this->id;
+        return $this->_id;
     }
 
     public function setId($id)
     {
-        $this->id = $id;
+        $this->_id = $id;
         return $this;
     }
 
     public function getTitle()
     {
-        return $this->title;
+        return $this->_title;
     }
 
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->_title = $title;
         return $this;
     }
 
     public function getFname()
     {
-        return $this->fname;
+        return $this->_fname;
     }
 
     public function setFname($fname)
     {
-        $this->fname = $fname;
+        $this->_fname = $fname;
         return $this;
     }
 
     public function getLname()
     {
-        return $this->lname;
+        return $this->_lname;
     }
 
     public function setLname($lname)
     {
-        $this->lname = $lname;
+        $this->_lname = $lname;
         return $this;
     }
 

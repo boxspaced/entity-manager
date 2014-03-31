@@ -6,22 +6,22 @@ class EntityManager_UnitOfWork
     /**
      * @var EntityManager_EntityInterface[]
      */
-    protected $dirty = array();
+    protected $_dirty = array();
 
     /**
      * @var EntityManager_EntityInterface[]
      */
-    protected $new = array();
+    protected $_new = array();
 
     /**
      * @var EntityManager_EntityInterface[]
      */
-    protected $delete = array();
+    protected $_delete = array();
 
     /**
      * @var EntityManager_UnitOfWorkProcessorInterface
      */
-    protected $unitOfWorkProcessor;
+    protected $_unitOfWorkProcessor;
 
     /**
      * @param EntityManager_UnitOfWorkProcessorInterface $unitOfWorkProcessor
@@ -30,7 +30,7 @@ class EntityManager_UnitOfWork
         EntityManager_UnitOfWorkProcessorInterface $unitOfWorkProcessor
     )
     {
-        $this->unitOfWorkProcessor = $unitOfWorkProcessor;
+        $this->_unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
     /**
@@ -39,8 +39,8 @@ class EntityManager_UnitOfWork
      */
     public function persist(EntityManager_EntityInterface $entity)
     {
-        if (!in_array($entity, $this->new, true)) {
-            $this->new[] = $entity;
+        if (!in_array($entity, $this->_new, true)) {
+            $this->_new[] = $entity;
         }
         return $this;
     }
@@ -51,8 +51,8 @@ class EntityManager_UnitOfWork
      */
     public function dirty(EntityManager_EntityInterface $entity)
     {
-        if (!in_array($entity, $this->new, true)) {
-            $this->dirty[$this->_globalKey($entity)] = $entity;
+        if (!in_array($entity, $this->_new, true)) {
+            $this->_dirty[$this->_globalKey($entity)] = $entity;
         }
         return $this;
     }
@@ -63,7 +63,7 @@ class EntityManager_UnitOfWork
      */
     public function delete(EntityManager_EntityInterface $entity)
     {
-        $this->delete[$this->_globalKey($entity)] = $entity;
+        $this->_delete[$this->_globalKey($entity)] = $entity;
         return $this;
     }
 
@@ -73,11 +73,11 @@ class EntityManager_UnitOfWork
      */
     public function clean(EntityManager_EntityInterface $entity)
     {
-        unset($this->delete[$this->_globalKey($entity)]);
-        unset($this->dirty[$this->_globalKey($entity)]);
-        foreach ($this->new as $key => $value) {
+        unset($this->_delete[$this->_globalKey($entity)]);
+        unset($this->_dirty[$this->_globalKey($entity)]);
+        foreach ($this->_new as $key => $value) {
             if ($value === $entity) {
-                unset($this->new[$key]);
+                unset($this->_new[$key]);
             }
         }
         return $this;
@@ -88,10 +88,10 @@ class EntityManager_UnitOfWork
      */
     public function flush()
     {
-        $this->unitOfWorkProcessor->process($this->new, $this->dirty, $this->delete);
-        $this->new = array();
-        $this->dirty = array();
-        $this->delete = array();
+        $this->_unitOfWorkProcessor->process($this->_new, $this->_dirty, $this->_delete);
+        $this->_new = array();
+        $this->_dirty = array();
+        $this->_delete = array();
         return $this;
     }
 

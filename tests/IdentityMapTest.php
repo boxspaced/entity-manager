@@ -5,18 +5,18 @@ require_once '_doubles/EntityStub.php';
 class IdentityMapTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $identityMap;
+    protected $_identityMap;
 
     public function setUp()
     {
-        $this->identityMap = new EntityManager_IdentityMap();
+        $this->_identityMap = new EntityManager_IdentityMap();
     }
 
     public function testEntityNotExistsWhenMapEmpty()
     {
         $entity = $this->_createEntityStub();
 
-        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
+        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertFalse($result);
     }
@@ -28,10 +28,10 @@ class IdentityMapTest extends PHPUnit_Framework_TestCase
         $entity3 = $this->_createEntityStub();
         $entity = $this->_createEntityStub();
 
-        $this->identityMap->add($entity1);
-        $this->identityMap->add($entity2);
-        $this->identityMap->add($entity3);
-        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
+        $this->_identityMap->add($entity1);
+        $this->_identityMap->add($entity2);
+        $this->_identityMap->add($entity3);
+        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertFalse($result);
     }
@@ -43,11 +43,11 @@ class IdentityMapTest extends PHPUnit_Framework_TestCase
         $entity3 = $this->_createEntityStub();
         $entity = $this->_createEntityStub();
 
-        $this->identityMap->add($entity1);
-        $this->identityMap->add($entity2);
-        $this->identityMap->add($entity3);
-        $this->identityMap->add($entity);
-        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
+        $this->_identityMap->add($entity1);
+        $this->_identityMap->add($entity2);
+        $this->_identityMap->add($entity3);
+        $this->_identityMap->add($entity);
+        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertEquals($entity, $result);
     }

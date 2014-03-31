@@ -6,12 +6,12 @@ class EntityManager_Mapper_Conditions_Paging
     /**
      * @var int
      */
-    protected $offset;
+    protected $_offset;
 
     /**
      * @var int
      */
-    protected $showPerPage;
+    protected $_showPerPage;
 
     /**
      * @param int $offset
@@ -19,8 +19,8 @@ class EntityManager_Mapper_Conditions_Paging
      */
     public function __construct($offset, $showPerPage)
     {
-        $this->offset = (int) $offset;
-        $this->showPerPage = (int) $showPerPage;
+        $this->_offset = (int) $offset;
+        $this->_showPerPage = (int) $showPerPage;
     }
 
     /**
@@ -28,7 +28,7 @@ class EntityManager_Mapper_Conditions_Paging
      */
     public function getOffset()
     {
-        return $this->offset;
+        return $this->_offset;
     }
 
     /**
@@ -36,7 +36,7 @@ class EntityManager_Mapper_Conditions_Paging
      */
     public function getShowPerPage()
     {
-        return $this->showPerPage;
+        return $this->_showPerPage;
     }
 
 }

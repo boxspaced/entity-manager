@@ -3,17 +3,17 @@
 class EntityStub implements EntityManager_EntityInterface
 {
 
-    protected $id;
-    private static $counter = 0;
+    protected $_id;
+    private static $_counter = 0;
 
     public function getId()
     {
-        return $this->id;
+        return $this->_id;
     }
 
     public function __construct()
     {
-        $this->id = self::$counter++;
+        $this->_id = self::$_counter++;
     }
 
 }

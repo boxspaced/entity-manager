@@ -6,7 +6,7 @@ abstract class EntityManager_Builder_AbstractBuilder
     /**
      * @var EntityManager_IdentityMap
      */
-    protected $identityMap;
+    protected $_identityMap;
 
     /**
      * @param array $row
@@ -32,7 +32,7 @@ abstract class EntityManager_Builder_AbstractBuilder
         EntityManager_IdentityMap $identityMap
     )
     {
-        $this->identityMap = $identityMap;
+        $this->_identityMap = $identityMap;
     }
 
     /**
@@ -70,7 +70,7 @@ abstract class EntityManager_Builder_AbstractBuilder
     protected function _getFromIdentityMap($id)
     {
         $entityClassName = $this->_getEntityClassName();
-        return $this->identityMap->exists($entityClassName, $id);
+        return $this->_identityMap->exists($entityClassName, $id);
     }
 
     /**
@@ -79,7 +79,7 @@ abstract class EntityManager_Builder_AbstractBuilder
      */
     protected function _addToIdentityMap(EntityManager_EntityInterface $entity)
     {
-        $this->identityMap->add($entity);
+        $this->_identityMap->add($entity);
         return $this;
     }
 

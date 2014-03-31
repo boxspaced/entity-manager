@@ -8,24 +8,24 @@ class EntityManager_Mapper_Conditions_Field
     /**
      * @var string
      */
-    protected $name;
+    protected $_name;
 
     /**
      * @var string
      */
-    protected $operator;
+    protected $_operator;
 
     /**
      * @var mixed
      */
-    protected $value;
+    protected $_value;
 
     /**
      * @param string $name
      */
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->_name = $name;
     }
 
     /**
@@ -33,7 +33,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function getName()
     {
-        return $this->name;
+        return $this->_name;
     }
 
     /**
@@ -42,7 +42,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->_name = $name;
         return $this;
     }
 
@@ -51,7 +51,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function getOperator()
     {
-        return $this->operator;
+        return $this->_operator;
     }
 
     /**
@@ -60,7 +60,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function setOperator($operator)
     {
-        $this->operator = $operator;
+        $this->_operator = $operator;
         return $this;
     }
 
@@ -69,7 +69,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function getValue()
     {
-        return $this->value;
+        return $this->_value;
     }
 
     /**
@@ -78,7 +78,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->_value = $value;
         return $this;
     }
 
@@ -87,9 +87,9 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function isComplete()
     {
-        return (!is_null($this->name)
-                && !is_null($this->operator)
-                && !is_null($this->value));
+        return (!is_null($this->_name)
+                && !is_null($this->_operator)
+                && !is_null($this->_value));
     }
 
     /**
@@ -97,7 +97,7 @@ class EntityManager_Mapper_Conditions_Field
      */
     public function isForeign()
     {
-        return strpos($this->name, self::FOREIGN_SEPARATOR) !== false;
+        return strpos($this->_name, self::FOREIGN_SEPARATOR) !== false;
     }
 
     /**
@@ -124,11 +124,11 @@ class EntityManager_Mapper_Conditions_Field
      */
     protected function _parseForeignFieldName()
     {
-        if (!$this->isForeign($this->name)) {
+        if (!$this->isForeign($this->_name)) {
             throw new EntityManager_Mapper_Conditions_Exception('Field is not recognised as foreign');
         }
 
-        $exploded = explode(self::FOREIGN_SEPARATOR, $this->name);
+        $exploded = explode(self::FOREIGN_SEPARATOR, $this->_name);
         $field = array_pop($exploded);
         $path = $exploded;
 

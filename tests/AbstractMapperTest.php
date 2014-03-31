@@ -8,11 +8,11 @@ require_once '_concrete/Mapper.php';
 class AbstractMapperTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $adapter;
-    protected $mapper;
-    protected $identityMap;
-    protected $unitOfWork;
-    protected $rowset = array(
+    protected $_adapter;
+    protected $_mapper;
+    protected $_identityMap;
+    protected $_unitOfWork;
+    protected $_rowset = array(
         array('id' => '1', 'title' => 'Mr', 'fname' => 'Tom', 'lname' => 'Jones'),
         array('id' => '2', 'title' => 'Mrs', 'fname' => 'Betty', 'lname' => 'Smith'),
         array('id' => '3', 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'),
@@ -21,22 +21,22 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $processor = new DummyUnitOfWorkProcessor();
-        $this->unitOfWork = new EntityManager_UnitOfWork($processor);
-        $this->identityMap = new EntityManager_IdentityMap();
-        $builder = new Builder($this->identityMap, $this->unitOfWork);
-        $this->adapter = new Zend_Test_DbAdapter();
-        $this->mapper = new Mapper($this->identityMap, $builder, $this->adapter);
+        $this->_unitOfWork = new EntityManager_UnitOfWork($processor);
+        $this->_identityMap = new EntityManager_IdentityMap();
+        $builder = new Builder($this->_identityMap, $this->_unitOfWork);
+        $this->_adapter = new Zend_Test_DbAdapter();
+        $this->_mapper = new Mapper($this->_identityMap, $builder, $this->_adapter);
     }
 
     public function testFindGetsFromIdentityMapWhenExists()
     {
         $id = 23;
 
-        $entity = new Entity($this->unitOfWork);
+        $entity = new Entity($this->_unitOfWork);
         $entity->setId($id);
 
-        $this->identityMap->add($entity);
-        $result = $this->mapper->find($id);
+        $this->_identityMap->add($entity);
+        $result = $this->_mapper->find($id);
 
         $this->assertEquals($entity, $result);
     }
@@ -45,19 +45,19 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
     {
         $rows = array();
         $stmt = Zend_Test_DbStatement::createSelectStatement($rows);
-        $this->adapter->appendStatementToStack($stmt);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->find(null);
+        $result = $this->_mapper->find(null);
 
         $this->assertFalse($result);
     }
 
     public function testFindReturnsAnEntityWhenFound()
     {
-        $stmt = Zend_Test_DbStatement::createSelectStatement($this->rowset);
-        $this->adapter->appendStatementToStack($stmt);
+        $stmt = Zend_Test_DbStatement::createSelectStatement($this->_rowset);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->find(null);
+        $result = $this->_mapper->find(null);
 
         $this->assertInstanceOf('Entity', $result);
     }
@@ -66,19 +66,19 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
     {
         $rowset = array();
         $stmt = Zend_Test_DbStatement::createSelectStatement($rowset);
-        $this->adapter->appendStatementToStack($stmt);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->findOne(null);
+        $result = $this->_mapper->findOne(null);
 
         $this->assertFalse($result);
     }
 
     public function testFindOneReturnsAnEntityWhenFound()
     {
-        $stmt = Zend_Test_DbStatement::createSelectStatement($this->rowset);
-        $this->adapter->appendStatementToStack($stmt);
+        $stmt = Zend_Test_DbStatement::createSelectStatement($this->_rowset);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->find(null);
+        $result = $this->_mapper->find(null);
 
         $this->assertInstanceOf('Entity', $result);
     }
@@ -87,9 +87,9 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
     {
         $rowset = array();
         $stmt = Zend_Test_DbStatement::createSelectStatement($rowset);
-        $this->adapter->appendStatementToStack($stmt);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->findAll();
+        $result = $this->_mapper->findAll();
 
         $this->assertInstanceOf('Collection', $result);
         $this->assertEquals(0, count($result));
@@ -97,24 +97,24 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
     public function testFindAllReturnsCollectionOfEntitiesWhenFound()
     {
-        $stmt = Zend_Test_DbStatement::createSelectStatement($this->rowset);
-        $this->adapter->appendStatementToStack($stmt);
+        $stmt = Zend_Test_DbStatement::createSelectStatement($this->_rowset);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->findAll();
+        $result = $this->_mapper->findAll();
 
         $this->assertInstanceOf('Collection', $result);
-        $this->assertEquals(count($this->rowset), count($result));
+        $this->assertEquals(count($this->_rowset), count($result));
     }
 
     public function testFindAllDoesNotCallDataSource()
     {
-        $stmt = Zend_Test_DbStatement::createSelectStatement($this->rowset);
-        $this->adapter->appendStatementToStack($stmt);
+        $stmt = Zend_Test_DbStatement::createSelectStatement($this->_rowset);
+        $this->_adapter->appendStatementToStack($stmt);
 
-        $result = $this->mapper->findAll();
+        $result = $this->_mapper->findAll();
 
         $this->assertInstanceOf('Collection', $result);
-        //$this->assertEquals(1, count($this->adapter->getStatementStack()));
+        //$this->assertEquals(1, count($this->_adapter->getStatementStack()));
     }
 
     public function testInsertWillNotAcceptWrongEntityType()
@@ -122,18 +122,18 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('EntityManager_Mapper_Exception');
         $badEntity = $this->getMock('EntityManager_EntityInterface', array(), array(), '');
 
-        $this->mapper->insert($badEntity);
+        $this->_mapper->insert($badEntity);
     }
 
     public function testInsertAddsEntityToIdentityMap()
     {
         $id = 67;
 
-        $this->adapter->appendLastInsertIdToStack($id);
-        $entity = new Entity($this->unitOfWork);
+        $this->_adapter->appendLastInsertIdToStack($id);
+        $entity = new Entity($this->_unitOfWork);
 
-        $this->mapper->insert($entity);
-        $result = $this->identityMap->exists(get_class($entity), $id);
+        $this->_mapper->insert($entity);
+        $result = $this->_identityMap->exists(get_class($entity), $id);
 
         $this->assertEquals($entity, $result);
     }
@@ -143,7 +143,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('EntityManager_Mapper_Exception');
         $badEntity = $this->getMock('EntityManager_EntityInterface', array(), array(), '');
 
-        $this->mapper->update($badEntity);
+        $this->_mapper->update($badEntity);
     }
 
     public function testDeleteWillNotAcceptWrongEntityType()
@@ -151,7 +151,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('EntityManager_Mapper_Exception');
         $badEntity = $this->getMock('EntityManager_EntityInterface', array(), array(), '');
 
-        $this->mapper->delete($badEntity);
+        $this->_mapper->delete($badEntity);
     }
 
 }
