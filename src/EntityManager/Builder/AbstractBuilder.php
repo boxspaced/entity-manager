@@ -15,7 +15,7 @@ abstract class EntityManager_Builder_AbstractBuilder
     abstract protected function _buildEntity(array $row);
 
     /**
-     * @param Callable $rowsetCallback
+     * @param Callable|null $rowsetCallback
      * @return EntityManager_Collection_AbstractCollection
      */
     abstract public function createCollection(Callable $rowsetCallback = null);

@@ -16,7 +16,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     protected $_builder;
 
     /**
-     * @var Callable
+     * @var Callable|null
      */
     protected $_rowsetCallback;
 
@@ -27,7 +27,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
 
     /**
      * @param EntityManager_Builder_AbstractBuilder $builder
-     * @param Callable $rowsetCallback
+     * @param Callable|null $rowsetCallback
      */
     public function __construct(
         EntityManager_Builder_AbstractBuilder $builder,
@@ -45,9 +45,8 @@ abstract class EntityManager_Collection_AbstractCollection implements
     {
         if ($this->_elements === null) {
             $this->_elements = array();
-            $rowsetCallback = $this->_rowsetCallback;
-            if (is_callable($rowsetCallback)) {
-                $this->_elements = $rowsetCallback();
+            if (is_callable($this->_rowsetCallback)) {
+                $this->_elements = call_user_func($this->_rowsetCallback);
             }
         }
         return $this->_elements;
