@@ -16,7 +16,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
     protected $_builder;
 
     /**
-     * @var Closure
+     * @var Callable
      */
     protected $_rowsetCallback;
 
@@ -27,11 +27,11 @@ abstract class EntityManager_Collection_AbstractCollection implements
 
     /**
      * @param EntityManager_Builder_AbstractBuilder $builder
-     * @param Closure $rowsetCallback
+     * @param Callable $rowsetCallback
      */
     public function __construct(
         EntityManager_Builder_AbstractBuilder $builder,
-        Closure $rowsetCallback = null
+        Callable $rowsetCallback = null
     )
     {
         $this->_builder = $builder;
@@ -181,10 +181,10 @@ abstract class EntityManager_Collection_AbstractCollection implements
     }
 
     /**
-     * @param Closure $callback
+     * @param Callable $callback
      * @return EntityManager_Collection_AbstractCollection
      */
-    public function filter(Closure $callback)
+    public function filter(Callable $callback)
     {
         $this->_loadAllRows();
         $filtered = array_filter($this->_elements, $callback);

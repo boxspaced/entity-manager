@@ -15,10 +15,10 @@ abstract class EntityManager_Builder_AbstractBuilder
     abstract protected function _buildEntity(array $row);
 
     /**
-     * @param Closure $rowsetCallback
+     * @param Callable $rowsetCallback
      * @return EntityManager_Collection_AbstractCollection
      */
-    abstract public function createCollection(Closure $rowsetCallback = null);
+    abstract public function createCollection(Callable $rowsetCallback = null);
 
     /**
      * @return string

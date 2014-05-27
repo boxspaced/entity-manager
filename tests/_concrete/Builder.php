@@ -6,7 +6,7 @@ require_once 'Entity.php';
 class Builder extends EntityManager_Builder_AbstractBuilder
 {
 
-    public function createCollection(Closure $rowsetCallback = null)
+    public function createCollection(Callable $rowsetCallback = null)
     {
         return new Collection($this, $rowsetCallback);
     }
