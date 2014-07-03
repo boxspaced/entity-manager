@@ -38,19 +38,19 @@ abstract class EntityManager_Mapper_AbstractMapper
 
     /**
      * @param EntityManager_EntityInterface $entity
-     * @return EntityManager_Mapper_AbstractMapper
+     * @return void
      */
     abstract protected function _insert(EntityManager_EntityInterface $entity);
 
     /**
      * @param EntityManager_EntityInterface $entity
-     * @return EntityManager_Mapper_AbstractMapper
+     * @return void
      */
     abstract protected function _update(EntityManager_EntityInterface $entity);
 
     /**
      * @param EntityManager_EntityInterface $entity
-     * @return EntityManager_Mapper_AbstractMapper
+     * @return void
      */
     abstract protected function _delete(EntityManager_EntityInterface $entity);
 
