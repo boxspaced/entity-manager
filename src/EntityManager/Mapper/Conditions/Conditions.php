@@ -105,7 +105,7 @@ class EntityManager_Mapper_Conditions_Conditions
     /**
      * @param string $operator
      * @param mixed $value
-     * @return EntityManager_Mapper_Conditions_Conditions
+     * @return void
      * @throws EntityManager_Mapper_Conditions_Exception
      */
     protected function _addOperatorAndValueToLastField($operator, $value)
@@ -120,7 +120,6 @@ class EntityManager_Mapper_Conditions_Conditions
         } else {
             throw new EntityManager_Mapper_Conditions_Exception('No fields found, add a field first');
         }
-        return $this;
     }
 
     /**

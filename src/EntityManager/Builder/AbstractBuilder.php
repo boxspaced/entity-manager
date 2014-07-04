@@ -46,7 +46,7 @@ abstract class EntityManager_Builder_AbstractBuilder
                 'Row array empty, use factories to create new entities'
             );
         }
-        if (!isset($row['id']) || !$row['id']) {
+        if (!isset($row['id']) || !$row['id']) { // @todo if empty()
             throw new EntityManager_Builder_Exception(
                 'No \'id\' index in row array, use factories to create new entities'
             );
@@ -75,12 +75,11 @@ abstract class EntityManager_Builder_AbstractBuilder
 
     /**
      * @param EntityManager_EntityInterface $entity
-     * @return EntityManager_Builder_AbstractBuilder
+     * @return void
      */
     protected function _addToIdentityMap(EntityManager_EntityInterface $entity)
     {
         $this->_identityMap->add($entity);
-        return $this;
     }
 
 }

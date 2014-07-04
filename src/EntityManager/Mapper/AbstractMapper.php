@@ -155,7 +155,7 @@ abstract class EntityManager_Mapper_AbstractMapper
 
     /**
      * @param EntityManager_EntityInterface $entity
-     * @return EntityManager_Mapper_AbstractMapper
+     * @return void
      * @throws EntityManager_Mapper_Exception
      */
     protected function _entityTypeCheck(EntityManager_EntityInterface $entity)
@@ -164,7 +164,6 @@ abstract class EntityManager_Mapper_AbstractMapper
             throw new EntityManager_Mapper_Exception('Entities passed to this mapper must be of type: '
                     . $this->_getEntityClassName() . ' (' . get_class($entity) .') provided');
         }
-        return $this;
     }
 
     /**
@@ -184,7 +183,6 @@ abstract class EntityManager_Mapper_AbstractMapper
     private function _addToIdentityMap(EntityManager_EntityInterface $entity)
     {
         $this->_identityMap->add($entity);
-        return $this;
     }
 
 }

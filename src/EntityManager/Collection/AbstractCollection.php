@@ -235,7 +235,7 @@ abstract class EntityManager_Collection_AbstractCollection implements
 
     /**
      * @param EntityManager_EntityInterface $entity
-     * @return EntityManager_Collection_AbstractCollection
+     * @return void
      * @throws EntityManager_Collection_Exception
      */
     protected function _entityTypeCheck(EntityManager_EntityInterface $entity)
@@ -244,7 +244,6 @@ abstract class EntityManager_Collection_AbstractCollection implements
             throw new EntityManager_Collection_Exception('Entities passed to this collection must be of type: '
                     . $this->_getEntityClassName() . ' (' . get_class($entity) .') provided');
         }
-        return $this;
     }
 
 }
