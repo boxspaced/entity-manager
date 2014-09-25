@@ -1,2 +1,5 @@
 /nbproject/private/
 /nbproject/
+/bin/phpunit
+/bin/phpunit.bat
+/vendor/

@@ -1,8 +1,15 @@
 {
     "name": "rw0600/entity-manager",
+    "require-dev": {
+        "phpunit/phpunit": "4.2.*"
+    },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
             "EntityManager_": "src/"
         }
+    },
+    "config": {
+        "bin-dir": "bin/"
     }
 }
