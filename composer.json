@@ -1,5 +1,8 @@
 {
     "name": "rw0600/entity-manager",
+    "require": {
+        "php": ">=5.4"
+    },
     "require-dev": {
         "phpunit/phpunit": "4.2.*"
     },
