@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c18e893e09d024b8445acd624b7a2c05",
+    "hash": "517e3b671a8b558cbae937ab937a8128",
     "packages": [],
     "packages-dev": [
         {
@@ -758,12 +758,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zf1.git",
-                "reference": "46079914d41d5e47f45d4342845624ca53e76bc3"
+                "reference": "901da6b34ddc89ea57286b086ad145201830c040"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zf1/zipball/46079914d41d5e47f45d4342845624ca53e76bc3",
-                "reference": "46079914d41d5e47f45d4342845624ca53e76bc3",
+                "url": "https://api.github.com/repos/zendframework/zf1/zipball/901da6b34ddc89ea57286b086ad145201830c040",
+                "reference": "901da6b34ddc89ea57286b086ad145201830c040",
                 "shasum": ""
             },
             "require": {
@@ -797,7 +797,7 @@
                 "ZF1",
                 "framework"
             ],
-            "time": "2014-09-16 20:50:03"
+            "time": "2014-09-26 07:47:15"
         }
     ],
     "aliases": [],
