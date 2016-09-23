@@ -1,61 +1,59 @@
 <?php
+namespace EntityManager\Test;
 
-require_once '_doubles/EntityStub.php';
+use EntityManager\IdentityMap;
+use EntityManager\Test\Double\Entity;
 
-class IdentityMapTest extends PHPUnit_Framework_TestCase
+class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected $_identityMap;
+    protected $identityMap;
 
     public function setUp()
     {
-        $this->_identityMap = new EntityManager_IdentityMap();
+        $this->identityMap = new IdentityMap();
     }
 
     public function testEntityNotExistsWhenMapEmpty()
     {
-        $entity = $this->_createEntityStub();
+        $entity = new Entity();
 
-        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
+        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertFalse($result);
     }
 
     public function testEntityNotExistsWhenMapNotEmpty()
     {
-        $entity1 = $this->_createEntityStub();
-        $entity2 = $this->_createEntityStub();
-        $entity3 = $this->_createEntityStub();
-        $entity = $this->_createEntityStub();
+        $entity1 = new Entity();
+        $entity2 = new Entity();
+        $entity3 = new Entity();
+        $entity = new Entity();
 
-        $this->_identityMap->add($entity1);
-        $this->_identityMap->add($entity2);
-        $this->_identityMap->add($entity3);
-        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
+        $this->identityMap->add($entity1);
+        $this->identityMap->add($entity2);
+        $this->identityMap->add($entity3);
+
+        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertFalse($result);
     }
 
     public function testEntityExistsWhenHasBeenAddedAndMapNotEmpty()
     {
-        $entity1 = $this->_createEntityStub();
-        $entity2 = $this->_createEntityStub();
-        $entity3 = $this->_createEntityStub();
-        $entity = $this->_createEntityStub();
+        $entity1 = new Entity();
+        $entity2 = new Entity();
+        $entity3 = new Entity();
+        $entity = new Entity();
 
-        $this->_identityMap->add($entity1);
-        $this->_identityMap->add($entity2);
-        $this->_identityMap->add($entity3);
-        $this->_identityMap->add($entity);
-        $result = $this->_identityMap->exists(get_class($entity), $entity->getId());
+        $this->identityMap->add($entity1);
+        $this->identityMap->add($entity2);
+        $this->identityMap->add($entity3);
+        $this->identityMap->add($entity);
+
+        $result = $this->identityMap->exists(get_class($entity), $entity->getId());
 
         $this->assertEquals($entity, $result);
-    }
-
-    protected function _createEntityStub()
-    {
-        $stub = new EntityStub();
-        return $stub;
     }
 
 }

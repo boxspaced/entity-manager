@@ -1,101 +1,119 @@
 <?php
+namespace EntityManager\Test;
 
-require_once '_doubles/UnitOfWorkProcessorSpy.php';
-require_once '_doubles/EntityStub.php';
+use EntityManager\Test\Double\MapperFactory;
+use EntityManager\UnitOfWork;
+use EntityManager\Test\Double\Entity;
 
-class UnitOfWorkTest extends PHPUnit_Framework_TestCase
+class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected $_processorSpy;
-    protected $_unitOfWork;
+    protected $mapperFactory;
+
+    protected $unitOfWork;
 
     public function setUp()
     {
-        $this->_processorSpy = new UnitOfWorkProcessorSpy();
-        $this->_unitOfWork = new EntityManager_UnitOfWork($this->_processorSpy);
+        $this->mapperFactory = new MapperFactory();
+        $this->mapperFactory->createForType(null); // Force creation of mapper
+        $this->unitOfWork = new UnitOfWork($this->mapperFactory);
     }
 
-    public function testEntitiesStoredInternally()
+    public function testPersistedEntityWillBeInserted()
     {
-        $entityNew = $this->_createEntityStub();
-        $entityDirty = $this->_createEntityStub();
-        $entityDelete = $this->_createEntityStub();
+        $entity = new Entity();
 
-        $this->_unitOfWork->persist($entityNew);
-        $this->_unitOfWork->dirty($entityDirty);
-        $this->_unitOfWork->delete($entityDelete);
-        $this->_unitOfWork->flush();
+        $this->unitOfWork->persist($entity);
+        $this->unitOfWork->flush();
 
-        $this->assertContains($entityNew, $this->_processorSpy->new);
-        $this->assertContains($entityDirty, $this->_processorSpy->dirty);
-        $this->assertContains($entityDelete, $this->_processorSpy->delete);
-        $this->assertEquals(1, count($this->_processorSpy->new));
-        $this->assertEquals(1, count($this->_processorSpy->dirty));
-        $this->assertEquals(1, count($this->_processorSpy->delete));
+        $this->assertContains($entity, $this->mapperFactory->mapper->inserted);
+        $this->assertEquals(1, count($this->mapperFactory->mapper->inserted));
     }
 
-    public function testAddingNewEntityMoreThanOnceDoesntDuplicate()
+    public function testDirtyEntityWillBeUpdated()
     {
-        $entity = $this->_createEntityStub();
+        $entity = new Entity();
 
-        $this->_unitOfWork->persist($entity);
-        $this->_unitOfWork->persist($entity);
-        $this->_unitOfWork->flush();
+        $this->unitOfWork->dirty($entity);
+        $this->unitOfWork->flush();
 
-        $this->assertEquals(array($entity), $this->_processorSpy->new);
+        $this->assertContains($entity, $this->mapperFactory->mapper->updated);
+        $this->assertEquals(1, count($this->mapperFactory->mapper->updated));
+    }
+
+    public function testDeletedEntityWillBeDeleted()
+    {
+        $entity = new Entity();
+
+        $this->unitOfWork->delete($entity);
+        $this->unitOfWork->flush();
+
+        $this->assertContains($entity, $this->mapperFactory->mapper->deleted);
+        $this->assertEquals(1, count($this->mapperFactory->mapper->deleted));
+    }
+
+    public function testPersistingNewEntityMoreThanOnceDoesntDuplicate()
+    {
+        $entity = new Entity();
+
+        $this->unitOfWork->persist($entity);
+        $this->unitOfWork->persist($entity);
+        $this->unitOfWork->flush();
+
+        $this->assertEquals([$entity], $this->mapperFactory->mapper->inserted);
     }
 
     public function testNewEntityCannotBeMadeDirty()
     {
-        $entity = $this->_createEntityStub();
+        $entity = new Entity();
 
-        $this->_unitOfWork->persist($entity);
-        $this->_unitOfWork->dirty($entity);
-        $this->_unitOfWork->flush();
+        $this->unitOfWork->persist($entity);
+        $this->unitOfWork->dirty($entity);
+        $this->unitOfWork->flush();
 
-        $this->assertEquals(array(), $this->_processorSpy->dirty);
+        $this->assertEquals([], $this->mapperFactory->mapper->updated);
     }
 
-    public function testCleanRemovesAllFromInternalStorage()
+    public function testCleanClearsAllEntities()
     {
-        $entityNew = $this->_createEntityStub();
-        $entityDirty = $this->_createEntityStub();
-        $entityDelete = $this->_createEntityStub();
+        $new = new Entity();
+        $dirty = new Entity();
+        $delete = new Entity();
 
-        $this->_unitOfWork->persist($entityNew);
-        $this->_unitOfWork->dirty($entityDirty);
-        $this->_unitOfWork->delete($entityDelete);
-        $this->_unitOfWork->clean($entityNew);
-        $this->_unitOfWork->clean($entityDirty);
-        $this->_unitOfWork->clean($entityDelete);
-        $this->_unitOfWork->flush();
+        $this->unitOfWork->persist($new);
+        $this->unitOfWork->dirty($dirty);
+        $this->unitOfWork->delete($delete);
+        $this->unitOfWork->clean($new);
+        $this->unitOfWork->clean($dirty);
+        $this->unitOfWork->clean($delete);
+        $this->unitOfWork->flush();
 
-        $this->assertEquals(array(), $this->_processorSpy->new);
-        $this->assertEquals(array(), $this->_processorSpy->dirty);
-        $this->assertEquals(array(), $this->_processorSpy->delete);
+        $this->assertEquals([], $this->mapperFactory->mapper->inserted);
+        $this->assertEquals([], $this->mapperFactory->mapper->updated);
+        $this->assertEquals([], $this->mapperFactory->mapper->deleted);
     }
 
-    public function testFlushClearsInternalStorageAfterProcessing()
+    public function testFlushClearsAllEntities()
     {
-        $entityNew = $this->_createEntityStub();
-        $entityDirty = $this->_createEntityStub();
-        $entityDelete = $this->_createEntityStub();
+        $new = new Entity();
+        $dirty = new Entity();
+        $delete = new Entity();
 
-        $this->_unitOfWork->persist($entityNew);
-        $this->_unitOfWork->dirty($entityDirty);
-        $this->_unitOfWork->delete($entityDelete);
-        $this->_unitOfWork->flush(); // Should clear internal storage
-        $this->_unitOfWork->flush();
+        $this->unitOfWork->persist($new);
+        $this->unitOfWork->dirty($dirty);
+        $this->unitOfWork->delete($delete);
 
-        $this->assertEquals(array(), $this->_processorSpy->new);
-        $this->assertEquals(array(), $this->_processorSpy->dirty);
-        $this->assertEquals(array(), $this->_processorSpy->delete);
-    }
+        $this->unitOfWork->flush(); // Should clear internal storage
 
-    protected function _createEntityStub()
-    {
-        $stub = new EntityStub();
-        return $stub;
+        $this->mapperFactory->mapper->inserted = [];
+        $this->mapperFactory->mapper->updated = [];
+        $this->mapperFactory->mapper->deleted = [];
+
+        $this->unitOfWork->flush();
+
+        $this->assertEquals([], $this->mapperFactory->mapper->inserted);
+        $this->assertEquals([], $this->mapperFactory->mapper->updated);
+        $this->assertEquals([], $this->mapperFactory->mapper->deleted);
     }
 
 }
