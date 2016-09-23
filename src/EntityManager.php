@@ -32,19 +32,11 @@ class EntityManager
 
         $container['db'] = function ($container) {
 
-            if (null === $container['config']->db) {
+            if (!isset($container['config']->db)) {
                 return null;
             }
 
-            return new DbAdapter([
-                'driver' => $container['config']->db->driver,
-                'database' => $container['config']->db->database,
-                'username' => $container['config']->db->username,
-                'password' => $container['config']->db->password,
-                'hostname' => $container['config']->db->get('hostname', 'localhost'),
-                'port' => $container['config']->db->port,
-                'charset' => $container['config']->db->charset,
-            ]);
+            return new DbAdapter($container['config']->db->toArray());
         };
 
         $container['identityMap'] = function () {
