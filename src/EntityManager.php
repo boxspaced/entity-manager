@@ -4,7 +4,7 @@ namespace EntityManager;
 use Pimple\Container;
 use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter as DbAdapter;
-use EntityManager\Entity\EntityInterface;
+use EntityManager\Entity\AbstractEntity;
 use EntityManager\Collection\Collection;
 use EntityManager\Mapper\Conditions\Conditions;
 use EntityManager\IdentityMap;
@@ -102,7 +102,7 @@ class EntityManager
     /**
      * @param string $type
      * @param int $id
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function find($type, $id)
     {
@@ -113,7 +113,7 @@ class EntityManager
     /**
      * @param string $type
      * @param Conditions $conditions
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function findOne($type, Conditions $conditions = null)
     {
@@ -133,10 +133,10 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return EntityManager
      */
-    public function persist(EntityInterface $entity)
+    public function persist(AbstractEntity $entity)
     {
         $this->container['unitOfWork']->persist($entity);
         return $this;
@@ -144,20 +144,20 @@ class EntityManager
 
     /**
      * @todo do we need this anymore?
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return EntityManager
      */
-    public function dirty(EntityInterface $entity)
+    public function dirty(AbstractEntity $entity)
     {
         $this->container['unitOfWork']->dirty($entity);
         return $this;
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return EntityManager
      */
-    public function delete(EntityInterface $entity)
+    public function delete(AbstractEntity $entity)
     {
         $this->container['unitOfWork']->delete($entity);
         return $this;

@@ -1,7 +1,7 @@
 <?php
 namespace EntityManager;
 
-use EntityManager\Entity\EntityInterface;
+use EntityManager\Entity\AbstractEntity;
 
 class IdentityMap
 {
@@ -12,10 +12,10 @@ class IdentityMap
     protected $map = [];
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return IdentityMap
      */
-    public function add(EntityInterface $entity)
+    public function add(AbstractEntity $entity)
     {
         $this->map[$this->globalKey($entity)] = $entity;
         return $this;
@@ -24,7 +24,7 @@ class IdentityMap
     /**
      * @param string $type
      * @param int $id
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function exists($type, $id)
     {
@@ -36,10 +36,10 @@ class IdentityMap
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return string
      */
-    protected function globalKey(EntityInterface $entity)
+    protected function globalKey(AbstractEntity $entity)
     {
         $key = get_class($entity) . '.' . $entity->getId();
         return $key;

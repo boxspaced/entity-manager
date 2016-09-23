@@ -1,7 +1,7 @@
 <?php
 namespace EntityManager\Mapper;
 
-use EntityManager\Entity\EntityInterface;
+use EntityManager\Entity\AbstractEntity;
 use EntityManager\Mapper\Conditions\Conditions;
 
 interface StrategyInterface
@@ -29,21 +29,21 @@ interface StrategyInterface
     public function findAll($type, Conditions $conditions = null);
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return void
      */
-    public function insert(EntityInterface $entity);
+    public function insert(AbstractEntity $entity);
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return void
      */
-    public function update(EntityInterface $entity);
+    public function update(AbstractEntity $entity);
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return void
      */
-    public function delete(EntityInterface $entity);
+    public function delete(AbstractEntity $entity);
 
 }

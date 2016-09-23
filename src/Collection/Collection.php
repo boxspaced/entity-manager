@@ -3,7 +3,7 @@ namespace EntityManager\Collection;
 
 use EntityManager\Entity\Builder as EntityBuilder;
 use EntityManager\UnitOfWork;
-use EntityManager\Entity\EntityInterface;
+use EntityManager\Entity\AbstractEntity;
 use InvalidArgumentException;
 
 class Collection implements
@@ -90,10 +90,10 @@ class Collection implements
 
     /**
      *
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return Collection
      */
-    public function add(EntityInterface $entity)
+    public function add(AbstractEntity $entity)
     {
         $this->entityTypeCheck($entity);
         $this->getElements();
@@ -102,10 +102,10 @@ class Collection implements
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return Collection
      */
-    public function delete(EntityInterface $entity)
+    public function delete(AbstractEntity $entity)
     {
         foreach ($this as $key => $value) {
 
@@ -145,7 +145,7 @@ class Collection implements
     }
 
     /**
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function first()
     {
@@ -155,7 +155,7 @@ class Collection implements
     }
 
     /**
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function last()
     {
@@ -175,7 +175,7 @@ class Collection implements
     }
 
     /**
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function current()
     {
@@ -193,7 +193,7 @@ class Collection implements
     }
 
     /**
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function next()
     {
@@ -203,7 +203,7 @@ class Collection implements
     }
 
     /**
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     public function prev()
     {
@@ -262,7 +262,7 @@ class Collection implements
 
     /**
      * @param int $key
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     protected function getRow($key)
     {
@@ -294,11 +294,11 @@ class Collection implements
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return Collection
      * @throws InvalidArgumentException
      */
-    protected function entityTypeCheck(EntityInterface $entity)
+    protected function entityTypeCheck(AbstractEntity $entity)
     {
         if (!is_a($entity, $this->type)) {
 

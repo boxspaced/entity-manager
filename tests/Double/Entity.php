@@ -1,10 +1,8 @@
 <?php
 namespace EntityManager\Test\Double;
 
-class Entity implements \EntityManager\Entity\EntityInterface
+class Entity extends \EntityManager\Entity\AbstractEntity
 {
-
-    protected $id;
 
     protected $title;
 
@@ -22,17 +20,6 @@ class Entity implements \EntityManager\Entity\EntityInterface
     public function getTypeMap()
     {
         return [];
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getTitle()

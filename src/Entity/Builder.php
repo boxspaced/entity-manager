@@ -5,7 +5,7 @@ use EntityManager\IdentityMap;
 use EntityManager\UnitOfWork;
 use EntityManager\Entity\Factory as EntityFactory;
 use EntityManager\Mapper\Factory as MapperFactory;
-use EntityManager\Entity\EntityInterface;
+use EntityManager\Entity\AbstractEntity;
 use EntityManager\Collection\AbstractCollection as Collection;
 use EntityManager\Mapper\Conditions\Conditions;
 use Zend\Config\Config;
@@ -64,7 +64,7 @@ class Builder
     /**
      * @param string
      * @param array $data
-     * @return EntityInterface
+     * @return AbstractEntity
      * @throws UnexpectedValueException
      */
     public function build($type, array $data)
@@ -98,7 +98,7 @@ class Builder
     /**
      * @param string $type
      * @param array $data
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     protected function createEntity($type, array $data)
     {
@@ -112,11 +112,11 @@ class Builder
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @param array $data
      * @return Builder
      */
-    protected function setEntityFields(EntityInterface $entity, array $data)
+    protected function setEntityFields(AbstractEntity $entity, array $data)
     {
         $methods = get_class_methods($entity);
 
@@ -133,12 +133,12 @@ class Builder
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @param string $field
      * @param mixed $value
      * @return Builder
      */
-    protected function setEntityField(EntityInterface $entity, $field, $value)
+    protected function setEntityField(AbstractEntity $entity, $field, $value)
     {
         $typeMap = $entity->getTypeMap();
 
@@ -174,11 +174,11 @@ class Builder
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @param array $data
      * @return Builder
      */
-    protected function setEntityReferences(EntityInterface $entity, array $data)
+    protected function setEntityReferences(AbstractEntity $entity, array $data)
     {
         $config = $this->getBuilderConfig(get_class($entity));
 
@@ -212,11 +212,11 @@ class Builder
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param AbstractEntity $entity
      * @return Builder
      * @throws UnexpectedValueException
      */
-    protected function setEntityChildren(EntityInterface $entity)
+    protected function setEntityChildren(AbstractEntity $entity)
     {
         $config = $this->getBuilderConfig(get_class($entity));
 
@@ -247,7 +247,7 @@ class Builder
     /**
      * @param string $type
      * @param int $id
-     * @return EntityInterface
+     * @return AbstractEntity
      */
     protected function getReference($type, $id)
     {

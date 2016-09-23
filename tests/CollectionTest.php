@@ -118,7 +118,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
 
         $badEntity = $this->getMock(
-            'EntityManager\\Entity\\EntityInterface',
+            'EntityManager\\Entity\\AbstractEntity',
             [],
             [],
             'BadEntity',
