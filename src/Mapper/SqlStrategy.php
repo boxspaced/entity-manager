@@ -64,7 +64,7 @@ class SqlStrategy implements StrategyInterface
     protected function remapRow($type, array $row)
     {
         $params = $this->getMapperParams($type);
-        $columns = $params->get('columns', [])->toArray();
+        $columns = isset($params->columns) ? $params->columns->toArray() : [];
 
         $remapped = [];
 
@@ -227,12 +227,13 @@ class SqlStrategy implements StrategyInterface
         $metadata = new Metadata($this->db);
         $table = $metadata->getTable($params->table);
         $methods = get_class_methods($entity);
+        $columns = isset($params->columns) ? $params->columns->toArray() : [];
 
         $row = [];
 
         foreach ($table->getColumns() as $column) {
 
-            $field = array_search($column, $params->get('columns', [])->toArray());
+            $field = array_search($column, $columns);
 
             if (false === $field) {
                 $field = (new UnderscoreToCamelCase)->filter($column);
