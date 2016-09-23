@@ -23,7 +23,7 @@ class Factory
 
     /**
      * @param string $type
-     * @return AbstractEntity
+     * @return EntityInterface
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
@@ -35,7 +35,7 @@ class Factory
 
         $entity = new $type($this->container['unitOfWork']);
 
-        if (!($entity instanceof \EntityManager\Entity\AbstractEntity)) {
+        if (!($entity instanceof \EntityManager\Entity\EntityInterface)) {
 
             throw new UnexpectedValueException(
                 sprintf('Object is not an entity: %s', get_class($entity))

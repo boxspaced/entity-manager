@@ -1,7 +1,7 @@
 <?php
 namespace EntityManager\Test\Double;
 
-use EntityManager\Entity\AbstractEntity;
+use EntityManager\Entity\EntityInterface;
 use EntityManager\Mapper\Conditions\Conditions;
 
 class Mapper extends \EntityManager\Mapper\Mapper
@@ -35,19 +35,19 @@ class Mapper extends \EntityManager\Mapper\Mapper
         return $this->entities;
     }
 
-    public function insert(AbstractEntity $entity)
+    public function insert(EntityInterface $entity)
     {
         $this->inserted[] = $entity;
         return $this;
     }
 
-    public function update(AbstractEntity $entity)
+    public function update(EntityInterface $entity)
     {
         $this->updated[] = $entity;
         return $this;
     }
 
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         $this->deleted[] = $entity;
         return $this;

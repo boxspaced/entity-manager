@@ -3,7 +3,7 @@ namespace EntityManager;
 
 use Zend\Db\Adapter\AdapterInterface as Database;
 use EntityManager\Mapper\Factory as MapperFactory;
-use EntityManager\Entity\AbstractEntity;
+use EntityManager\Entity\EntityInterface;
 use Exception;
 
 class UnitOfWork
@@ -20,17 +20,17 @@ class UnitOfWork
     protected $mapperFactory;
 
     /**
-     * @var AbstractEntity[]
+     * @var EntityInterface[]
      */
     protected $new = [];
 
     /**
-     * @var AbstractEntity[]
+     * @var EntityInterface[]
      */
     protected $dirty = [];
 
     /**
-     * @var AbstractEntity[]
+     * @var EntityInterface[]
      */
     protected $delete = [];
 
@@ -53,10 +53,10 @@ class UnitOfWork
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return UnitOfWork
      */
-    public function persist(AbstractEntity $entity)
+    public function persist(EntityInterface $entity)
     {
         if (!in_array($entity, $this->new, true)) {
             $this->new[] = $entity;
@@ -66,10 +66,10 @@ class UnitOfWork
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return UnitOfWork
      */
-    public function dirty(AbstractEntity $entity)
+    public function dirty(EntityInterface $entity)
     {
         if (!in_array($entity, $this->new, true)) {
             $this->dirty[$this->globalKey($entity)] = $entity;
@@ -79,20 +79,20 @@ class UnitOfWork
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return UnitOfWork
      */
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         $this->delete[$this->globalKey($entity)] = $entity;
         return $this;
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return UnitOfWork
      */
-    public function clean(AbstractEntity $entity)
+    public function clean(EntityInterface $entity)
     {
         unset($this->delete[$this->globalKey($entity)]);
         unset($this->dirty[$this->globalKey($entity)]);
@@ -159,10 +159,10 @@ class UnitOfWork
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return string
      */
-    protected function globalKey(AbstractEntity $entity)
+    protected function globalKey(EntityInterface $entity)
     {
         $key = get_class($entity) . '.' . $entity->getId();
         return $key;

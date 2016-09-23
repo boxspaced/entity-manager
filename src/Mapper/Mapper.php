@@ -4,7 +4,7 @@ namespace EntityManager\Mapper;
 use EntityManager\IdentityMap;
 use EntityManager\Entity\Builder as EntityBuilder;
 use EntityManager\Collection\Factory as CollectionFactory;
-use EntityManager\Entity\AbstractEntity;
+use EntityManager\Entity\EntityInterface;
 use EntityManager\Mapper\Conditions\Conditions;
 use EntityManager\Collection\AbstractCollection as Collection;
 
@@ -53,7 +53,7 @@ class Mapper
     /**
      * @param string $type
      * @param int $id
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function find($type, $id)
     {
@@ -75,7 +75,7 @@ class Mapper
     /**
      * @param string $type
      * @param Conditions $conditions
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function findOne($type, Conditions $conditions = null)
     {
@@ -104,10 +104,10 @@ class Mapper
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return Mapper
      */
-    public function insert(AbstractEntity $entity)
+    public function insert(EntityInterface $entity)
     {
         $this->strategy->insert($entity);
         $this->identityMap->add($entity);
@@ -115,20 +115,20 @@ class Mapper
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return Mapper
      */
-    public function update(AbstractEntity $entity)
+    public function update(EntityInterface $entity)
     {
         $this->strategy->update($entity);
         return $this;
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return Mapper
      */
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         $this->strategy->delete($entity);
         return $this;

@@ -1,7 +1,7 @@
 <?php
 namespace EntityManager\Test\Double;
 
-use EntityManager\Entity\AbstractEntity;
+use EntityManager\Entity\EntityInterface;
 use EntityManager\Mapper\Conditions\Conditions;
 
 class MapperStrategy implements \EntityManager\Mapper\StrategyInterface
@@ -24,19 +24,19 @@ class MapperStrategy implements \EntityManager\Mapper\StrategyInterface
         return $this->data;
     }
 
-    public function insert(AbstractEntity $entity)
+    public function insert(EntityInterface $entity)
     {
         $id = max(array_column($this->data, 'id')) + 1;
         $entity->setId($id);
         return $this;
     }
 
-    public function update(AbstractEntity $entity)
+    public function update(EntityInterface $entity)
     {
         return $this;
     }
 
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         return $this;
     }

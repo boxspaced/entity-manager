@@ -3,9 +3,16 @@ namespace EntityManager;
 
 use Pimple\Container;
 use Zend\Config\Config;
-use EntityManager\Entity\AbstractEntity;
+use Zend\Db\Adapter\Adapter as DbAdapter;
+use EntityManager\Entity\EntityInterface;
 use EntityManager\Collection\Collection;
 use EntityManager\Mapper\Conditions\Conditions;
+use EntityManager\IdentityMap;
+use EntityManager\UnitOfWork;
+use EntityManager\Entity\Factory as EntityFactory;
+use EntityManager\Entity\Builder as EntityBuilder;
+use EntityManager\Collection\Factory as CollectionFactory;
+use EntityManager\Mapper\Factory as MapperFactory;
 
 class EntityManager
 {
@@ -29,7 +36,7 @@ class EntityManager
                 return null;
             }
 
-            return new \Zend\Db\Adapter\Adapter([
+            return new DbAdapter([
                 'driver' => $container['config']->db->driver,
                 'database' => $container['config']->db->database,
                 'username' => $container['config']->db->username,
@@ -41,12 +48,12 @@ class EntityManager
         };
 
         $container['identityMap'] = function () {
-            return new \EntityManager\IdentityMap();
+            return new IdentityMap();
         };
 
         $container['unitOfWork'] = function ($container) {
 
-            $unitOfWork = new \EntityManager\UnitOfWork(
+            $unitOfWork = new UnitOfWork(
                 $container['mapperFactory']
             );
 
@@ -58,11 +65,11 @@ class EntityManager
         };
 
         $container['entityFactory'] = function ($container) {
-            return new \EntityManager\Entity\Factory($container);
+            return new EntityFactory($container);
         };
 
         $container['entityBuilder'] = function ($container) {
-            return new \EntityManager\Entity\Builder(
+            return new EntityBuilder(
                 $container['identityMap'],
                 $container['unitOfWork'],
                 $container['entityFactory'],
@@ -72,14 +79,24 @@ class EntityManager
         };
 
         $container['collectionFactory'] = function ($container) {
-            return new \EntityManager\Collection\Factory($container);
+            return new CollectionFactory($container);
         };
 
         $container['mapperFactory'] = function ($container) {
-            return new \EntityManager\Mapper\Factory($container);
+            return new MapperFactory($container);
         };
 
         $this->container = $container;
+    }
+
+    /**
+     * @param string $type
+     * @param Callable $rowset
+     * @return Collection
+     */
+    public function createCollection($type)
+    {
+        return $this->container['collectionFactory']->create($type);
     }
 
     /**
@@ -93,7 +110,7 @@ class EntityManager
     /**
      * @param string $type
      * @param int $id
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function find($type, $id)
     {
@@ -104,7 +121,7 @@ class EntityManager
     /**
      * @param string $type
      * @param Conditions $conditions
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function findOne($type, Conditions $conditions = null)
     {
@@ -124,10 +141,10 @@ class EntityManager
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return EntityManager
      */
-    public function persist(AbstractEntity $entity)
+    public function persist(EntityInterface $entity)
     {
         $this->container['unitOfWork']->persist($entity);
         return $this;
@@ -135,20 +152,20 @@ class EntityManager
 
     /**
      * @todo do we need this anymore?
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return EntityManager
      */
-    public function dirty(AbstractEntity $entity)
+    public function dirty(EntityInterface $entity)
     {
         $this->container['unitOfWork']->dirty($entity);
         return $this;
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return EntityManager
      */
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         $this->container['unitOfWork']->delete($entity);
         return $this;

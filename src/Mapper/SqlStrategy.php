@@ -1,7 +1,7 @@
 <?php
 namespace EntityManager\Mapper;
 
-use EntityManager\Entity\AbstractEntity;
+use EntityManager\Entity\EntityInterface;
 use EntityManager\Mapper\Conditions\Conditions;
 use EntityManager\Mapper\Sql\Select;
 use Zend\Db\Adapter\AdapterInterface as Database;
@@ -144,10 +144,10 @@ class SqlStrategy implements StrategyInterface
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return SqlMapper
      */
-    public function insert(AbstractEntity $entity)
+    public function insert(EntityInterface $entity)
     {
         $params = $this->getMapperParams(get_class($entity));
 
@@ -168,10 +168,10 @@ class SqlStrategy implements StrategyInterface
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return SqlMapper
      */
-    public function update(AbstractEntity $entity)
+    public function update(EntityInterface $entity)
     {
         $params = $this->getMapperParams(get_class($entity));
 
@@ -194,10 +194,10 @@ class SqlStrategy implements StrategyInterface
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return SqlMapper
      */
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         $params = $this->getMapperParams(get_class($entity));
 
@@ -217,10 +217,10 @@ class SqlStrategy implements StrategyInterface
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return array
      */
-    protected function entityToRow(AbstractEntity $entity)
+    protected function entityToRow(EntityInterface $entity)
     {
         $params = $this->getMapperParams(get_class($entity));
 
@@ -250,7 +250,7 @@ class SqlStrategy implements StrategyInterface
                 $value = $value->format('Y-m-d H:i:s');
             }
 
-            if ($value instanceof \EntityManager\Entity\AbstractEntity) {
+            if ($value instanceof \EntityManager\Entity\EntityInterface) {
                 $value = $value->getId();
             }
 

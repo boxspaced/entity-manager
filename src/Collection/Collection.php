@@ -3,7 +3,7 @@ namespace EntityManager\Collection;
 
 use EntityManager\Entity\Builder as EntityBuilder;
 use EntityManager\UnitOfWork;
-use EntityManager\Entity\AbstractEntity;
+use EntityManager\Entity\EntityInterface;
 use InvalidArgumentException;
 
 class Collection implements
@@ -90,10 +90,10 @@ class Collection implements
 
     /**
      *
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return Collection
      */
-    public function add(AbstractEntity $entity)
+    public function add(EntityInterface $entity)
     {
         $this->entityTypeCheck($entity);
         $this->getElements();
@@ -102,10 +102,10 @@ class Collection implements
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return Collection
      */
-    public function delete(AbstractEntity $entity)
+    public function delete(EntityInterface $entity)
     {
         foreach ($this as $key => $value) {
 
@@ -145,7 +145,7 @@ class Collection implements
     }
 
     /**
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function first()
     {
@@ -155,7 +155,7 @@ class Collection implements
     }
 
     /**
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function last()
     {
@@ -175,7 +175,7 @@ class Collection implements
     }
 
     /**
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function current()
     {
@@ -193,7 +193,7 @@ class Collection implements
     }
 
     /**
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function next()
     {
@@ -203,7 +203,7 @@ class Collection implements
     }
 
     /**
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     public function prev()
     {
@@ -262,22 +262,21 @@ class Collection implements
 
     /**
      * @param int $key
-     * @return AbstractEntity
+     * @return EntityInterface
      */
     protected function getRow($key)
     {
         $this->getElements();
 
-        if (isset($this->elements[$key])) {
-
-            if (is_array($this->elements[$key])) {
-                $this->elements[$key] = $this->entityBuilder->build($this->type, $this->elements[$key]);
-            }
-
-            return $this->elements[$key];
+        if (!isset($this->elements[$key])) {
+            return null;
         }
 
-        return null;
+        if (is_array($this->elements[$key])) {
+            $this->elements[$key] = $this->entityBuilder->build($this->type, $this->elements[$key]);
+        }
+
+        return $this->elements[$key];
     }
 
     /**
@@ -295,11 +294,11 @@ class Collection implements
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityInterface $entity
      * @return Collection
      * @throws InvalidArgumentException
      */
-    protected function entityTypeCheck(AbstractEntity $entity)
+    protected function entityTypeCheck(EntityInterface $entity)
     {
         if (!is_a($entity, $this->type)) {
 
