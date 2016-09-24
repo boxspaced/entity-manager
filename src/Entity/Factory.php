@@ -30,10 +30,13 @@ class Factory
     public function create($type)
     {
         if (!class_exists($type)) {
-            throw new InvalidArgumentException("Entity class is not defined: {$type}");
+            throw new InvalidArgumentException("Entity class is not defined for type: {$type}");
         }
 
-        $entity = new $type($this->container['unitOfWork']);
+        $entity = new $type(
+            $this->container['unitOfWork'],
+            $this->container['config']
+        );
 
         if (!($entity instanceof \EntityManager\Entity\AbstractEntity)) {
 

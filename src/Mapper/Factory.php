@@ -3,6 +3,7 @@ namespace EntityManager\Mapper;
 
 use Pimple\Container;
 use UnexpectedValueException;
+use InvalidArgumentException;
 
 class Factory
 {
@@ -29,11 +30,12 @@ class Factory
      * @param string $type
      * @return Mapper
      * @throws UnexpectedValueException
+     * @throws InvalidArgumentException
      */
     public function createForType($type)
     {
         if (!isset($this->container['config']->types->{$type})) {
-            throw new UnexpectedValueException("No config found for type: {$type}");
+            throw new InvalidArgumentException("Config not found for type: {$type}");
         }
 
         $config = $this->container['config']->types->{$type};
