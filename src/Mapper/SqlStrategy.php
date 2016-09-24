@@ -230,6 +230,8 @@ class SqlStrategy implements StrategyInterface
 
         $row = [];
 
+        // @todo stop call to db to get columns cos have fields in config now
+
         foreach ($table->getColumns() as $column) {
 
             $field = array_search($column, $columns);

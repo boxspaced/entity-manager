@@ -115,7 +115,7 @@ abstract class AbstractEntity
                 $valid = is_float($value);
                 break;
 
-            case static::TYPE_BOOLEAN:
+            case static::TYPE_BOOL:
                 $valid = is_bool($value);
                 break;
 
