@@ -8,7 +8,7 @@ class EntityProxy extends Entity
 
     protected $entity;
 
-    public function __construct(Callable $initializer)
+    public function __construct(callable $initializer)
     {
         $this->initializer = $initializer;
     }

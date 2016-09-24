@@ -83,7 +83,6 @@ class EntityManager
 
     /**
      * @param string $type
-     * @param Callable $rowset
      * @return Collection
      */
     public function createCollection($type)

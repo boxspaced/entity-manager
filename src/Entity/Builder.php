@@ -9,6 +9,7 @@ use EntityManager\Entity\AbstractEntity;
 use EntityManager\Collection\AbstractCollection as Collection;
 use EntityManager\Mapper\Conditions\Conditions;
 use Zend\Config\Config;
+use InvalidArgumentException;
 use UnexpectedValueException;
 
 class Builder
@@ -105,7 +106,6 @@ class Builder
         $entity = $this->entityFactory->create($type);
 
         $this->setEntityFields($entity, $data);
-        $this->setEntityReferences($entity, $data);
         $this->setEntityChildren($entity);
 
         return $entity;
@@ -118,80 +118,36 @@ class Builder
      */
     protected function setEntityFields(AbstractEntity $entity, array $data)
     {
-        $methods = get_class_methods($entity);
+        $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        foreach ($data as $field => $value) {
+        foreach ($entityConfig->get('fields', []) as $field => $fieldConfig) {
 
-            $setter = sprintf('set%s', ucfirst($field));
+            switch ($fieldConfig->type) {
 
-            if (in_array($setter, $methods)) {
-                $this->setEntityField($entity, $field, $value);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param AbstractEntity $entity
-     * @param string $field
-     * @param mixed $value
-     * @return Builder
-     */
-    protected function setEntityField(AbstractEntity $entity, $field, $value)
-    {
-        $typeMap = $entity->getTypeMap();
-
-        if (array_key_exists($field, $typeMap) && !is_null($value)) {
-
-            switch ($typeMap[$field]) {
-
-                case static::TYPE_INT:
-                    $value = intval($value);
+                case $entity::TYPE_STRING:
+                    $entity->set($field, strval($data[$field]));
                     break;
 
-                case static::TYPE_FLOAT:
-                    $value = floatval($value);
+                case $entity::TYPE_INT:
+                    $entity->set($field, intval($data[$field]));
                     break;
 
-                case static::TYPE_BOOLEAN:
-                    $value = boolval($value);
+                case $entity::TYPE_FLOAT:
+                    $entity->set($field, floatval($data[$field]));
                     break;
 
-                case static::TYPE_DATETIME:
-                    $value = new \DateTime($value);
+                case $entity::TYPE_BOOL:
+                    $entity->set($field, boolval($data[$field]));
+                    break;
+
+                case $entity::TYPE_DATETIME:
+                    $entity->set($field, new \DateTime($data[$field]));
                     break;
 
                 default:
-                    // No default leave as string
+                    $reference = $this->getReference($fieldConfig->type, $data[$field]);
+                    $entity->set($field, $reference);
             }
-        }
-
-        $setter = sprintf('set%s', ucfirst($field));
-        $entity->{$setter}($value);
-
-        return $this;
-    }
-
-    /**
-     * @param AbstractEntity $entity
-     * @param array $data
-     * @return Builder
-     */
-    protected function setEntityReferences(AbstractEntity $entity, array $data)
-    {
-        $config = $this->getBuilderConfig(get_class($entity));
-
-        if (null === $config) {
-            return $this;
-        }
-
-        foreach ($config->get('references', []) as $field => $referenceConfig) {
-
-            $reference = $this->getReference($referenceConfig->type, $data[$field]);
-
-            $setter = sprintf('set%s', ucfirst($field));
-            $entity->{$setter}($reference);
         }
 
         return $this;
@@ -200,15 +156,34 @@ class Builder
     /**
      * @param string $type
      * @return Config
-     * @throws UnexpectedValueException
+     * @throws InvalidArgumentException
      */
-    protected function getBuilderConfig($type)
+    protected function getEntityConfig($type)
     {
-        if (!isset($this->config->types->{$type})) {
-            throw new UnexpectedValueException("No config found for type: {$type}");
+        if (!isset($this->config->types->{$type}->entity)) {
+            throw new InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
-        return $this->config->types->{$type}->builder;
+        return $this->config->types->{$type}->entity;
+    }
+
+    /**
+     * @param string $type
+     * @param int $id
+     * @return callable
+     */
+    protected function getReference($type, $id)
+    {
+        if (!$id) {
+            return null;
+        }
+
+        $callback = function() use ($type, $id) {
+            return $this->mapperFactory->createForType($type)->find($type, $id);
+        };
+        $callback->bindTo($this);
+
+        return $callback;
     }
 
     /**
@@ -218,49 +193,21 @@ class Builder
      */
     protected function setEntityChildren(AbstractEntity $entity)
     {
-        $config = $this->getBuilderConfig(get_class($entity));
+        $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        if (null === $config) {
-            return $this;
-        }
-
-        foreach ($config->get('children', []) as $field => $childrenConfig) {
+        foreach ($entityConfig->get('children', []) as $field => $childrenConfig) {
 
             if (!is_callable($childrenConfig->conditions)) {
                 throw new UnexpectedValueException('The children conditions must be callable');
             }
 
-            $conditions = call_user_func($childrenConfig->conditions, $entity->getId());
+            $conditions = call_user_func($childrenConfig->conditions, $entity->get('id'));
+            $children = $this->getChildren($childrenConfig->type, $conditions);
 
-            $children = $this->getChildren(
-                $childrenConfig->type,
-                $conditions
-            );
-
-            $setter = sprintf('set%s', ucfirst($field));
-            $entity->{$setter}($children);
+            $entity->set($field, $children);
         }
 
         return $this;
-    }
-
-    /**
-     * @param string $type
-     * @param int $id
-     * @return AbstractEntity
-     */
-    protected function getReference($type, $id)
-    {
-        if (!$id) {
-            return null;
-        }
-
-        $callback = function() use ($type, $id) {
-            return $this->mapperFactory->createForType($type)->find($id);
-        };
-        $callback->bindTo($this);
-
-        return $callback; // @todo new Proxy($callback);
     }
 
     /**
@@ -270,7 +217,7 @@ class Builder
      */
     protected function getChildren($type, Conditions $conditions = null)
     {
-        return $this->mapperFactory->createForType($type)->findAll($conditions);
+        return $this->mapperFactory->createForType($type)->findAll($type, $conditions);
     }
 
 }

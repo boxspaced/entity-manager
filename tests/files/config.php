@@ -1,6 +1,7 @@
 <?php
 
 use EntityManager\Mapper\Conditions\Conditions;
+use EntityManager\Entity\AbstractEntity;
 
 return [
     'db' => [
@@ -23,8 +24,17 @@ return [
                     ],
                 ],
             ],
-            'builder' => [
-                'references' => [
+            'entity' => [
+                'fields' => [
+                    'id' => [
+                        'type' => AbstractEntity::TYPE_INT,
+                    ],
+                    'desc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'longDesc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
                     'author' => [
                         'type' => 'User',
                     ],
@@ -52,8 +62,17 @@ return [
                     ],
                 ],
             ],
-            'builder' => [
-                'references' => [
+            'entity' => [
+                'fields' => [
+                    'id' => [
+                        'type' => AbstractEntity::TYPE_INT,
+                    ],
+                    'desc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'longDesc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
                     'type' => [
                         'type' => 'UserType',
                     ],
@@ -71,6 +90,19 @@ return [
                     ],
                 ],
             ],
+            'entity' => [
+                'fields' => [
+                    'id' => [
+                        'type' => AbstractEntity::TYPE_INT,
+                    ],
+                    'desc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'longDesc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                ]
+            ]
         ],
         'ContentStatus' => [
             'mapper' => [
@@ -84,8 +116,17 @@ return [
                     ],
                 ],
             ],
-            'builder' => [
-                'references' => [
+            'entity' => [
+                'fields' => [
+                    'id' => [
+                        'type' => AbstractEntity::TYPE_INT,
+                    ],
+                    'desc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'longDesc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
                     'type' => [
                         'type' => 'ContentStatusType',
                     ],
@@ -103,9 +144,37 @@ return [
                     ],
                 ],
             ],
+            'entity' => [
+                'fields' => [
+                    'id' => [
+                        'type' => AbstractEntity::TYPE_INT,
+                    ],
+                    'desc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'longDesc' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                ],
+            ],
         ],
         'EntityManager\\Test\\Double\\Entity' => [
-
+            'entity' => [
+                'fields' => [
+                    'id' => [
+                        'type' => AbstractEntity::TYPE_INT,
+                    ],
+                    'title' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'fname' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                    'lname' => [
+                        'type' => AbstractEntity::TYPE_STRING,
+                    ],
+                ],
+            ],
         ],
         // @todo probably don't need all the config below as mapper
         // is specific to entity not generic (can all be in mapper)

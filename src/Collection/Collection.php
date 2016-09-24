@@ -32,7 +32,7 @@ class Collection implements
     protected $type;
 
     /**
-     * @var Callable
+     * @var callable
      */
     protected $rowset;
 
@@ -53,10 +53,18 @@ class Collection implements
     }
 
     /**
-     * @param Callable $rowset
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param callable $rowset
      * @return Collection
      */
-    public function setRowset(Callable $rowset)
+    public function setRowset(callable $rowset)
     {
         $this->rowset = $rowset;
         return $this;
@@ -111,7 +119,7 @@ class Collection implements
 
             if ($value === $entity) {
 
-                if ($entity->getId()) {
+                if ($entity->get('id')) {
                     $this->unitOfWork->delete($entity);
                 } else {
                     $this->unitOfWork->clean($entity);
@@ -230,10 +238,10 @@ class Collection implements
     }
 
     /**
-     * @param Callable $callback
+     * @param callable $callback
      * @return Collection
      */
-    public function filter(Callable $callback)
+    public function filter(callable $callback)
     {
         $this->loadAllRows();
         $filtered = array_filter($this->elements, $callback);
@@ -300,7 +308,7 @@ class Collection implements
      */
     protected function entityTypeCheck(AbstractEntity $entity)
     {
-        if (!is_a($entity, $this->type)) {
+        if (!($entity instanceof $this->type)) {
 
             throw new InvalidArgumentException(sprintf(
                 'Entities passed to this collection must be of type: %s provided: %s',

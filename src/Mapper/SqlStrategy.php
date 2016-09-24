@@ -10,7 +10,7 @@ use Zend\Config\Config;
 use Zend\Filter\Word\UnderscoreToCamelCase;
 use Zend\Db\Metadata\Metadata;
 use Zend\Db\Sql\Where;
-use UnexpectedValueException;
+use InvalidArgumentException;
 
 class SqlStrategy implements StrategyInterface
 {
@@ -63,8 +63,8 @@ class SqlStrategy implements StrategyInterface
      */
     protected function remapRow($type, array $row)
     {
-        $params = $this->getMapperParams($type);
-        $columns = isset($params->columns) ? $params->columns->toArray() : [];
+        $config = $this->getMapperConfig($type);
+        $columns = isset($config->columns) ? $config->columns->toArray() : [];
 
         $remapped = [];
 
@@ -88,21 +88,21 @@ class SqlStrategy implements StrategyInterface
     /**
      * @param string $type
      * @return Config
-     * @throws UnexpectedValueException
+     * @throws InvalidArgumentException
      */
-    protected function getMapperParams($type)
+    protected function getMapperConfig($type)
     {
         if (!isset($this->config->types->{$type}->mapper->params)) {
-            throw new UnexpectedValueException('No mapper params found for type');
+            throw new InvalidArgumentException("Mapper config missing for type: {$type}");
         }
 
-        $params = $this->config->types->{$type}->mapper->params;
+        $config = $this->config->types->{$type}->mapper->params;
 
-        if (empty($params->table)) {
-            throw new UnexpectedValueException('No table provided in mapper params');
+        if (empty($config->table)) {
+            throw new InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
-        return $params;
+        return $config;
     }
 
     /**
@@ -149,10 +149,10 @@ class SqlStrategy implements StrategyInterface
      */
     public function insert(AbstractEntity $entity)
     {
-        $params = $this->getMapperParams(get_class($entity));
+        $config = $this->getMapperConfig(get_class($entity));
 
         $sql = new Sql($this->db);
-        $insert = $sql->insert($params->table);
+        $insert = $sql->insert($config->table);
 
         $row = $this->entityToRow($entity);
         $insert->columns(array_keys($row));
@@ -173,17 +173,17 @@ class SqlStrategy implements StrategyInterface
      */
     public function update(AbstractEntity $entity)
     {
-        $params = $this->getMapperParams(get_class($entity));
+        $config = $this->getMapperConfig(get_class($entity));
 
         $sql = new Sql($this->db);
-        $update = $sql->update($params->table);
+        $update = $sql->update($config->table);
 
         $row = $this->entityToRow($entity);
         $update->set($row);
 
         $where = (new Where())->equalTo(
-            isset($params->columns->id) ? $params->columns->id : 'id',
-            $entity->getId()
+            isset($config->columns->id) ? $config->columns->id : 'id',
+            $entity->get('id')
         );
         $update->where($where);
 
@@ -199,14 +199,14 @@ class SqlStrategy implements StrategyInterface
      */
     public function delete(AbstractEntity $entity)
     {
-        $params = $this->getMapperParams(get_class($entity));
+        $config = $this->getMapperConfig(get_class($entity));
 
         $sql = new Sql($this->db);
-        $delete = $sql->delete($params->table);
+        $delete = $sql->delete($config->table);
 
         $where = (new Where())->equalTo(
-            isset($params->columns->id) ? $params->columns->id : 'id',
-            $entity->getId()
+            isset($config->columns->id) ? $config->columns->id : 'id',
+            $entity->get('id')
         );
         $delete->where($where);
 
@@ -222,12 +222,11 @@ class SqlStrategy implements StrategyInterface
      */
     protected function entityToRow(AbstractEntity $entity)
     {
-        $params = $this->getMapperParams(get_class($entity));
+        $config = $this->getMapperConfig(get_class($entity));
 
         $metadata = new Metadata($this->db);
-        $table = $metadata->getTable($params->table);
-        $methods = get_class_methods($entity);
-        $columns = isset($params->columns) ? $params->columns->toArray() : [];
+        $table = $metadata->getTable($config->table);
+        $columns = isset($config->columns) ? $config->columns->toArray() : [];
 
         $row = [];
 
@@ -239,20 +238,18 @@ class SqlStrategy implements StrategyInterface
                 $field = (new UnderscoreToCamelCase)->filter($column);
             }
 
-            $getter = sprintf('get%s', ucfirst($field));
-
-            if (!in_array($getter, $methods)) {
+            if (!$entity->has($field)) {
                 continue;
             }
 
-            $value = $entity->{$getter}();
+            $value = $entity->get($field);
 
             if ($value instanceof \DateTime) {
                 $value = $value->format('Y-m-d H:i:s');
             }
 
             if ($value instanceof \EntityManager\Entity\AbstractEntity) {
-                $value = $value->getId();
+                $value = $value->get('id');
             }
 
             $row[$column] = $value;

@@ -11,7 +11,7 @@ class CollectionFactory extends \EntityManager\Collection\Factory
 
     }
 
-    public function create($type, Callable $rowset = null)
+    public function create($type, callable $rowset = null)
     {
         $collection = new Collection(
             new UnitOfWork(),

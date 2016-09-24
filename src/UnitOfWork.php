@@ -164,7 +164,7 @@ class UnitOfWork
      */
     protected function globalKey(AbstractEntity $entity)
     {
-        $key = get_class($entity) . '.' . $entity->getId();
+        $key = get_class($entity) . '.' . $entity->get('id');
         return $key;
     }
 

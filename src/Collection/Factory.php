@@ -21,10 +21,10 @@ class Factory
 
     /**
      * @param string $type
-     * @param Callable $rowset
+     * @param callable $rowset
      * @return Collection
      */
-    public function create($type, Callable $rowset = null)
+    public function create($type, callable $rowset = null)
     {
         $collection = new Collection(
             $this->container['unitOfWork'],

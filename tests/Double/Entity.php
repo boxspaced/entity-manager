@@ -1,58 +1,76 @@
 <?php
 namespace EntityManager\Test\Double;
 
+use Zend\Config\Config;
+
 class Entity extends \EntityManager\Entity\AbstractEntity
 {
-
-    protected $title;
-
-    protected $fname;
-
-    protected $lname;
 
     private static $counter = 0;
 
     public function __construct()
     {
-        $this->id = self::$counter++;
+        $config = [
+            'fields' => [
+                'id' => [
+                    'type' => static::TYPE_INT,
+                ],
+                'title' => [
+                    'type' => static::TYPE_STRING,
+                ],
+                'fname' => [
+                    'type' => static::TYPE_STRING,
+                ],
+                'lname' => [
+                    'type' => static::TYPE_STRING,
+                ],
+            ]
+        ];
+
+        $this->config = new Config($config);
+        $this->unitOfWork = new UnitOfWork();
+
+        $this->set('id', self::$counter++);
     }
 
-    public function getTypeMap()
+    public function getId()
     {
-        return [];
+        return $this->get('id');
+    }
+
+    public function setId($id)
+    {
+        return $this->set('id', $id);
     }
 
     public function getTitle()
     {
-        return $this->title;
+        return $this->get('title');
     }
 
     public function setTitle($title)
     {
-        $this->title = $title;
-        return $this;
+        return $this->set('title', $title);
     }
 
     public function getFname()
     {
-        return $this->fname;
+        return $this->get('fname');
     }
 
     public function setFname($fname)
     {
-        $this->fname = $fname;
-        return $this;
+        return $this->set('fname', $fname);
     }
 
     public function getLname()
     {
-        return $this->lname;
+        return $this->get('lname');
     }
 
     public function setLname($lname)
     {
-        $this->lname = $lname;
-        return $this;
+        return $this->set('lname', $lname);
     }
 
 }

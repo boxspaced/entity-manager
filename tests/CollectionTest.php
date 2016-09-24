@@ -12,11 +12,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     protected $collection;
 
     protected $rowset = [
-        ['id' => '1', 'title' => 'Mr', 'fname' => 'Tom', 'lname' => 'Jones'],
-        ['id' => '2', 'title' => 'Mrs', 'fname' => 'Betty', 'lname' => 'Smith'],
-        ['id' => '3', 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'],
-        ['id' => '4', 'title' => 'Miss', 'fname' => 'Liz', 'lname' => 'McGuire'],
-        ['id' => '5', 'title' => 'Mr', 'fname' => 'Terry', 'lname' => 'Fawlty'],
+        ['id' => 1, 'title' => 'Mr', 'fname' => 'Tom', 'lname' => 'Jones'],
+        ['id' => 2, 'title' => 'Mrs', 'fname' => 'Betty', 'lname' => 'Smith'],
+        ['id' => 3, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'],
+        ['id' => 4, 'title' => 'Miss', 'fname' => 'Liz', 'lname' => 'McGuire'],
+        ['id' => 5, 'title' => 'Mr', 'fname' => 'Terry', 'lname' => 'Fawlty'],
     ];
 
     public function setUp()

@@ -169,8 +169,8 @@ class Select extends \Zend\Db\Sql\Select
             $mapping['columns'] = $config->mapper->params->columns->toArray();
         }
 
-        if (isset($config->builder->references)) {
-            $mapping['references'] = $config->builder->references->toArray();
+        if (isset($config->entity->fields)) {
+            $mapping['references'] = $config->entity->fields->toArray();
         }
 
         if (null !== $previous && null !== $field) {

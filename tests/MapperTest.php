@@ -18,9 +18,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     protected $identityMap;
 
     protected $data = [
-        ['id' => '1', 'title' => 'Mr', 'fname' => 'Tom', 'lname' => 'Jones'],
-        ['id' => '2', 'title' => 'Mrs', 'fname' => 'Betty', 'lname' => 'Smith'],
-        ['id' => '3', 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'],
+        ['id' => 1, 'title' => 'Mr', 'fname' => 'Tom', 'lname' => 'Jones'],
+        ['id' => 2, 'title' => 'Mrs', 'fname' => 'Betty', 'lname' => 'Smith'],
+        ['id' => 3, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'],
     ];
 
     public function setUp()
