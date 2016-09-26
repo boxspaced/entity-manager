@@ -83,11 +83,11 @@ class EntityManager
 
     /**
      * @param string $type
-     * @return Collection
+     * @return AbstractEntity
      */
-    public function createCollection($type)
+    public function createEntity($type)
     {
-        return $this->container['collectionFactory']->create($type);
+        return $this->container['entityFactory']->create($type);
     }
 
     /**
