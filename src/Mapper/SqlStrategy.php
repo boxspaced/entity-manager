@@ -235,7 +235,7 @@ class SqlStrategy implements StrategyInterface
             if (isset($columns[$field])) {
                 $column = $columns[$field];
             } else {
-                $column = (new CamelCaseToUnderscore)->filter($field);
+                $column = mb_strtolower((new CamelCaseToUnderscore)->filter($field));
             }
 
             $value = $entity->get($field);
