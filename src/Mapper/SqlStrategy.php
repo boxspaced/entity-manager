@@ -8,7 +8,7 @@ use Zend\Db\Adapter\AdapterInterface as Database;
 use Zend\Db\Sql\Sql;
 use Zend\Config\Config;
 use Zend\Filter\Word\UnderscoreToCamelCase;
-use Zend\Db\Metadata\Metadata;
+use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Db\Sql\Where;
 use InvalidArgumentException;
 
@@ -145,7 +145,7 @@ class SqlStrategy implements StrategyInterface
 
     /**
      * @param AbstractEntity $entity
-     * @return SqlMapper
+     * @return SqlStrategy
      */
     public function insert(AbstractEntity $entity)
     {
@@ -169,7 +169,7 @@ class SqlStrategy implements StrategyInterface
 
     /**
      * @param AbstractEntity $entity
-     * @return SqlMapper
+     * @return SqlStrategy
      */
     public function update(AbstractEntity $entity)
     {
@@ -195,7 +195,7 @@ class SqlStrategy implements StrategyInterface
 
     /**
      * @param AbstractEntity $entity
-     * @return SqlMapper
+     * @return SqlStrategy
      */
     public function delete(AbstractEntity $entity)
     {
@@ -222,26 +222,20 @@ class SqlStrategy implements StrategyInterface
      */
     protected function entityToRow(AbstractEntity $entity)
     {
-        $config = $this->getMapperConfig(get_class($entity));
+        $mapperConfig = $this->getMapperConfig(get_class($entity));
+        $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        $metadata = new Metadata($this->db);
-        $table = $metadata->getTable($config->table);
-        $columns = isset($config->columns) ? $config->columns->toArray() : [];
+        $columns = isset($mapperConfig->columns) ? $mapperConfig->columns->toArray() : [];
+        $fields = isset($entityConfig->fields) ? $entityConfig->fields->toArray() : [];
 
         $row = [];
 
-        // @todo stop call to db to get columns cos have fields in config now
+        foreach ($fields as $field => $fieldConfig) {
 
-        foreach ($table->getColumns() as $column) {
-
-            $field = array_search($column, $columns);
-
-            if (false === $field) {
-                $field = (new UnderscoreToCamelCase)->filter($column);
-            }
-
-            if (!$entity->has($field)) {
-                continue;
+            if (isset($columns[$field])) {
+                $column = $columns[$field];
+            } else {
+                $column = (new CamelCaseToUnderscore)->filter($field);
             }
 
             $value = $entity->get($field);
@@ -258,6 +252,20 @@ class SqlStrategy implements StrategyInterface
         }
 
         return $row;
+    }
+
+    /**
+     * @param string $type
+     * @return Config
+     * @throws InvalidArgumentException
+     */
+    protected function getEntityConfig($type)
+    {
+        if (!isset($this->config->types->{$type}->entity)) {
+            throw new InvalidArgumentException("Entity config missing for type: {$type}");
+        }
+
+        return $this->config->types->{$type}->entity;
     }
 
 }

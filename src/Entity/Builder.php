@@ -126,6 +126,10 @@ class Builder
                 throw new InvalidArgumentException("Type config missing for field: {$field}");
             }
 
+            if (!isset($data[$field])) {
+                continue;
+            }
+
             switch ($fieldConfig->type) {
 
                 case $entity::TYPE_STRING:
