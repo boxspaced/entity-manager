@@ -35,6 +35,7 @@ class Factory
 
         $entity = new $type(
             $this->container['unitOfWork'],
+            $this->container['collectionFactory'],
             $this->container['config']
         );
 

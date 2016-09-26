@@ -123,7 +123,7 @@ class Builder
         foreach ($entityConfig->get('fields', []) as $field => $fieldConfig) {
 
             if (!isset($fieldConfig->type)) {
-                throw new InvalidArgumentException("Type config not found for field: {$field}");
+                throw new InvalidArgumentException("Type config missing for field: {$field}");
             }
 
             switch ($fieldConfig->type) {

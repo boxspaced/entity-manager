@@ -2,6 +2,7 @@
 namespace EntityManager\Entity;
 
 use Zend\Config\Config;
+use EntityManager\Collection\Factory as CollectionFactory;
 use EntityManager\Collection\Collection;
 use EntityManager\UnitOfWork;
 use InvalidArgumentException;
@@ -21,6 +22,11 @@ abstract class AbstractEntity
     protected $unitOfWork;
 
     /**
+     * @var CollectionFactory
+     */
+    protected $collectionFactory;
+
+    /**
      * @var array
      */
     protected $fields = [];
@@ -32,12 +38,18 @@ abstract class AbstractEntity
 
     /**
      * @param UnitOfWork $unitOfWork
+     * @param CollectionFactory $collectionFactory
      * @param Config $config
      * @throws InvalidArgumentException
      */
-    public function __construct(UnitOfWork $unitOfWork, Config $config)
+    public function __construct(
+        UnitOfWork $unitOfWork,
+        CollectionFactory $collectionFactory,
+        Config $config
+    )
     {
         $this->unitOfWork = $unitOfWork;
+        $this->collectionFactory = $collectionFactory;
 
         $type = get_class($this);
 
@@ -46,6 +58,28 @@ abstract class AbstractEntity
         }
 
         $this->config = $config->types->{$type}->entity;
+
+        $this->initChildren();
+    }
+
+    /**
+     * @return AbstractEntity
+     * @throws InvalidArgumentException
+     */
+    protected function initChildren()
+    {
+        foreach ($this->config->get('children', []) as $field => $childrenConfig) {
+
+            if (!isset($childrenConfig->type)) {
+                throw new InvalidArgumentException("Type config missing for field: {$field}");
+            }
+
+            $collection = $this->collectionFactory->create($childrenConfig->type);
+
+            $this->set($field, $collection);
+        }
+
+        return $this;
     }
 
     /**
@@ -130,7 +164,7 @@ abstract class AbstractEntity
                 );
         }
 
-        if (!$valid) {
+        if (null !== $value && !$valid) {
             throw new InvalidArgumentException("Invalid value for field: {$field}");
         }
 
