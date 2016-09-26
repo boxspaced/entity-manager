@@ -37,6 +37,11 @@ abstract class AbstractEntity
     protected $config;
 
     /**
+     * @var bool
+     */
+    protected $strict = true;
+
+    /**
      * @param UnitOfWork $unitOfWork
      * @param CollectionFactory $collectionFactory
      * @param Config $config
@@ -50,6 +55,8 @@ abstract class AbstractEntity
     {
         $this->unitOfWork = $unitOfWork;
         $this->collectionFactory = $collectionFactory;
+
+        $this->strict = !empty($config->strict);
 
         $type = get_class($this);
 
@@ -164,7 +171,7 @@ abstract class AbstractEntity
                 );
         }
 
-        if (null !== $value && !$valid) {
+        if (null !== $value && $this->strict && !$valid) {
             throw new InvalidArgumentException("Invalid value for field: {$field}");
         }
 
