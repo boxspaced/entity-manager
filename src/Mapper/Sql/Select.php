@@ -7,6 +7,7 @@ use Zend\Config\Config;
 use EntityManager\Mapper\Conditions\Conditions;
 use EntityManager\Mapper\Conditions\Field;
 use UnexpectedValueException;
+use InvalidArgumentException;
 
 class Select extends \Zend\Db\Sql\Select
 {
@@ -39,7 +40,7 @@ class Select extends \Zend\Db\Sql\Select
         $this->conditions = $conditions;
 
         if (empty($config->types->{$type}->mapper->params->table)) {
-            throw new UnexpectedValueException("No table provided in config for type: {$type}");
+            throw new InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
         parent::__construct($config->types->{$type}->mapper->params->table);
@@ -125,7 +126,12 @@ class Select extends \Zend\Db\Sql\Select
             $field = lcfirst($part);
 
             if (!isset($previous['references'][$field])) {
-                throw new UnexpectedValueException("Previous mapping does not reference this part: {$part}");
+
+                throw new UnexpectedValueException(sprintf(
+                    'Previous mapping does not reference this part: %s in path: %s',
+                    $part,
+                    $path
+                ));
             }
 
             $type = $previous['references'][$field]['type'];
@@ -150,13 +156,13 @@ class Select extends \Zend\Db\Sql\Select
     protected function createMapping($type, $field = null, array $previous = null)
     {
         if (!isset($this->config->types->{$type})) {
-            throw new UnexpectedValueException("No config found for type: {$type}");
+            throw new InvalidArgumentException("Config missing for type: {$type}");
         }
 
         $config = $this->config->types->{$type};
 
         if (empty($config->mapper->params->table)) {
-            throw new UnexpectedValueException('No table provided in config');
+            throw new InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
         $mapping = [];
