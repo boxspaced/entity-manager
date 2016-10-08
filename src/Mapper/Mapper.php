@@ -1,12 +1,12 @@
 <?php
-namespace EntityManager\Mapper;
+namespace Boxspaced\EntityManager\Mapper;
 
-use EntityManager\IdentityMap;
-use EntityManager\Entity\Builder as EntityBuilder;
-use EntityManager\Collection\Factory as CollectionFactory;
-use EntityManager\Entity\AbstractEntity;
-use EntityManager\Mapper\Conditions\Conditions;
-use EntityManager\Collection\AbstractCollection as Collection;
+use Boxspaced\EntityManager\IdentityMap;
+use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
+use Boxspaced\EntityManager\Collection\Factory as CollectionFactory;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Collection\AbstractCollection as Collection;
 
 class Mapper
 {

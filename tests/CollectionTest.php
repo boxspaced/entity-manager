@@ -1,10 +1,10 @@
 <?php
-namespace EntityManager\Test;
+namespace Boxspaced\EntityManager\Test;
 
-use EntityManager\Collection\Collection;
-use EntityManager\Test\Double\Entity;
-use EntityManager\Test\Double\UnitOfWork;
-use EntityManager\Test\Double\EntityBuilder;
+use Boxspaced\EntityManager\Collection\Collection;
+use Boxspaced\EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\Test\Double\UnitOfWork;
+use Boxspaced\EntityManager\Test\Double\EntityBuilder;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +24,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->collection = new Collection(
             new UnitOfWork(),
             new EntityBuilder(),
-            'EntityManager\\Test\\Double\\Entity'
+            'Boxspaced\\EntityManager\\Test\\Double\\Entity'
         );
 
         $this->collection->setRowset(function() {
@@ -110,7 +110,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testCollectionReturnsOnlyEntityInstancesOnIteration()
     {
-        $this->assertContainsOnly('EntityManager\\Test\\Double\\Entity', $this->collection);
+        $this->assertContainsOnly('Boxspaced\\EntityManager\\Test\\Double\\Entity', $this->collection);
     }
 
     public function testAddWillNotAcceptWrongEntityType()
@@ -118,7 +118,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
 
         $badEntity = $this->getMock(
-            'EntityManager\\Entity\\AbstractEntity',
+            'Boxspaced\\EntityManager\\Entity\\AbstractEntity',
             [],
             [],
             'BadEntity',
@@ -260,7 +260,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             $actual[] = $entity->getId();
         }
 
-        $this->assertInstanceOf('EntityManager\\Collection\\Collection', $filtered);
+        $this->assertInstanceOf('Boxspaced\\EntityManager\\Collection\\Collection', $filtered);
         $this->assertEquals([1, 5], $actual);
     }
 

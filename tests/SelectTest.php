@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager\Test;
+namespace Boxspaced\EntityManager\Test;
 
 use Zend\Config\Config;
-use EntityManager\Mapper\Sql\Select;
-use EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Sql\Select;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 
 class SelectTest extends \PHPUnit_Framework_TestCase
 {

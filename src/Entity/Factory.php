@@ -1,5 +1,5 @@
 <?php
-namespace EntityManager\Entity;
+namespace Boxspaced\EntityManager\Entity;
 
 use Pimple\Container;
 use InvalidArgumentException;
@@ -39,7 +39,7 @@ class Factory
             $this->container['config']
         );
 
-        if (!($entity instanceof \EntityManager\Entity\AbstractEntity)) {
+        if (!($entity instanceof \Boxspaced\EntityManager\Entity\AbstractEntity)) {
 
             throw new UnexpectedValueException(
                 sprintf('Object is not an entity: %s', get_class($entity))

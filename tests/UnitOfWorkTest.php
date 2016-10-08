@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager\Test;
+namespace Boxspaced\EntityManager\Test;
 
-use EntityManager\Test\Double\MapperFactory;
-use EntityManager\UnitOfWork;
-use EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\Test\Double\MapperFactory;
+use Boxspaced\EntityManager\UnitOfWork;
+use Boxspaced\EntityManager\Test\Double\Entity;
 
 class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,5 +1,5 @@
 <?php
-namespace EntityManager\Collection;
+namespace Boxspaced\EntityManager\Collection;
 
 use Pimple\Container;
 

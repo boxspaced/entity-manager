@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
-use EntityManager\Collection\Collection;
+use Boxspaced\EntityManager\Collection\Collection;
 
-class CollectionFactory extends \EntityManager\Collection\Factory
+class CollectionFactory extends \Boxspaced\EntityManager\Collection\Factory
 {
 
     public function __construct()

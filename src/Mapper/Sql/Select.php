@@ -1,11 +1,11 @@
 <?php
-namespace EntityManager\Mapper\Sql;
+namespace Boxspaced\EntityManager\Mapper\Sql;
 
 use Zend\Db\Sql\Expression;
 use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Config\Config;
-use EntityManager\Mapper\Conditions\Conditions;
-use EntityManager\Mapper\Conditions\Field;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Conditions\Field;
 use UnexpectedValueException;
 use InvalidArgumentException;
 
@@ -206,7 +206,7 @@ class Select extends \Zend\Db\Sql\Select
 
             $value = $field->getValue();
 
-            if ($value instanceof \EntityManager\Mapper\Conditions\Expr) {
+            if ($value instanceof \Boxspaced\EntityManager\Mapper\Conditions\Expr) {
                 $value = new Expression($value->__toString());
             }
 

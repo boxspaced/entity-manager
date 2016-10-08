@@ -1,12 +1,12 @@
 <?php
-namespace EntityManager\Test;
+namespace Boxspaced\EntityManager\Test;
 
-use EntityManager\IdentityMap;
-use EntityManager\Test\Double\EntityBuilder;
-use EntityManager\Test\Double\CollectionFactory;
-use EntityManager\Mapper\Mapper;
-use EntityManager\Test\Double\MapperStrategy;
-use EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\IdentityMap;
+use Boxspaced\EntityManager\Test\Double\EntityBuilder;
+use Boxspaced\EntityManager\Test\Double\CollectionFactory;
+use Boxspaced\EntityManager\Mapper\Mapper;
+use Boxspaced\EntityManager\Test\Double\MapperStrategy;
+use Boxspaced\EntityManager\Test\Double\Entity;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -63,7 +63,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->mapper->find(null, null);
 
-        $this->assertInstanceOf('EntityManager\\Test\\Double\\Entity', $result);
+        $this->assertInstanceOf('Boxspaced\\EntityManager\\Test\\Double\\Entity', $result);
     }
 
     public function testFindOneReturnsNullIfNotFound()
@@ -79,7 +79,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->mapper->find(null, null);
 
-        $this->assertInstanceOf('EntityManager\\Test\\Double\\Entity', $result);
+        $this->assertInstanceOf('Boxspaced\\EntityManager\\Test\\Double\\Entity', $result);
     }
 
     public function testFindAllReturnsAnEmptyCollectionWhenNoneFound()
@@ -88,7 +88,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->mapper->findAll(null, null);
 
-        $this->assertInstanceOf('EntityManager\\Collection\\Collection', $result);
+        $this->assertInstanceOf('Boxspaced\\EntityManager\\Collection\\Collection', $result);
         $this->assertEquals(0, count($result));
     }
 
@@ -96,7 +96,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->mapper->findAll(null, null);
 
-        $this->assertInstanceOf('EntityManager\\Collection\\Collection', $result);
+        $this->assertInstanceOf('Boxspaced\\EntityManager\\Collection\\Collection', $result);
         $this->assertEquals(count($this->data), count($result));
     }
 

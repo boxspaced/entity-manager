@@ -1,7 +1,7 @@
 <?php
 
-use EntityManager\Mapper\Conditions\Conditions;
-use EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
 
 return [
     'db' => [
@@ -158,7 +158,7 @@ return [
                 ],
             ],
         ],
-        'EntityManager\\Test\\Double\\Entity' => [
+        'Boxspaced\\EntityManager\\Test\\Double\\Entity' => [
             'entity' => [
                 'fields' => [
                     'id' => [

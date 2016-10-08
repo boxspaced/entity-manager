@@ -1,5 +1,5 @@
 <?php
-namespace EntityManager\Mapper\Conditions;
+namespace Boxspaced\EntityManager\Mapper\Conditions;
 
 class Expr
 {

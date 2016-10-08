@@ -1,8 +1,8 @@
 <?php
-namespace EntityManager\Test;
+namespace Boxspaced\EntityManager\Test;
 
-use EntityManager\IdentityMap;
-use EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\IdentityMap;
+use Boxspaced\EntityManager\Test\Double\Entity;
 
 class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {

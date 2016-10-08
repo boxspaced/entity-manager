@@ -1,8 +1,8 @@
 <?php
-namespace EntityManager\Mapper;
+namespace Boxspaced\EntityManager\Mapper;
 
-use EntityManager\Entity\AbstractEntity;
-use EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 
 interface StrategyInterface
 {

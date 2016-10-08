@@ -1,7 +1,7 @@
 <?php
-namespace EntityManager;
+namespace Boxspaced\EntityManager;
 
-use EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
 
 class IdentityMap
 {

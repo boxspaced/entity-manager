@@ -1,10 +1,10 @@
 <?php
-namespace EntityManager\Entity;
+namespace Boxspaced\EntityManager\Entity;
 
 use Zend\Config\Config;
-use EntityManager\Collection\Factory as CollectionFactory;
-use EntityManager\Collection\Collection;
-use EntityManager\UnitOfWork;
+use Boxspaced\EntityManager\Collection\Factory as CollectionFactory;
+use Boxspaced\EntityManager\Collection\Collection;
+use Boxspaced\EntityManager\UnitOfWork;
 use InvalidArgumentException;
 
 abstract class AbstractEntity

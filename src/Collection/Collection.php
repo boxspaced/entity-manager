@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager\Collection;
+namespace Boxspaced\EntityManager\Collection;
 
-use EntityManager\Entity\Builder as EntityBuilder;
-use EntityManager\UnitOfWork;
-use EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
+use Boxspaced\EntityManager\UnitOfWork;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
 use InvalidArgumentException;
 
 class Collection implements

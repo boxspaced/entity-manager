@@ -14,12 +14,12 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "EntityManager\\": "src/"
+            "Boxspaced\\EntityManager\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "EntityManager\\Test\\": "tests/"
+            "Boxspaced\\EntityManager\\Test\\": "tests/"
         }
     },
     "config": {

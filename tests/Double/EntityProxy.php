@@ -1,5 +1,5 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
 class EntityProxy extends Entity
 {

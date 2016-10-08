@@ -1,7 +1,7 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
-class EntityFactory extends \EntityManager\Entity\Factory
+class EntityFactory extends \Boxspaced\EntityManager\Entity\Factory
 {
 
     public function __construct()

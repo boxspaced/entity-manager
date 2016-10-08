@@ -1,7 +1,7 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
-class UnitOfWork extends \EntityManager\UnitOfWork
+class UnitOfWork extends \Boxspaced\EntityManager\UnitOfWork
 {
 
     public function __construct()

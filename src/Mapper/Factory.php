@@ -1,5 +1,5 @@
 <?php
-namespace EntityManager\Mapper;
+namespace Boxspaced\EntityManager\Mapper;
 
 use Pimple\Container;
 use UnexpectedValueException;

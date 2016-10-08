@@ -1,13 +1,13 @@
 <?php
-namespace EntityManager\Entity;
+namespace Boxspaced\EntityManager\Entity;
 
-use EntityManager\IdentityMap;
-use EntityManager\UnitOfWork;
-use EntityManager\Entity\Factory as EntityFactory;
-use EntityManager\Mapper\Factory as MapperFactory;
-use EntityManager\Entity\AbstractEntity;
-use EntityManager\Collection\AbstractCollection as Collection;
-use EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\IdentityMap;
+use Boxspaced\EntityManager\UnitOfWork;
+use Boxspaced\EntityManager\Entity\Factory as EntityFactory;
+use Boxspaced\EntityManager\Mapper\Factory as MapperFactory;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Collection\AbstractCollection as Collection;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 use Zend\Config\Config;
 use InvalidArgumentException;
 use UnexpectedValueException;

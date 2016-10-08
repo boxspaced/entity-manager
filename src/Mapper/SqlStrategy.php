@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager\Mapper;
+namespace Boxspaced\EntityManager\Mapper;
 
-use EntityManager\Entity\AbstractEntity;
-use EntityManager\Mapper\Conditions\Conditions;
-use EntityManager\Mapper\Sql\Select;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Sql\Select;
 use Zend\Db\Adapter\AdapterInterface as Database;
 use Zend\Db\Sql\Sql;
 use Zend\Config\Config;
@@ -244,7 +244,7 @@ class SqlStrategy implements StrategyInterface
                 $value = $value->format('Y-m-d H:i:s');
             }
 
-            if ($value instanceof \EntityManager\Entity\AbstractEntity) {
+            if ($value instanceof \Boxspaced\EntityManager\Entity\AbstractEntity) {
                 $value = $value->get('id');
             }
 

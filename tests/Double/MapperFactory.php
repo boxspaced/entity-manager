@@ -1,7 +1,7 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
-class MapperFactory extends \EntityManager\Mapper\Factory
+class MapperFactory extends \Boxspaced\EntityManager\Mapper\Factory
 {
 
     public $mapper;

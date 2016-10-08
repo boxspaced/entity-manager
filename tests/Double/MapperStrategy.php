@@ -1,10 +1,10 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
-use EntityManager\Entity\AbstractEntity;
-use EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 
-class MapperStrategy implements \EntityManager\Mapper\StrategyInterface
+class MapperStrategy implements \Boxspaced\EntityManager\Mapper\StrategyInterface
 {
 
     public $data = [];

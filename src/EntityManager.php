@@ -1,18 +1,18 @@
 <?php
-namespace EntityManager;
+namespace Boxspaced\EntityManager;
 
 use Pimple\Container;
 use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter as DbAdapter;
-use EntityManager\Entity\AbstractEntity;
-use EntityManager\Collection\Collection;
-use EntityManager\Mapper\Conditions\Conditions;
-use EntityManager\IdentityMap;
-use EntityManager\UnitOfWork;
-use EntityManager\Entity\Factory as EntityFactory;
-use EntityManager\Entity\Builder as EntityBuilder;
-use EntityManager\Collection\Factory as CollectionFactory;
-use EntityManager\Mapper\Factory as MapperFactory;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Collection\Collection;
+use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\IdentityMap;
+use Boxspaced\EntityManager\UnitOfWork;
+use Boxspaced\EntityManager\Entity\Factory as EntityFactory;
+use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
+use Boxspaced\EntityManager\Collection\Factory as CollectionFactory;
+use Boxspaced\EntityManager\Mapper\Factory as MapperFactory;
 
 class EntityManager
 {

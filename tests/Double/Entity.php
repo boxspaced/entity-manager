@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test\Double;
 
 use Zend\Config\Config;
 
-class Entity extends \EntityManager\Entity\AbstractEntity
+class Entity extends \Boxspaced\EntityManager\Entity\AbstractEntity
 {
 
     private static $counter = 0;

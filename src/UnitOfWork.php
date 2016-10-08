@@ -1,9 +1,9 @@
 <?php
-namespace EntityManager;
+namespace Boxspaced\EntityManager;
 
 use Zend\Db\Adapter\AdapterInterface as Database;
-use EntityManager\Mapper\Factory as MapperFactory;
-use EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Mapper\Factory as MapperFactory;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Exception;
 
 class UnitOfWork
