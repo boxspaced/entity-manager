@@ -3,7 +3,7 @@ namespace Boxspaced\EntityManager;
 
 use Pimple\Container;
 use Zend\Config\Config;
-use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Db\Adapter\Adapter as Database;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
@@ -36,7 +36,7 @@ class EntityManager
                 return null;
             }
 
-            return new DbAdapter($container['config']->db->toArray());
+            return new Database($container['config']->db->toArray());
         };
 
         $container['identityMap'] = function () {
@@ -79,6 +79,14 @@ class EntityManager
         };
 
         $this->container = $container;
+    }
+
+    /**
+     * @return Database
+     */
+    public function getDb()
+    {
+        return $this->container['db'];
     }
 
     /**
