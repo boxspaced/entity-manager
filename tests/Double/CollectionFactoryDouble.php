@@ -1,9 +1,10 @@
 <?php
 namespace Boxspaced\EntityManager\Test\Double;
 
+use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 
-class CollectionFactory extends \Boxspaced\EntityManager\Collection\Factory
+class CollectionFactoryDouble extends CollectionFactory
 {
 
     public function __construct()
@@ -14,8 +15,8 @@ class CollectionFactory extends \Boxspaced\EntityManager\Collection\Factory
     public function create($type, callable $rowset = null)
     {
         $collection = new Collection(
-            new UnitOfWork(),
-            new EntityBuilder(),
+            new UnitOfWorkDouble(),
+            new EntityBuilderDouble(),
             $type
         );
 

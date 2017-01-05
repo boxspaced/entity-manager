@@ -1,14 +1,17 @@
 <?php
 namespace Boxspaced\EntityManager\Collection;
 
-use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
+use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use InvalidArgumentException;
+use Countable;
+use IteratorAggregate;
+use ArrayIterator;
 
 class Collection implements
-    \Countable,
-    \IteratorAggregate
+    Countable,
+    IteratorAggregate
 {
 
     /**
@@ -88,12 +91,12 @@ class Collection implements
     }
 
     /**
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
         $this->loadAllRows();
-        return new \ArrayIterator($this->getElements());
+        return new ArrayIterator($this->getElements());
     }
 
     /**
@@ -117,16 +120,17 @@ class Collection implements
     {
         foreach ($this as $key => $value) {
 
-            if ($value === $entity) {
-
-                if ($entity->get('id')) {
-                    $this->unitOfWork->delete($entity);
-                } else {
-                    $this->unitOfWork->clean($entity);
-                }
-
-                $this->remove($key);
+            if ($value !== $entity) {
+                continue;
             }
+
+            if ($entity->get('id')) {
+                $this->unitOfWork->delete($entity);
+            } else {
+                $this->unitOfWork->clean($entity);
+            }
+
+            $this->remove($key);
         }
 
         return $this;

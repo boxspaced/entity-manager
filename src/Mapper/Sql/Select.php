@@ -4,12 +4,15 @@ namespace Boxspaced\EntityManager\Mapper\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Config\Config;
+use Zend\Db\Sql\Select as ZendSelect;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 use Boxspaced\EntityManager\Mapper\Conditions\Field;
+use Boxspaced\EntityManager\Mapper\Conditions\Expr;
 use UnexpectedValueException;
 use InvalidArgumentException;
+use DateTime;
 
-class Select extends \Zend\Db\Sql\Select
+class Select extends ZendSelect
 {
 
     /**
@@ -206,11 +209,11 @@ class Select extends \Zend\Db\Sql\Select
 
             $value = $field->getValue();
 
-            if ($value instanceof \Boxspaced\EntityManager\Mapper\Conditions\Expr) {
+            if ($value instanceof Expr) {
                 $value = new Expression($value->__toString());
             }
 
-            if ($value instanceof \DateTime) {
+            if ($value instanceof DateTime) {
                 $value = $value->format('Y-m-d H:i:s');
             }
 

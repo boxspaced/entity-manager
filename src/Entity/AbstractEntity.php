@@ -2,10 +2,11 @@
 namespace Boxspaced\EntityManager\Entity;
 
 use Zend\Config\Config;
-use Boxspaced\EntityManager\Collection\Factory as CollectionFactory;
+use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\UnitOfWork;
 use InvalidArgumentException;
+use DateTime;
 
 abstract class AbstractEntity
 {
@@ -161,7 +162,7 @@ abstract class AbstractEntity
                 break;
 
             case static::TYPE_DATETIME:
-                $valid = ($value instanceof \DateTime);
+                $valid = ($value instanceof DateTime);
                 break;
 
             default:

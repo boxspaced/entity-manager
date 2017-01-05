@@ -2,11 +2,12 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\IdentityMap;
-use Boxspaced\EntityManager\Test\Double\EntityBuilder;
-use Boxspaced\EntityManager\Test\Double\CollectionFactory;
 use Boxspaced\EntityManager\Mapper\Mapper;
-use Boxspaced\EntityManager\Test\Double\MapperStrategy;
-use Boxspaced\EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\Collection\Collection;
+use Boxspaced\EntityManager\Test\Double\MapperStrategyDouble;
+use Boxspaced\EntityManager\Test\Double\EntityBuilderDouble;
+use Boxspaced\EntityManager\Test\Double\CollectionFactoryDouble;
+use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,13 +27,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->identityMap = new IdentityMap();
-        $this->mapperStrategy = new MapperStrategy();
+        $this->mapperStrategy = new MapperStrategyDouble();
         $this->mapperStrategy->data = $this->data;
 
         $this->mapper = new Mapper(
             $this->identityMap,
-            new EntityBuilder(),
-            new CollectionFactory(),
+            new EntityBuilderDouble(),
+            new CollectionFactoryDouble(),
             $this->mapperStrategy
         );
     }
@@ -41,7 +42,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $id = 23;
 
-        $entity = new Entity();
+        $entity = new EntityDouble();
         $entity->setId($id);
 
         $this->identityMap->add($entity);
@@ -63,7 +64,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->mapper->find(null, null);
 
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Test\\Double\\Entity', $result);
+        $this->assertInstanceOf(EntityDouble::class, $result);
     }
 
     public function testFindOneReturnsNullIfNotFound()
@@ -79,7 +80,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->mapper->find(null, null);
 
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Test\\Double\\Entity', $result);
+        $this->assertInstanceOf(EntityDouble::class, $result);
     }
 
     public function testFindAllReturnsAnEmptyCollectionWhenNoneFound()
@@ -88,7 +89,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->mapper->findAll(null, null);
 
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Collection\\Collection', $result);
+        $this->assertInstanceOf(Collection::class, $result);
         $this->assertEquals(0, count($result));
     }
 
@@ -96,7 +97,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->mapper->findAll(null, null);
 
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Collection\\Collection', $result);
+        $this->assertInstanceOf(Collection::class, $result);
         $this->assertEquals(count($this->data), count($result));
     }
 
@@ -104,7 +105,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $id = max(array_column($this->data, 'id')) + 1;
 
-        $entity = new Entity();
+        $entity = new EntityDouble();
         $this->mapper->insert($entity);
 
         $result = $this->identityMap->exists(get_class($entity), $id);

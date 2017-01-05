@@ -1,7 +1,9 @@
 <?php
 namespace Boxspaced\EntityManager\Test\Double;
 
-class EntityBuilder extends \Boxspaced\EntityManager\Entity\Builder
+use Boxspaced\EntityManager\Entity\EntityBuilder;
+
+class EntityBuilderDouble extends EntityBuilder
 {
 
     public function __construct()
@@ -11,7 +13,7 @@ class EntityBuilder extends \Boxspaced\EntityManager\Entity\Builder
 
     public function build($type, array $data)
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
         $entity->setId($data['id']);
         $entity->setTitle($data['title']);
         $entity->setFname($data['fname']);

@@ -2,9 +2,10 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Collection\Collection;
-use Boxspaced\EntityManager\Test\Double\Entity;
-use Boxspaced\EntityManager\Test\Double\UnitOfWork;
-use Boxspaced\EntityManager\Test\Double\EntityBuilder;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Test\Double\UnitOfWorkDouble;
+use Boxspaced\EntityManager\Test\Double\EntityBuilderDouble;
+use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,9 +23,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->collection = new Collection(
-            new UnitOfWork(),
-            new EntityBuilder(),
-            'Boxspaced\\EntityManager\\Test\\Double\\Entity'
+            new UnitOfWorkDouble(),
+            new EntityBuilderDouble(),
+            EntityDouble::class
         );
 
         $this->collection->setRowset(function() {
@@ -52,7 +53,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testCollectionIterationProducesCorrectKeys()
     {
         $i = 0;
+
         foreach ($this->collection as $key => $element) {
+
             $this->assertEquals($i, $key);
             $i++;
         }
@@ -110,7 +113,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testCollectionReturnsOnlyEntityInstancesOnIteration()
     {
-        $this->assertContainsOnly('Boxspaced\\EntityManager\\Test\\Double\\Entity', $this->collection);
+        $this->assertContainsOnly(Double\EntityDouble::class, $this->collection);
     }
 
     public function testAddWillNotAcceptWrongEntityType()
@@ -118,7 +121,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
 
         $badEntity = $this->getMock(
-            'Boxspaced\\EntityManager\\Entity\\AbstractEntity',
+            AbstractEntity::class,
             [],
             [],
             'BadEntity',
@@ -130,7 +133,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddEntityToCollectionIncrementsCountByOne()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
         $this->collection->add($entity);
 
         $this->assertEquals(count($this->rowset)+1, count($this->collection));
@@ -148,6 +151,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->collection->remove(0);
 
         $actual = [];
+
         foreach ($this->collection as $entity) {
             $actual[] = $entity->getId();
         }
@@ -160,6 +164,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->collection->remove(1);
 
         $actual = [];
+
         foreach ($this->collection as $entity) {
             $actual[] = $entity->getId();
         }
@@ -174,6 +179,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->collection->remove(3);
 
         $actual = [];
+
         foreach ($this->collection as $entity) {
             $actual[] = $entity->getId();
         }
@@ -186,6 +192,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->collection->remove(4);
 
         $actual = [];
+
         foreach ($this->collection as $entity) {
             $actual[] = $entity->getId();
         }
@@ -196,7 +203,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testCanIterateAndRemoveEntityFromBeginningSimultaneously()
     {
         $actual = [];
+
         foreach ($this->collection as $key => $entity) {
+
             if ($entity->getId() == 1) {
                 $this->collection->remove($key);
             } else {
@@ -210,7 +219,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testCanIterateAndRemoveEntityFromMiddleSimultaneously()
     {
         $actual = [];
+
         foreach ($this->collection as $key => $entity) {
+
             if ($entity->getId() == 2) {
                 $this->collection->remove($key);
             } else {
@@ -224,7 +235,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testCanIterateAndRemoveMultipleEntitiesFromMiddleSimultaneously()
     {
         $actual = [];
+
         foreach ($this->collection as $key => $entity) {
+
             if (in_array($entity->getId(), [2, 3, 4])) {
                 $this->collection->remove($key);
             } else {
@@ -238,7 +251,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testCanIterateAndRemoveEntityFromEndSimultaneously()
     {
         $actual = [];
+
         foreach ($this->collection as $key => $entity) {
+
             if ($entity->getId() == 5) {
                 $this->collection->remove($key);
             } else {
@@ -252,15 +267,16 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testFilteringReturnsCorrectEntities()
     {
         $filtered = $this->collection->filter(function($entity) {
-            return $entity->getTitle() == 'Mr';
+            return $entity->getTitle() === 'Mr';
         });
 
         $actual = [];
+
         foreach ($filtered as $entity) {
             $actual[] = $entity->getId();
         }
 
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Collection\\Collection', $filtered);
+        $this->assertInstanceOf(Collection::class, $filtered);
         $this->assertEquals([1, 5], $actual);
     }
 

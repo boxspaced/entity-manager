@@ -12,7 +12,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = new Config(require 'files/config.php');
+        $this->config = new Config(require 'config.php');
     }
 
     protected function getSqlFromConditions(Conditions $conditions)
@@ -106,20 +106,20 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function testApplySingleForeignFieldCondition()
     {
         $conditions = new Conditions();
-        $conditions->field('author.username')->eq('rwallwork');
+        $conditions->field('author.username')->eq('jbloggs');
 
         $sql = $this->getSqlFromConditions($conditions);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
-                  . 'WHERE author.username = \'rwallwork\'';
+                  . 'WHERE author.username = \'jbloggs\'';
         $this->assertEquals($expected, $sql);
     }
 
     public function testApplyMultipleForeignFieldConditions()
     {
         $conditions = new Conditions();
-        $conditions->field('author.username')->eq('rwallwork');
+        $conditions->field('author.username')->eq('jbloggs');
         $conditions->field('status.name')->eq('published');
 
         $sql = $this->getSqlFromConditions($conditions);
@@ -127,7 +127,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
                   . 'INNER JOIN "content_status" AS "status" ON "item"."status_id" = "status"."cs_id" '
-                  . 'WHERE author.username = \'rwallwork\' AND status.name = \'published\'';
+                  . 'WHERE author.username = \'jbloggs\' AND status.name = \'published\'';
         $this->assertEquals($expected, $sql);
     }
 
@@ -289,17 +289,15 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function testApplyMultipleForeignFieldConditionsOfSameType()
     {
         $conditions = new Conditions();
-        $conditions->field('author.username')->eq('rwallwork');
-        $conditions->field('publisher.username')->eq('rwallwork');
+        $conditions->field('author.username')->eq('jbloggs');
+        $conditions->field('publisher.username')->eq('jbloggs');
 
         $sql = $this->getSqlFromConditions($conditions);
-
-        // @todo
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
                   . 'INNER JOIN "user" AS "publisher" ON "item"."publisher_id" = "publisher"."u_id" '
-                  . 'WHERE author.username = \'rwallwork\' AND publisher.username = \'rwallwork\'';
+                  . 'WHERE author.username = \'jbloggs\' AND publisher.username = \'jbloggs\'';
         $this->assertEquals($expected, $sql);
     }
 
@@ -340,7 +338,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $conditions->field('field4')->isNotNull();
         $conditions->field('field5')->gt(5);
         $conditions->field('field6')->lt(6);
-        $conditions->field('author.username')->eq('rwallwork');
+        $conditions->field('author.username')->eq('jbloggs');
         $conditions->field('status.name')->eq('published');
         $conditions->field('author.type.active')->eq('1');
         $conditions->field('status.type.name')->eq('global');
@@ -353,7 +351,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $conditions->field('status.type.longDesc')->eq('testing testing');
         $conditions->field('author')->isNull();
         $conditions->field('status.Type')->eq(8);
-        $conditions->field('publisher.username')->eq('rwallwork');
+        $conditions->field('publisher.username')->eq('jbloggs');
         $conditions->field('publisher.type.active')->eq('1');
         $conditions->order('name', 'ASC');
         $conditions->order('date', 'DESC');
@@ -377,14 +375,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase
                   . 'INNER JOIN "user_type" AS "publisher_type" ON "publisher"."type_id" = "publisher_type"."ut_id" '
                   . 'WHERE item.field1 = \'value1\' AND item.field2 != \'value2\' '
                   . 'AND item.field3 IS NULL AND item.field4 IS NOT NULL AND item.field5 > \'5\' AND item.field6 < \'6\' '
-                  . 'AND author.username = \'rwallwork\' AND status.name = \'published\' '
+                  . 'AND author.username = \'jbloggs\' AND status.name = \'published\' '
                   . 'AND author_type.active = \'1\' AND status_type.name = \'global\' '
                   . 'AND item.description = \'testing\' AND item.long_description = \'testing testing\' '
                   . 'AND item.unmapped_camel_case = \'testing\' AND author.description = \'testing\' '
                   . 'AND status.long_description = \'testing testing\' '
                   . 'AND author_type.description = \'testing\' AND status_type.long_description = \'testing testing\' '
                   . 'AND item.author_id IS NULL AND status.type_id = \'8\' '
-                  . 'AND publisher.username = \'rwallwork\' AND publisher_type.active = \'1\' '
+                  . 'AND publisher.username = \'jbloggs\' AND publisher_type.active = \'1\' '
                   . 'ORDER BY "item"."name" ASC, "item"."date" DESC, "author"."username" ASC, "status"."name" DESC, '
                   . '"author"."description" ASC, "status"."long_description" DESC, "item"."author_id" ASC, '
                   . '"status"."type_id" DESC, "publisher"."username" ASC LIMIT \'12\' OFFSET \'84\'';

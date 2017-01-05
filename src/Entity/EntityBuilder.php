@@ -3,16 +3,15 @@ namespace Boxspaced\EntityManager\Entity;
 
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
-use Boxspaced\EntityManager\Entity\Factory as EntityFactory;
-use Boxspaced\EntityManager\Mapper\Factory as MapperFactory;
-use Boxspaced\EntityManager\Entity\AbstractEntity;
-use Boxspaced\EntityManager\Collection\AbstractCollection as Collection;
+use Boxspaced\EntityManager\Mapper\MapperFactory;
+use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 use Zend\Config\Config;
 use InvalidArgumentException;
 use UnexpectedValueException;
+use DateTime;
 
-class Builder
+class EntityBuilder
 {
 
     /**
@@ -149,7 +148,7 @@ class Builder
                     break;
 
                 case $entity::TYPE_DATETIME:
-                    $entity->set($field, new \DateTime($data[$field]));
+                    $entity->set($field, new DateTime($data[$field]));
                     break;
 
                 default:

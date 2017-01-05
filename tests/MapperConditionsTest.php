@@ -2,6 +2,7 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Conditions\Expr;
 
 class MapperConditionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -72,7 +73,7 @@ class MapperConditionsTest extends \PHPUnit_Framework_TestCase
             Conditions::OPERATOR_IS,
             $fields[0]->getOperator()
         );
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Mapper\\Conditions\\Expr', $fields[0]->getValue());
+        $this->assertInstanceOf(Expr::class, $fields[0]->getValue());
         $this->assertEquals('NULL', (string) $fields[0]->getValue());
     }
 
@@ -89,7 +90,7 @@ class MapperConditionsTest extends \PHPUnit_Framework_TestCase
             Conditions::OPERATOR_IS_NOT,
             $fields[0]->getOperator()
         );
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Mapper\\Conditions\\Expr', $fields[0]->getValue());
+        $this->assertInstanceOf(Expr::class, $fields[0]->getValue());
         $this->assertEquals('NULL', (string) $fields[0]->getValue());
     }
 

@@ -2,7 +2,7 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\IdentityMap;
-use Boxspaced\EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,7 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
 
     public function testEntityNotExistsWhenMapEmpty()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
 
         $result = $this->identityMap->exists(get_class($entity), $entity->getId());
 
@@ -25,10 +25,10 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
 
     public function testEntityNotExistsWhenMapNotEmpty()
     {
-        $entity1 = new Entity();
-        $entity2 = new Entity();
-        $entity3 = new Entity();
-        $entity = new Entity();
+        $entity1 = new EntityDouble();
+        $entity2 = new EntityDouble();
+        $entity3 = new EntityDouble();
+        $entity = new EntityDouble();
 
         $this->identityMap->add($entity1);
         $this->identityMap->add($entity2);
@@ -41,10 +41,10 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
 
     public function testEntityExistsWhenHasBeenAddedAndMapNotEmpty()
     {
-        $entity1 = new Entity();
-        $entity2 = new Entity();
-        $entity3 = new Entity();
-        $entity = new Entity();
+        $entity1 = new EntityDouble();
+        $entity2 = new EntityDouble();
+        $entity3 = new EntityDouble();
+        $entity = new EntityDouble();
 
         $this->identityMap->add($entity1);
         $this->identityMap->add($entity2);

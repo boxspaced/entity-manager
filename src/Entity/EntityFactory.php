@@ -5,7 +5,7 @@ use Pimple\Container;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
-class Factory
+class EntityFactory
 {
 
     /**
@@ -39,7 +39,7 @@ class Factory
             $this->container['config']
         );
 
-        if (!($entity instanceof \Boxspaced\EntityManager\Entity\AbstractEntity)) {
+        if (!($entity instanceof AbstractEntity)) {
 
             throw new UnexpectedValueException(
                 sprintf('Object is not an entity: %s', get_class($entity))

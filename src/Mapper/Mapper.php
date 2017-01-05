@@ -2,11 +2,11 @@
 namespace Boxspaced\EntityManager\Mapper;
 
 use Boxspaced\EntityManager\IdentityMap;
-use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
-use Boxspaced\EntityManager\Collection\Factory as CollectionFactory;
+use Boxspaced\EntityManager\Entity\EntityBuilder;
+use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
-use Boxspaced\EntityManager\Collection\AbstractCollection as Collection;
 
 class Mapper
 {
@@ -27,7 +27,7 @@ class Mapper
     protected $collectionFactory;
 
     /**
-     * @var StrategyInterface
+     * @var MapperStrategyInterface
      */
     protected $strategy;
 
@@ -35,13 +35,13 @@ class Mapper
      * @param IdentityMap $identityMap
      * @param EntityBuilder $entityBuilder
      * @param CollectionFactory $collectionFactory
-     * @param StrategyInterface $strategy
+     * @param MapperStrategyInterface $strategy
      */
     public function __construct(
         IdentityMap $identityMap,
         EntityBuilder $entityBuilder,
         CollectionFactory $collectionFactory,
-        StrategyInterface $strategy
+        MapperStrategyInterface $strategy
     )
     {
         $this->identityMap = $identityMap;

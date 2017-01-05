@@ -3,7 +3,7 @@ namespace Boxspaced\EntityManager\Collection;
 
 use Pimple\Container;
 
-class Factory
+class CollectionFactory
 {
 
     /**

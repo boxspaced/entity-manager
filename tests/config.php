@@ -1,12 +1,12 @@
 <?php
+namespace Boxspaced\EntityManager\Test;
 
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 
 return [
     'db' => [
         'driver' => 'Pdo_Sqlite',
-        'database' => '/home/rwallwork/sqlite/em.db',
+        'database' => __DIR__ . '/../data/sqlite/em.db',
     ],
     'types' => [
         'Item' => [
@@ -158,7 +158,7 @@ return [
                 ],
             ],
         ],
-        'Boxspaced\\EntityManager\\Test\\Double\\Entity' => [
+        Double\EntityDouble::class => [
             'entity' => [
                 'fields' => [
                     'id' => [

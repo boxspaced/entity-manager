@@ -5,20 +5,25 @@ use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 use Boxspaced\EntityManager\Mapper\Sql\Select;
 use Zend\Db\Adapter\AdapterInterface as Database;
-use Zend\Db\Sql\Sql;
 use Zend\Config\Config;
 use Zend\Filter\Word\UnderscoreToCamelCase;
 use Zend\Filter\Word\CamelCaseToUnderscore;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use InvalidArgumentException;
 
-class SqlStrategy implements StrategyInterface
+class SqlMapperStrategy implements MapperStrategyInterface
 {
 
     /**
      * @var Database
      */
     protected $db;
+
+    /**
+     * @var Sql
+     */
+    protected $sql;
 
     /**
      * @var Config
@@ -32,6 +37,7 @@ class SqlStrategy implements StrategyInterface
     public function __construct(Database $db, Config $config)
     {
         $this->db = $db;
+        $this->sql = new Sql($db);
         $this->config = $config;
     }
 
@@ -45,7 +51,7 @@ class SqlStrategy implements StrategyInterface
         $conditions = (new Conditions())->field('id')->eq($id);
 
         $select = new Select($this->config, $type, $conditions);
-        $stmt = (new Sql($this->db))->prepareStatementForSqlObject($select);
+        $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $row = $stmt->execute()->current();
 
@@ -113,7 +119,7 @@ class SqlStrategy implements StrategyInterface
     public function findOne($type, Conditions $conditions = null)
     {
         $select = new Select($this->config, $type, $conditions);
-        $stmt = (new Sql($this->db))->prepareStatementForSqlObject($select);
+        $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $row = $stmt->execute()->current();
 
@@ -132,7 +138,7 @@ class SqlStrategy implements StrategyInterface
     public function findAll($type, Conditions $conditions = null)
     {
         $select = new Select($this->config, $type, $conditions);
-        $stmt = (new Sql($this->db))->prepareStatementForSqlObject($select);
+        $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $rows = [];
 
@@ -145,20 +151,19 @@ class SqlStrategy implements StrategyInterface
 
     /**
      * @param AbstractEntity $entity
-     * @return SqlStrategy
+     * @return SqlMapperStrategy
      */
     public function insert(AbstractEntity $entity)
     {
         $config = $this->getMapperConfig(get_class($entity));
 
-        $sql = new Sql($this->db);
-        $insert = $sql->insert($config->table);
+        $insert = $this->sql->insert($config->table);
 
         $row = $this->entityToRow($entity);
         $insert->columns(array_keys($row));
         $insert->values(array_values($row));
 
-        $stmt = $sql->prepareStatementForSqlObject($insert);
+        $stmt = $this->sql->prepareStatementForSqlObject($insert);
         $stmt->execute();
 
         $id = $this->db->getDriver()->getConnection()->getLastGeneratedValue();
@@ -169,14 +174,13 @@ class SqlStrategy implements StrategyInterface
 
     /**
      * @param AbstractEntity $entity
-     * @return SqlStrategy
+     * @return SqlMapperStrategy
      */
     public function update(AbstractEntity $entity)
     {
         $config = $this->getMapperConfig(get_class($entity));
 
-        $sql = new Sql($this->db);
-        $update = $sql->update($config->table);
+        $update = $this->sql->update($config->table);
 
         $row = $this->entityToRow($entity);
         $update->set($row);
@@ -187,7 +191,7 @@ class SqlStrategy implements StrategyInterface
         );
         $update->where($where);
 
-        $stmt = $sql->prepareStatementForSqlObject($update);
+        $stmt = $this->sql->prepareStatementForSqlObject($update);
         $stmt->execute();
 
         return $this;
@@ -195,14 +199,13 @@ class SqlStrategy implements StrategyInterface
 
     /**
      * @param AbstractEntity $entity
-     * @return SqlStrategy
+     * @return SqlMapperStrategy
      */
     public function delete(AbstractEntity $entity)
     {
         $config = $this->getMapperConfig(get_class($entity));
 
-        $sql = new Sql($this->db);
-        $delete = $sql->delete($config->table);
+        $delete = $this->sql->delete($config->table);
 
         $where = (new Where())->equalTo(
             isset($config->columns->id) ? $config->columns->id : 'id',
@@ -210,7 +213,7 @@ class SqlStrategy implements StrategyInterface
         );
         $delete->where($where);
 
-        $stmt = $sql->prepareStatementForSqlObject($delete);
+        $stmt = $this->sql->prepareStatementForSqlObject($delete);
         $stmt->execute();
 
         return $this;
@@ -230,7 +233,7 @@ class SqlStrategy implements StrategyInterface
 
         $row = [];
 
-        foreach ($fields as $field => $fieldConfig) {
+        foreach (array_keys($fields) as $field) {
 
             if (isset($columns[$field])) {
                 $column = $columns[$field];
@@ -244,7 +247,7 @@ class SqlStrategy implements StrategyInterface
                 $value = $value->format('Y-m-d H:i:s');
             }
 
-            if ($value instanceof \Boxspaced\EntityManager\Entity\AbstractEntity) {
+            if ($value instanceof AbstractEntity) {
                 $value = $value->get('id');
             }
 

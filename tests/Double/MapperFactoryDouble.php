@@ -1,7 +1,9 @@
 <?php
 namespace Boxspaced\EntityManager\Test\Double;
 
-class MapperFactory extends \Boxspaced\EntityManager\Mapper\Factory
+use Boxspaced\EntityManager\Mapper\MapperFactory;
+
+class MapperFactoryDouble extends MapperFactory
 {
 
     public $mapper;
@@ -14,7 +16,7 @@ class MapperFactory extends \Boxspaced\EntityManager\Mapper\Factory
     public function createForType($type)
     {
         if (null === $this->mapper) {
-            $this->mapper = new Mapper();
+            $this->mapper = new MapperDouble();
         }
 
         return $this->mapper;

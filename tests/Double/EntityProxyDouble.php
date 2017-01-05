@@ -1,7 +1,7 @@
 <?php
 namespace Boxspaced\EntityManager\Test\Double;
 
-class EntityProxy extends Entity
+class EntityProxyDouble extends EntityDouble
 {
 
     protected $initializer;

@@ -9,10 +9,10 @@ use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
-use Boxspaced\EntityManager\Entity\Factory as EntityFactory;
-use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
-use Boxspaced\EntityManager\Collection\Factory as CollectionFactory;
-use Boxspaced\EntityManager\Mapper\Factory as MapperFactory;
+use Boxspaced\EntityManager\Entity\EntityFactory;
+use Boxspaced\EntityManager\Entity\EntityBuilder;
+use Boxspaced\EntityManager\Collection\CollectionFactory;
+use Boxspaced\EntityManager\Mapper\MapperFactory;
 
 class EntityManager
 {

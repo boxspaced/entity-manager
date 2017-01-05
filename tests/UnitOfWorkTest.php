@@ -1,9 +1,9 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
-use Boxspaced\EntityManager\Test\Double\MapperFactory;
 use Boxspaced\EntityManager\UnitOfWork;
-use Boxspaced\EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\Test\Double\MapperFactoryDouble;
+use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,14 +14,14 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mapperFactory = new MapperFactory();
+        $this->mapperFactory = new MapperFactoryDouble();
         $this->mapperFactory->createForType(null); // Force creation of mapper
         $this->unitOfWork = new UnitOfWork($this->mapperFactory);
     }
 
     public function testPersistedEntityWillBeInserted()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
 
         $this->unitOfWork->persist($entity);
         $this->unitOfWork->flush();
@@ -32,7 +32,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function testDirtyEntityWillBeUpdated()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
 
         $this->unitOfWork->dirty($entity);
         $this->unitOfWork->flush();
@@ -43,7 +43,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function testDeletedEntityWillBeDeleted()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
 
         $this->unitOfWork->delete($entity);
         $this->unitOfWork->flush();
@@ -54,7 +54,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function testPersistingNewEntityMoreThanOnceDoesntDuplicate()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
 
         $this->unitOfWork->persist($entity);
         $this->unitOfWork->persist($entity);
@@ -65,7 +65,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function testNewEntityCannotBeMadeDirty()
     {
-        $entity = new Entity();
+        $entity = new EntityDouble();
 
         $this->unitOfWork->persist($entity);
         $this->unitOfWork->dirty($entity);
@@ -76,9 +76,9 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function testCleanClearsAllEntities()
     {
-        $new = new Entity();
-        $dirty = new Entity();
-        $delete = new Entity();
+        $new = new EntityDouble();
+        $dirty = new EntityDouble();
+        $delete = new EntityDouble();
 
         $this->unitOfWork->persist($new);
         $this->unitOfWork->dirty($dirty);
@@ -95,9 +95,9 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 
     public function testFlushClearsAllEntities()
     {
-        $new = new Entity();
-        $dirty = new Entity();
-        $delete = new Entity();
+        $new = new EntityDouble();
+        $dirty = new EntityDouble();
+        $delete = new EntityDouble();
 
         $this->unitOfWork->persist($new);
         $this->unitOfWork->dirty($dirty);

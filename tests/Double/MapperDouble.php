@@ -3,8 +3,9 @@ namespace Boxspaced\EntityManager\Test\Double;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Mapper;
 
-class Mapper extends \Boxspaced\EntityManager\Mapper\Mapper
+class MapperDouble extends Mapper
 {
 
     public $entities = [];

@@ -1,12 +1,12 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
-use Boxspaced\EntityManager\Entity\Builder as EntityBuilder;
-use Boxspaced\EntityManager\Test\Double\Entity;
+use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\IdentityMap;
-use Boxspaced\EntityManager\Test\Double\UnitOfWork;
-use Boxspaced\EntityManager\Test\Double\EntityFactory;
-use Boxspaced\EntityManager\Test\Double\MapperFactory;
+use Boxspaced\EntityManager\Test\Double\UnitOfWorkDouble;
+use Boxspaced\EntityManager\Test\Double\EntityFactoryDouble;
+use Boxspaced\EntityManager\Test\Double\MapperFactoryDouble;
+use Boxspaced\EntityManager\Test\Double\EntityDouble;
 use Zend\Config\Config;
 
 class EntityBuilderTest extends \PHPUnit_Framework_TestCase
@@ -22,10 +22,10 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->builder = new EntityBuilder(
             $this->identityMap,
-            new UnitOfWork(),
-            new EntityFactory(),
-            new MapperFactory(),
-            new Config(require 'files/config.php')
+            new UnitOfWorkDouble(),
+            new EntityFactoryDouble(),
+            new MapperFactoryDouble(),
+            new Config(require 'config.php')
         );
     }
 
@@ -33,7 +33,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $id = 3;
 
-        $entity = new Entity();
+        $entity = new EntityDouble();
         $entity->setId($id);
         $this->identityMap->add($entity);
 
@@ -46,15 +46,15 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
     public function testBuildReturnsNewEntityWhenNotInIdentityMap()
     {
         $data = ['id' => 49, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
-        $result = $this->builder->build('Boxspaced\\EntityManager\\Test\\Double\\Entity', $data);
+        $result = $this->builder->build(EntityDouble::class, $data);
 
-        $this->assertInstanceOf('Boxspaced\\EntityManager\\Test\\Double\\Entity', $result);
+        $this->assertInstanceOf(EntityDouble::class, $result);
     }
 
     public function testBuildAddsToIdentityMapWhenRowFromPersistantStorage()
     {
         $data = ['id' => 33, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
-        $entity = $this->builder->build('Boxspaced\\EntityManager\\Test\\Double\\Entity', $data);
+        $entity = $this->builder->build(EntityDouble::class, $data);
 
         $result = $this->identityMap->exists(get_class($entity), $entity->getId());
 
@@ -66,7 +66,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('UnexpectedValueException');
 
         $data = [];
-        $this->builder->build('Boxspaced\\EntityManager\\Test\\Double\\Entity', $data);
+        $this->builder->build(EntityDouble::class, $data);
     }
 
     public function testBuildWillNotAcceptRowWithoutId()
@@ -74,7 +74,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('UnexpectedValueException');
 
         $data = ['title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
-        $this->builder->build('Boxspaced\\EntityManager\\Test\\Double\\Entity', $data);
+        $this->builder->build(EntityDouble::class, $data);
     }
 
 }

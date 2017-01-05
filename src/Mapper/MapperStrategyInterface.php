@@ -4,7 +4,7 @@ namespace Boxspaced\EntityManager\Mapper;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 
-interface StrategyInterface
+interface MapperStrategyInterface
 {
 
     /**

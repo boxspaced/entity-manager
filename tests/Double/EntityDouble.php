@@ -2,8 +2,9 @@
 namespace Boxspaced\EntityManager\Test\Double;
 
 use Zend\Config\Config;
+use Boxspaced\EntityManager\Entity\AbstractEntity;
 
-class Entity extends \Boxspaced\EntityManager\Entity\AbstractEntity
+class EntityDouble extends AbstractEntity
 {
 
     private static $counter = 0;
@@ -28,7 +29,7 @@ class Entity extends \Boxspaced\EntityManager\Entity\AbstractEntity
         ];
 
         $this->config = new Config($config);
-        $this->unitOfWork = new UnitOfWork();
+        $this->unitOfWork = new UnitOfWorkDouble();
 
         $this->set('id', self::$counter++);
     }

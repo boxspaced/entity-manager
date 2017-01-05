@@ -3,8 +3,9 @@ namespace Boxspaced\EntityManager\Test\Double;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\MapperStrategyInterface;
 
-class MapperStrategy implements \Boxspaced\EntityManager\Mapper\StrategyInterface
+class MapperStrategyDouble implements MapperStrategyInterface
 {
 
     public $data = [];

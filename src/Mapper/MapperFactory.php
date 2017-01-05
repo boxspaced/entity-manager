@@ -5,7 +5,7 @@ use Pimple\Container;
 use UnexpectedValueException;
 use InvalidArgumentException;
 
-class Factory
+class MapperFactory
 {
 
     /**
@@ -55,7 +55,7 @@ class Factory
                 throw new UnexpectedValueException('Defaulting to SQL mapper but no database available');
             }
 
-            $strategy = new SqlStrategy(
+            $strategy = new SqlMapperStrategy(
                 $this->container['db'],
                 $this->container['config']
             );

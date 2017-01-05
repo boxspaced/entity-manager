@@ -2,7 +2,7 @@
 namespace Boxspaced\EntityManager;
 
 use Zend\Db\Adapter\AdapterInterface as Database;
-use Boxspaced\EntityManager\Mapper\Factory as MapperFactory;
+use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Exception;
 
