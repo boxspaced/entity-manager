@@ -67,22 +67,22 @@ abstract class AbstractEntity
 
         $this->config = $config->types->{$type}->entity;
 
-        $this->initChildren();
+        $this->initOneToMany();
     }
 
     /**
      * @return AbstractEntity
      * @throws Exception\InvalidArgumentException
      */
-    protected function initChildren()
+    protected function initOneToMany()
     {
-        foreach ($this->config->get('children', []) as $field => $childrenConfig) {
+        foreach ($this->config->get('oneToMany', []) as $field => $oneToManyConfig) {
 
-            if (!isset($childrenConfig->type)) {
+            if (!isset($oneToManyConfig->type)) {
                 throw new Exception\InvalidArgumentException("Type config missing for field: {$field}");
             }
 
-            $collection = $this->collectionFactory->create($childrenConfig->type);
+            $collection = $this->collectionFactory->create($oneToManyConfig->type);
 
             $this->set($field, $collection);
         }
@@ -123,7 +123,7 @@ abstract class AbstractEntity
     {
         return (
             isset($this->config->fields->{$field})
-            || isset($this->config->children->{$field})
+            || isset($this->config->oneToMany->{$field})
         );
     }
 
@@ -135,9 +135,9 @@ abstract class AbstractEntity
      */
     public function set($field, $value)
     {
-        if (isset($this->config->children->{$field})) {
+        if (isset($this->config->oneToMany->{$field})) {
 
-            $this->setChildren($field, $value);
+            $this->setOneToMany($field, $value);
             return $this;
         }
 
@@ -191,9 +191,9 @@ abstract class AbstractEntity
      * @return AbstractEntity
      * @throws Exception\InvalidArgumentException
      */
-    protected function setChildren($field, Collection $collection)
+    protected function setOneToMany($field, Collection $collection)
     {
-        $type = $this->getChildType($field);
+        $type = $this->getOneToManyType($field);
 
         if ($collection->getType() !== $type) {
 
@@ -231,15 +231,15 @@ abstract class AbstractEntity
      * @return string
      * @throws Exception\InvalidArgumentException
      */
-    protected function getChildType($field)
+    protected function getOneToManyType($field)
     {
-        if (!isset($this->config->children->{$field}->type)) {
+        if (!isset($this->config->oneToMany->{$field}->type)) {
             throw new Exception\InvalidArgumentException(
-                "Child type has not been defined for field: {$field}"
+                "Type has not been defined for 'one to many' field: {$field}"
             );
         }
 
-        return $this->config->children->{$field}->type;
+        return $this->config->oneToMany->{$field}->type;
     }
 
 }

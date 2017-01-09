@@ -104,7 +104,7 @@ class EntityBuilder
         $entity = $this->entityFactory->create($type);
 
         $this->setEntityFields($entity, $data);
-        $this->setEntityChildren($entity);
+        $this->setEntityOneToMany($entity);
 
         return $entity;
     }
@@ -151,8 +151,8 @@ class EntityBuilder
                     break;
 
                 default:
-                    $reference = $this->getReference($fieldConfig->type, $data[$field]);
-                    $entity->set($field, $reference);
+                    $oneToOne = $this->getOneToOne($fieldConfig->type, $data[$field]);
+                    $entity->set($field, $oneToOne);
             }
         }
 
@@ -178,7 +178,7 @@ class EntityBuilder
      * @param int $id
      * @return callable
      */
-    protected function getReference($type, $id)
+    protected function getOneToOne($type, $id)
     {
         if (!$id) {
             return null;
@@ -197,20 +197,20 @@ class EntityBuilder
      * @return Builder
      * @throws Exception\UnexpectedValueException
      */
-    protected function setEntityChildren(AbstractEntity $entity)
+    protected function setEntityOneToMany(AbstractEntity $entity)
     {
         $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        foreach ($entityConfig->get('children', []) as $field => $childrenConfig) {
+        foreach ($entityConfig->get('oneToMany', []) as $field => $oneToManyConfig) {
 
-            if (!is_callable($childrenConfig->conditions)) {
-                throw new Exception\UnexpectedValueException('The children conditions must be callable');
+            if (!is_callable($oneToManyConfig->conditions)) {
+                throw new Exception\UnexpectedValueException("The 'one to many' conditions must be callable");
             }
 
-            $conditions = call_user_func($childrenConfig->conditions, $entity->get('id'));
-            $children = $this->getChildren($childrenConfig->type, $conditions);
+            $conditions = call_user_func($oneToManyConfig->conditions, $entity->get('id'));
+            $oneToMany = $this->getOneToMany($oneToManyConfig->type, $conditions);
 
-            $entity->set($field, $children);
+            $entity->set($field, $oneToMany);
         }
 
         return $this;
@@ -221,7 +221,7 @@ class EntityBuilder
      * @param Conditions $conditions
      * @return Collection
      */
-    protected function getChildren($type, Conditions $conditions = null)
+    protected function getOneToMany($type, Conditions $conditions = null)
     {
         return $this->mapperFactory->createForType($type)->findAll($type, $conditions);
     }
