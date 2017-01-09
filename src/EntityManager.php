@@ -2,7 +2,6 @@
 namespace Boxspaced\EntityManager;
 
 use Pimple\Container;
-use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter as Database;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Collection\Collection;
@@ -28,15 +27,15 @@ class EntityManager
     public function __construct(array $config = [])
     {
         $container = new Container();
-        $container['config'] = new Config($config);
+        $container['config'] = $config;
 
         $container['db'] = function ($container) {
 
-            if (!isset($container['config']->db)) {
+            if (!isset($container['config']['db'])) {
                 return null;
             }
 
-            return new Database($container['config']->db->toArray());
+            return new Database($container['config']['db']);
         };
 
         $container['identityMap'] = function () {

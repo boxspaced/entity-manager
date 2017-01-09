@@ -4,7 +4,6 @@ namespace Boxspaced\EntityManager\Test;
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\Exception;
-use Zend\Config\Config;
 
 class EntityBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +21,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
             new UnitOfWorkDouble(),
             new EntityFactoryDouble(),
             new MapperFactoryDouble(),
-            new Config(require 'config.php')
+            require 'config.php'
         );
     }
 

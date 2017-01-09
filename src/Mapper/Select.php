@@ -3,7 +3,6 @@ namespace Boxspaced\EntityManager\Mapper;
 
 use Zend\Db\Sql\Expression;
 use Zend\Filter\Word\CamelCaseToUnderscore;
-use Zend\Config\Config;
 use Zend\Db\Sql\Select as ZendSelect;
 use Boxspaced\EntityManager\Exception;
 use DateTime;
@@ -12,7 +11,7 @@ class Select extends ZendSelect
 {
 
     /**
-     * @var Config
+     * @var array
      */
     protected $config;
 
@@ -27,22 +26,22 @@ class Select extends ZendSelect
     protected $conditions;
 
     /**
-     * @param Config $config
+     * @param array $config
      * @param string $type
      * @param Conditions $conditions
      * @throws Exception\UnexpectedValueException
      */
-    public function __construct(Config $config, $type, Conditions $conditions = null)
+    public function __construct(array $config, $type, Conditions $conditions = null)
     {
         $this->config = $config;
         $this->type = $type;
         $this->conditions = $conditions;
 
-        if (empty($config->types->{$type}->mapper->params->table)) {
+        if (empty($config['types'][$type]['mapper']['params']['table'])) {
             throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
-        parent::__construct($config->types->{$type}->mapper->params->table);
+        parent::__construct($config['types'][$type]['mapper']['params']['table']);
 
         $this->build();
     }
@@ -154,28 +153,28 @@ class Select extends ZendSelect
      */
     protected function createMapping($type, $field = null, array $previous = null)
     {
-        if (!isset($this->config->types->{$type})) {
+        if (!isset($this->config['types'][$type])) {
             throw new Exception\InvalidArgumentException("Config missing for type: {$type}");
         }
 
-        $config = $this->config->types->{$type};
+        $config = $this->config['types'][$type];
 
-        if (empty($config->mapper->params->table)) {
+        if (empty($config['mapper']['params']['table'])) {
             throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
         $mapping = [];
-        $mapping['table'] = $config->mapper->params->table;
+        $mapping['table'] = $config['mapper']['params']['table'];
         $mapping['alias'] = isset($previous['alias']) ? $previous['alias'] . '_' . $field : $field;
         $mapping['columns'] = [];
         $mapping['references'] = [];
 
-        if (isset($config->mapper->params->columns)) {
-            $mapping['columns'] = $config->mapper->params->columns->toArray();
+        if (isset($config['mapper']['params']['columns'])) {
+            $mapping['columns'] = $config['mapper']['params']['columns'];
         }
 
-        if (isset($config->entity->fields)) {
-            $mapping['references'] = $config->entity->fields->toArray();
+        if (isset($config['entity']['fields'])) {
+            $mapping['references'] = $config['entity']['fields'];
         }
 
         if (null !== $previous && null !== $field) {

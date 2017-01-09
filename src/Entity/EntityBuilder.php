@@ -1,7 +1,6 @@
 <?php
 namespace Boxspaced\EntityManager\Entity;
 
-use Zend\Config\Config;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
@@ -34,7 +33,7 @@ class EntityBuilder
     protected $mapperFactory;
 
     /**
-     * @var Config
+     * @var array
      */
     protected $config;
 
@@ -43,14 +42,14 @@ class EntityBuilder
      * @param UnitOfWork $unitOfWork
      * @param EntityFactory $entityFactory
      * @param MapperFactory $mapperFactory
-     * @param Config $config
+     * @param array $config
      */
     public function __construct(
         IdentityMap $identityMap,
         UnitOfWork $unitOfWork,
         EntityFactory $entityFactory,
         MapperFactory $mapperFactory,
-        Config $config
+        array $config
     )
     {
         $this->identityMap = $identityMap;
@@ -118,9 +117,9 @@ class EntityBuilder
     {
         $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        foreach ($entityConfig->get('fields', []) as $field => $fieldConfig) {
+        foreach (isset($entityConfig['fields']) ? $entityConfig['fields'] : [] as $field => $fieldConfig) {
 
-            if (!isset($fieldConfig->type)) {
+            if (!isset($fieldConfig['type'])) {
                 throw new Exception\InvalidArgumentException("Type config missing for field: {$field}");
             }
 
@@ -128,7 +127,7 @@ class EntityBuilder
                 continue;
             }
 
-            switch ($fieldConfig->type) {
+            switch ($fieldConfig['type']) {
 
                 case $entity::TYPE_STRING:
                     $entity->set($field, strval($data[$field]));
@@ -151,7 +150,7 @@ class EntityBuilder
                     break;
 
                 default:
-                    $oneToOne = $this->getOneToOne($fieldConfig->type, $data[$field]);
+                    $oneToOne = $this->getOneToOne($fieldConfig['type'], $data[$field]);
                     $entity->set($field, $oneToOne);
             }
         }
@@ -161,16 +160,16 @@ class EntityBuilder
 
     /**
      * @param string $type
-     * @return Config
+     * @return array
      * @throws Exception\InvalidArgumentException
      */
     protected function getEntityConfig($type)
     {
-        if (!isset($this->config->types->{$type}->entity)) {
+        if (!isset($this->config['types'][$type]['entity'])) {
             throw new Exception\InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
-        return $this->config->types->{$type}->entity;
+        return $this->config['types'][$type]['entity'];
     }
 
     /**
@@ -201,14 +200,14 @@ class EntityBuilder
     {
         $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        foreach ($entityConfig->get('oneToMany', []) as $field => $oneToManyConfig) {
+        foreach (isset($entityConfig['oneToMany']) ? $entityConfig['oneToMany'] : [] as $field => $oneToManyConfig) {
 
-            if (!is_callable($oneToManyConfig->conditions)) {
+            if (!is_callable($oneToManyConfig['conditions'])) {
                 throw new Exception\UnexpectedValueException("The 'one to many' conditions must be callable");
             }
 
-            $conditions = call_user_func($oneToManyConfig->conditions, $entity->get('id'));
-            $oneToMany = $this->getOneToMany($oneToManyConfig->type, $conditions);
+            $conditions = call_user_func($oneToManyConfig['conditions'], $entity->get('id'));
+            $oneToMany = $this->getOneToMany($oneToManyConfig['type'], $conditions);
 
             $entity->set($field, $oneToMany);
         }

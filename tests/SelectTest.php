@@ -1,7 +1,6 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
-use Zend\Config\Config;
 use Boxspaced\EntityManager\Mapper\Select;
 use Boxspaced\EntityManager\Mapper\Conditions;
 use Boxspaced\EntityManager\Exception;
@@ -13,7 +12,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = new Config(require 'config.php');
+        $this->config = require 'config.php';
     }
 
     protected function getSqlFromConditions(Conditions $conditions)

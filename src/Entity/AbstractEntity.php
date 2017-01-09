@@ -1,7 +1,6 @@
 <?php
 namespace Boxspaced\EntityManager\Entity;
 
-use Zend\Config\Config;
 use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\UnitOfWork;
@@ -33,7 +32,7 @@ abstract class AbstractEntity
     protected $fields = [];
 
     /**
-     * @var Config
+     * @var array
      */
     protected $config;
 
@@ -45,27 +44,27 @@ abstract class AbstractEntity
     /**
      * @param UnitOfWork $unitOfWork
      * @param CollectionFactory $collectionFactory
-     * @param Config $config
+     * @param array $config
      * @throws Exception\InvalidArgumentException
      */
     public function __construct(
         UnitOfWork $unitOfWork,
         CollectionFactory $collectionFactory,
-        Config $config
+        array $config
     )
     {
         $this->unitOfWork = $unitOfWork;
         $this->collectionFactory = $collectionFactory;
 
-        $this->strict = !empty($config->strict);
+        $this->strict = !empty($config['strict']);
 
         $type = get_class($this);
 
-        if (!isset($config->types->{$type}->entity)) {
+        if (!isset($config['types'][$type]['entity'])) {
             throw new Exception\InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
-        $this->config = $config->types->{$type}->entity;
+        $this->config = $config['types'][$type]['entity'];
 
         $this->initOneToMany();
     }
@@ -76,13 +75,13 @@ abstract class AbstractEntity
      */
     protected function initOneToMany()
     {
-        foreach ($this->config->get('oneToMany', []) as $field => $oneToManyConfig) {
+        foreach (isset($this->config['oneToMany']) ? $this->config['oneToMany'] : [] as $field => $oneToManyConfig) {
 
-            if (!isset($oneToManyConfig->type)) {
+            if (!isset($oneToManyConfig['type'])) {
                 throw new Exception\InvalidArgumentException("Type config missing for field: {$field}");
             }
 
-            $collection = $this->collectionFactory->create($oneToManyConfig->type);
+            $collection = $this->collectionFactory->create($oneToManyConfig['type']);
 
             $this->set($field, $collection);
         }
@@ -122,8 +121,8 @@ abstract class AbstractEntity
     public function has($field)
     {
         return (
-            isset($this->config->fields->{$field})
-            || isset($this->config->oneToMany->{$field})
+            isset($this->config['fields'][$field])
+            || isset($this->config['oneToMany'][$field])
         );
     }
 
@@ -135,7 +134,7 @@ abstract class AbstractEntity
      */
     public function set($field, $value)
     {
-        if (isset($this->config->oneToMany->{$field})) {
+        if (isset($this->config['oneToMany'][$field])) {
 
             $this->setOneToMany($field, $value);
             return $this;
@@ -217,13 +216,13 @@ abstract class AbstractEntity
      */
     protected function getFieldType($field)
     {
-        if (!isset($this->config->fields->{$field}->type)) {
+        if (!isset($this->config['fields'][$field]['type'])) {
             throw new Exception\InvalidArgumentException(
                 "Field type has not been defined for field: {$field}"
             );
         }
 
-        return $this->config->fields->{$field}->type;
+        return $this->config['fields'][$field]['type'];
     }
 
     /**
@@ -233,13 +232,13 @@ abstract class AbstractEntity
      */
     protected function getOneToManyType($field)
     {
-        if (!isset($this->config->oneToMany->{$field}->type)) {
+        if (!isset($this->config['oneToMany'][$field]['type'])) {
             throw new Exception\InvalidArgumentException(
                 "Type has not been defined for 'one to many' field: {$field}"
             );
         }
 
-        return $this->config->oneToMany->{$field}->type;
+        return $this->config['oneToMany'][$field]['type'];
     }
 
 }

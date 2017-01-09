@@ -1,7 +1,6 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
-use Zend\Config\Config;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 
 class EntityDouble extends AbstractEntity
@@ -11,7 +10,7 @@ class EntityDouble extends AbstractEntity
 
     public function __construct()
     {
-        $config = [
+        $this->config = [
             'fields' => [
                 'id' => [
                     'type' => static::TYPE_INT,
@@ -28,7 +27,6 @@ class EntityDouble extends AbstractEntity
             ]
         ];
 
-        $this->config = new Config($config);
         $this->unitOfWork = new UnitOfWorkDouble();
 
         $this->set('id', self::$counter++);

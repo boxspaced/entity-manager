@@ -4,7 +4,6 @@ namespace Boxspaced\EntityManager\Mapper;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Exception;
 use Zend\Db\Adapter\AdapterInterface as Database;
-use Zend\Config\Config;
 use Zend\Filter\Word\UnderscoreToCamelCase;
 use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Db\Sql\Sql;
@@ -25,15 +24,15 @@ class SqlMapperStrategy implements MapperStrategyInterface
     protected $sql;
 
     /**
-     * @var Config
+     * @var array
      */
     protected $config;
 
     /**
      * @param Database $db
-     * @param Config $config
+     * @param array $config
      */
-    public function __construct(Database $db, Config $config)
+    public function __construct(Database $db, array $config)
     {
         $this->db = $db;
         $this->sql = new Sql($db);
@@ -69,7 +68,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
     protected function remapRow($type, array $row)
     {
         $config = $this->getMapperConfig($type);
-        $columns = isset($config->columns) ? $config->columns->toArray() : [];
+        $columns = isset($config['columns']) ? $config['columns'] : [];
 
         $remapped = [];
 
@@ -92,18 +91,18 @@ class SqlMapperStrategy implements MapperStrategyInterface
 
     /**
      * @param string $type
-     * @return Config
+     * @return array
      * @throws Exception\InvalidArgumentException
      */
     protected function getMapperConfig($type)
     {
-        if (!isset($this->config->types->{$type}->mapper->params)) {
+        if (!isset($this->config['types'][$type]['mapper']['params'])) {
             throw new Exception\InvalidArgumentException("Mapper config missing for type: {$type}");
         }
 
-        $config = $this->config->types->{$type}->mapper->params;
+        $config = $this->config['types'][$type]['mapper']['params'];
 
-        if (empty($config->table)) {
+        if (empty($config['table'])) {
             throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
@@ -156,7 +155,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
     {
         $config = $this->getMapperConfig(get_class($entity));
 
-        $insert = $this->sql->insert($config->table);
+        $insert = $this->sql->insert($config['table']);
 
         $row = $this->entityToRow($entity);
         $insert->columns(array_keys($row));
@@ -179,13 +178,13 @@ class SqlMapperStrategy implements MapperStrategyInterface
     {
         $config = $this->getMapperConfig(get_class($entity));
 
-        $update = $this->sql->update($config->table);
+        $update = $this->sql->update($config['table']);
 
         $row = $this->entityToRow($entity);
         $update->set($row);
 
         $where = (new Where())->equalTo(
-            isset($config->columns->id) ? $config->columns->id : 'id',
+            isset($config['columns']['id']) ? $config['columns']['id'] : 'id',
             $entity->get('id')
         );
         $update->where($where);
@@ -204,10 +203,10 @@ class SqlMapperStrategy implements MapperStrategyInterface
     {
         $config = $this->getMapperConfig(get_class($entity));
 
-        $delete = $this->sql->delete($config->table);
+        $delete = $this->sql->delete($config['table']);
 
         $where = (new Where())->equalTo(
-            isset($config->columns->id) ? $config->columns->id : 'id',
+            isset($config['columns']['id']) ? $config['columns']['id'] : 'id',
             $entity->get('id')
         );
         $delete->where($where);
@@ -227,8 +226,8 @@ class SqlMapperStrategy implements MapperStrategyInterface
         $mapperConfig = $this->getMapperConfig(get_class($entity));
         $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        $columns = isset($mapperConfig->columns) ? $mapperConfig->columns->toArray() : [];
-        $fields = isset($entityConfig->fields) ? $entityConfig->fields->toArray() : [];
+        $columns = isset($mapperConfig['columns']) ? $mapperConfig['columns'] : [];
+        $fields = isset($entityConfig['fields']) ? $entityConfig['fields'] : [];
 
         $row = [];
 
@@ -258,16 +257,16 @@ class SqlMapperStrategy implements MapperStrategyInterface
 
     /**
      * @param string $type
-     * @return Config
+     * @return array
      * @throws Exception\InvalidArgumentException
      */
     protected function getEntityConfig($type)
     {
-        if (!isset($this->config->types->{$type}->entity)) {
+        if (!isset($this->config['types'][$type]['entity'])) {
             throw new Exception\InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
-        return $this->config->types->{$type}->entity;
+        return $this->config['types'][$type]['entity'];
     }
 
 }

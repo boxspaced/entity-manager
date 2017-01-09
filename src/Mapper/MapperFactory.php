@@ -33,19 +33,19 @@ class MapperFactory
      */
     public function createForType($type)
     {
-        if (!isset($this->container['config']->types->{$type})) {
+        if (!isset($this->container['config']['types'][$type])) {
             throw new Exception\InvalidArgumentException("Config not found for type: {$type}");
         }
 
-        $config = $this->container['config']->types->{$type};
+        $config = $this->container['config']['types'][$type];
 
         $strategy = null;
 
         if (
-            isset($config->mapper->strategy)
-            && is_callable($config->mapper->strategy)
+            isset($config['mapper']['strategy'])
+            && is_callable($config['mapper']['strategy'])
         ) {
-            $strategy = call_user_func($config->mapper->strategy);
+            $strategy = call_user_func($config['mapper']['strategy']);
         }
 
         if (null === $strategy) {

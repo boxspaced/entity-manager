@@ -4,7 +4,6 @@
         "php": "^5.5 || ^7.0",
         "zendframework/zend-db": "^2.8",
         "zendframework/zend-filter": "^2.7",
-        "zendframework/zend-config": "^2.6",
         "pimple/pimple": "^3.0"
     },
     "require-dev": {
