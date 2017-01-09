@@ -6,7 +6,7 @@ use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter as Database;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Collection\Collection;
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Conditions;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Entity\EntityFactory;

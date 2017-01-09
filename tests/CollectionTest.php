@@ -3,9 +3,6 @@ namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
-use Boxspaced\EntityManager\Test\Double\UnitOfWorkDouble;
-use Boxspaced\EntityManager\Test\Double\EntityBuilderDouble;
-use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -113,7 +110,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testCollectionReturnsOnlyEntityInstancesOnIteration()
     {
-        $this->assertContainsOnly(Double\EntityDouble::class, $this->collection);
+        $this->assertContainsOnly(EntityDouble::class, $this->collection);
     }
 
     public function testAddWillNotAcceptWrongEntityType()

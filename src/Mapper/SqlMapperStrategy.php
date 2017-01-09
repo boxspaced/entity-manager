@@ -2,8 +2,6 @@
 namespace Boxspaced\EntityManager\Mapper;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
-use Boxspaced\EntityManager\Mapper\Sql\Select;
 use Zend\Db\Adapter\AdapterInterface as Database;
 use Zend\Config\Config;
 use Zend\Filter\Word\UnderscoreToCamelCase;
@@ -11,6 +9,7 @@ use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use InvalidArgumentException;
+use DateTime;
 
 class SqlMapperStrategy implements MapperStrategyInterface
 {
@@ -243,7 +242,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
 
             $value = $entity->get($field);
 
-            if ($value instanceof \DateTime) {
+            if ($value instanceof DateTime) {
                 $value = $value->format('Y-m-d H:i:s');
             }
 

@@ -1,5 +1,5 @@
 <?php
-namespace Boxspaced\EntityManager\Mapper\Conditions;
+namespace Boxspaced\EntityManager\Mapper;
 
 class Order
 {

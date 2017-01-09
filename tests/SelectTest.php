@@ -2,8 +2,8 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Zend\Config\Config;
-use Boxspaced\EntityManager\Mapper\Sql\Select;
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Select;
+use Boxspaced\EntityManager\Mapper\Conditions;
 
 class SelectTest extends \PHPUnit_Framework_TestCase
 {

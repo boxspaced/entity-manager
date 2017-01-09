@@ -3,10 +3,6 @@ namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\IdentityMap;
-use Boxspaced\EntityManager\Test\Double\UnitOfWorkDouble;
-use Boxspaced\EntityManager\Test\Double\EntityFactoryDouble;
-use Boxspaced\EntityManager\Test\Double\MapperFactoryDouble;
-use Boxspaced\EntityManager\Test\Double\EntityDouble;
 use Zend\Config\Config;
 
 class EntityBuilderTest extends \PHPUnit_Framework_TestCase

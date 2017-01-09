@@ -2,8 +2,6 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\UnitOfWork;
-use Boxspaced\EntityManager\Test\Double\MapperFactoryDouble;
-use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class UnitOfWorkTest extends \PHPUnit_Framework_TestCase
 {

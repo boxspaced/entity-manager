@@ -6,7 +6,6 @@ use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Collection\Collection;
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
 
 class Mapper
 {

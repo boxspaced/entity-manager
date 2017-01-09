@@ -1,8 +1,8 @@
 <?php
-namespace Boxspaced\EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
+use Boxspaced\EntityManager\Mapper\Conditions;
 use Boxspaced\EntityManager\Mapper\MapperStrategyInterface;
 
 class MapperStrategyDouble implements MapperStrategyInterface

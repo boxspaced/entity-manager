@@ -1,5 +1,5 @@
 <?php
-namespace Boxspaced\EntityManager\Test\Double;
+namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 

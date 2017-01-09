@@ -158,7 +158,7 @@ return [
                 ],
             ],
         ],
-        Double\EntityDouble::class => [
+        EntityDouble::class => [
             'entity' => [
                 'fields' => [
                     'id' => [

@@ -4,10 +4,6 @@ namespace Boxspaced\EntityManager\Test;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\Mapper\Mapper;
 use Boxspaced\EntityManager\Collection\Collection;
-use Boxspaced\EntityManager\Test\Double\MapperStrategyDouble;
-use Boxspaced\EntityManager\Test\Double\EntityBuilderDouble;
-use Boxspaced\EntityManager\Test\Double\CollectionFactoryDouble;
-use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {

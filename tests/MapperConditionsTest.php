@@ -1,8 +1,8 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
-use Boxspaced\EntityManager\Mapper\Conditions\Conditions;
-use Boxspaced\EntityManager\Mapper\Conditions\Expr;
+use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Expr;
 
 class MapperConditionsTest extends \PHPUnit_Framework_TestCase
 {

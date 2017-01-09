@@ -2,7 +2,6 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\IdentityMap;
-use Boxspaced\EntityManager\Test\Double\EntityDouble;
 
 class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {
