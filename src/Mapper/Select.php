@@ -286,7 +286,7 @@ class Select extends ZendSelect
         if (isset($mapping['columns'][$fieldName])) {
             $columnName = $mapping['columns'][$fieldName];
         } else {
-            $columnName = strtolower((new CamelCaseToUnderscore())->filter($fieldName));
+            $columnName = mb_strtolower((new CamelCaseToUnderscore())->filter($fieldName));
         }
 
         return (isset($mapping['alias']) ? $mapping['alias'] : $mapping['table']) . '.' . $columnName;
