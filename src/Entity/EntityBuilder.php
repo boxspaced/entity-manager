@@ -200,7 +200,7 @@ class EntityBuilder
     {
         $entityConfig = $this->getEntityConfig(get_class($entity));
 
-        foreach (isset($entityConfig['oneToMany']) ? $entityConfig['oneToMany'] : [] as $field => $oneToManyConfig) {
+        foreach (isset($entityConfig['one_to_many']) ? $entityConfig['one_to_many'] : [] as $field => $oneToManyConfig) {
 
             if (!is_callable($oneToManyConfig['conditions'])) {
                 throw new Exception\UnexpectedValueException("The 'one to many' conditions must be callable");

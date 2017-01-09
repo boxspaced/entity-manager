@@ -75,7 +75,7 @@ abstract class AbstractEntity
      */
     protected function initOneToMany()
     {
-        foreach (isset($this->config['oneToMany']) ? $this->config['oneToMany'] : [] as $field => $oneToManyConfig) {
+        foreach (isset($this->config['one_to_many']) ? $this->config['one_to_many'] : [] as $field => $oneToManyConfig) {
 
             if (!isset($oneToManyConfig['type'])) {
                 throw new Exception\InvalidArgumentException("Type config missing for field: {$field}");
@@ -122,7 +122,7 @@ abstract class AbstractEntity
     {
         return (
             isset($this->config['fields'][$field])
-            || isset($this->config['oneToMany'][$field])
+            || isset($this->config['one_to_many'][$field])
         );
     }
 
@@ -134,7 +134,7 @@ abstract class AbstractEntity
      */
     public function set($field, $value)
     {
-        if (isset($this->config['oneToMany'][$field])) {
+        if (isset($this->config['one_to_many'][$field])) {
 
             $this->setOneToMany($field, $value);
             return $this;
@@ -232,13 +232,13 @@ abstract class AbstractEntity
      */
     protected function getOneToManyType($field)
     {
-        if (!isset($this->config['oneToMany'][$field]['type'])) {
+        if (!isset($this->config['one_to_many'][$field]['type'])) {
             throw new Exception\InvalidArgumentException(
                 "Type has not been defined for 'one to many' field: {$field}"
             );
         }
 
-        return $this->config['oneToMany'][$field]['type'];
+        return $this->config['one_to_many'][$field]['type'];
     }
 
 }
