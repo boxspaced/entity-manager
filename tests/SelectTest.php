@@ -99,7 +99,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
         $sql = $this->getSqlFromConditions($conditions);
 
-        $expected = 'SELECT "item".* FROM "item" WHERE item.name_camel_case = \'test-page\' AND item.archived_camel_case = \'1\'';
+        $expected = 'SELECT "item".* FROM "item" WHERE item.nameCamelCase = \'test-page\' AND item.archivedCamelCase = \'1\'';
         $this->assertEquals($expected, $sql);
     }
 
@@ -378,7 +378,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
                   . 'AND author.username = \'jbloggs\' AND status.name = \'published\' '
                   . 'AND author_type.active = \'1\' AND status_type.name = \'global\' '
                   . 'AND item.description = \'testing\' AND item.long_description = \'testing testing\' '
-                  . 'AND item.unmapped_camel_case = \'testing\' AND author.description = \'testing\' '
+                  . 'AND item.unmappedCamelCase = \'testing\' AND author.description = \'testing\' '
                   . 'AND status.long_description = \'testing testing\' '
                   . 'AND author_type.description = \'testing\' AND status_type.long_description = \'testing testing\' '
                   . 'AND item.author_id IS NULL AND status.type_id = \'8\' '

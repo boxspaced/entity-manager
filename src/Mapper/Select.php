@@ -2,7 +2,6 @@
 namespace Boxspaced\EntityManager\Mapper;
 
 use Zend\Db\Sql\Expression;
-use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Db\Sql\Select as ZendSelect;
 use Boxspaced\EntityManager\Exception;
 use DateTime;
@@ -282,11 +281,10 @@ class Select extends ZendSelect
         }
 
         $fieldName = lcfirst($fieldName);
+        $columnName = $fieldName;
 
         if (isset($mapping['columns'][$fieldName])) {
             $columnName = $mapping['columns'][$fieldName];
-        } else {
-            $columnName = mb_strtolower((new CamelCaseToUnderscore())->filter($fieldName));
         }
 
         return (isset($mapping['alias']) ? $mapping['alias'] : $mapping['table']) . '.' . $columnName;

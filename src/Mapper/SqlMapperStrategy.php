@@ -4,8 +4,6 @@ namespace Boxspaced\EntityManager\Mapper;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Exception;
 use Zend\Db\Adapter\AdapterInterface as Database;
-use Zend\Filter\Word\UnderscoreToCamelCase;
-use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use DateTime;
@@ -81,9 +79,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
                 continue;
             }
 
-            $field = lcfirst((new UnderscoreToCamelCase)->filter($column));
-
-            $remapped[$field] = $value;
+            $remapped[$column] = $value;
         }
 
         return $remapped;
@@ -233,10 +229,10 @@ class SqlMapperStrategy implements MapperStrategyInterface
 
         foreach (array_keys($fields) as $field) {
 
+            $column = $field;
+
             if (isset($columns[$field])) {
                 $column = $columns[$field];
-            } else {
-                $column = mb_strtolower((new CamelCaseToUnderscore)->filter($field));
             }
 
             $value = $entity->get($field);
