@@ -2,8 +2,7 @@
 namespace Boxspaced\EntityManager\Entity;
 
 use Pimple\Container;
-use InvalidArgumentException;
-use UnexpectedValueException;
+use Boxspaced\EntityManager\Exception;
 
 class EntityFactory
 {
@@ -24,13 +23,13 @@ class EntityFactory
     /**
      * @param string $type
      * @return AbstractEntity
-     * @throws InvalidArgumentException
-     * @throws UnexpectedValueException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\UnexpectedValueException
      */
     public function create($type)
     {
         if (!class_exists($type)) {
-            throw new InvalidArgumentException("Entity class is not defined for type: {$type}");
+            throw new Exception\InvalidArgumentException("Entity class is not defined for type: {$type}");
         }
 
         $entity = new $type(
@@ -41,7 +40,7 @@ class EntityFactory
 
         if (!($entity instanceof AbstractEntity)) {
 
-            throw new UnexpectedValueException(
+            throw new Exception\UnexpectedValueException(
                 sprintf('Object is not an entity: %s', get_class($entity))
             );
         }

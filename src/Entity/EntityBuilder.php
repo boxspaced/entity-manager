@@ -1,14 +1,13 @@
 <?php
 namespace Boxspaced\EntityManager\Entity;
 
+use Zend\Config\Config;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions;
-use Zend\Config\Config;
-use InvalidArgumentException;
-use UnexpectedValueException;
+use Boxspaced\EntityManager\Exception;
 use DateTime;
 
 class EntityBuilder
@@ -65,18 +64,18 @@ class EntityBuilder
      * @param string
      * @param array $data
      * @return AbstractEntity
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     public function build($type, array $data)
     {
         if (!$data) {
-            throw new UnexpectedValueException(
+            throw new Exception\UnexpectedValueException(
                 'Data array empty, use factories to create new entities'
             );
         }
 
         if (empty($data['id'])) {
-            throw new UnexpectedValueException(
+            throw new Exception\UnexpectedValueException(
                 "No 'id' field in data, use factories to create new entities"
             );
         }
@@ -122,7 +121,7 @@ class EntityBuilder
         foreach ($entityConfig->get('fields', []) as $field => $fieldConfig) {
 
             if (!isset($fieldConfig->type)) {
-                throw new InvalidArgumentException("Type config missing for field: {$field}");
+                throw new Exception\InvalidArgumentException("Type config missing for field: {$field}");
             }
 
             if (!isset($data[$field])) {
@@ -163,12 +162,12 @@ class EntityBuilder
     /**
      * @param string $type
      * @return Config
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function getEntityConfig($type)
     {
         if (!isset($this->config->types->{$type}->entity)) {
-            throw new InvalidArgumentException("Entity config missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
         return $this->config->types->{$type}->entity;
@@ -196,7 +195,7 @@ class EntityBuilder
     /**
      * @param AbstractEntity $entity
      * @return Builder
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     protected function setEntityChildren(AbstractEntity $entity)
     {
@@ -205,7 +204,7 @@ class EntityBuilder
         foreach ($entityConfig->get('children', []) as $field => $childrenConfig) {
 
             if (!is_callable($childrenConfig->conditions)) {
-                throw new UnexpectedValueException('The children conditions must be callable');
+                throw new Exception\UnexpectedValueException('The children conditions must be callable');
             }
 
             $conditions = call_user_func($childrenConfig->conditions, $entity->get('id'));

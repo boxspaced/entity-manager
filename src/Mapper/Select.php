@@ -5,8 +5,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Config\Config;
 use Zend\Db\Sql\Select as ZendSelect;
-use UnexpectedValueException;
-use InvalidArgumentException;
+use Boxspaced\EntityManager\Exception;
 use DateTime;
 
 class Select extends ZendSelect
@@ -31,7 +30,7 @@ class Select extends ZendSelect
      * @param Config $config
      * @param string $type
      * @param Conditions $conditions
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     public function __construct(Config $config, $type, Conditions $conditions = null)
     {
@@ -40,7 +39,7 @@ class Select extends ZendSelect
         $this->conditions = $conditions;
 
         if (empty($config->types->{$type}->mapper->params->table)) {
-            throw new InvalidArgumentException("Mapper table missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
         parent::__construct($config->types->{$type}->mapper->params->table);
@@ -107,7 +106,7 @@ class Select extends ZendSelect
     /**
      * @param string $path
      * @return array
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     protected function getMappings($path)
     {
@@ -127,7 +126,7 @@ class Select extends ZendSelect
 
             if (!isset($previous['references'][$field])) {
 
-                throw new UnexpectedValueException(sprintf(
+                throw new Exception\UnexpectedValueException(sprintf(
                     'Previous mapping does not reference this part: %s in path: %s',
                     $part,
                     $path
@@ -151,18 +150,18 @@ class Select extends ZendSelect
      * @param string $field
      * @param array $previous
      * @return array
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     protected function createMapping($type, $field = null, array $previous = null)
     {
         if (!isset($this->config->types->{$type})) {
-            throw new InvalidArgumentException("Config missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Config missing for type: {$type}");
         }
 
         $config = $this->config->types->{$type};
 
         if (empty($config->mapper->params->table)) {
-            throw new InvalidArgumentException("Mapper table missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
         $mapping = [];
@@ -182,7 +181,7 @@ class Select extends ZendSelect
         if (null !== $previous && null !== $field) {
 
             if (!isset($previous['columns'][$field])) {
-                throw new UnexpectedValueException("No column provided in previous mapping for field: {$field}");
+                throw new Exception\UnexpectedValueException("No column provided in previous mapping for field: {$field}");
             }
 
             $mapping['fk'] = sprintf(

@@ -2,13 +2,13 @@
 namespace Boxspaced\EntityManager\Mapper;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Exception;
 use Zend\Db\Adapter\AdapterInterface as Database;
 use Zend\Config\Config;
 use Zend\Filter\Word\UnderscoreToCamelCase;
 use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
-use InvalidArgumentException;
 use DateTime;
 
 class SqlMapperStrategy implements MapperStrategyInterface
@@ -93,18 +93,18 @@ class SqlMapperStrategy implements MapperStrategyInterface
     /**
      * @param string $type
      * @return Config
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function getMapperConfig($type)
     {
         if (!isset($this->config->types->{$type}->mapper->params)) {
-            throw new InvalidArgumentException("Mapper config missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Mapper config missing for type: {$type}");
         }
 
         $config = $this->config->types->{$type}->mapper->params;
 
         if (empty($config->table)) {
-            throw new InvalidArgumentException("Mapper table missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
         return $config;
@@ -259,12 +259,12 @@ class SqlMapperStrategy implements MapperStrategyInterface
     /**
      * @param string $type
      * @return Config
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function getEntityConfig($type)
     {
         if (!isset($this->config->types->{$type}->entity)) {
-            throw new InvalidArgumentException("Entity config missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
         return $this->config->types->{$type}->entity;

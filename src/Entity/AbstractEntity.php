@@ -5,7 +5,7 @@ use Zend\Config\Config;
 use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\UnitOfWork;
-use InvalidArgumentException;
+use Boxspaced\EntityManager\Exception;
 use DateTime;
 
 abstract class AbstractEntity
@@ -46,7 +46,7 @@ abstract class AbstractEntity
      * @param UnitOfWork $unitOfWork
      * @param CollectionFactory $collectionFactory
      * @param Config $config
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function __construct(
         UnitOfWork $unitOfWork,
@@ -62,7 +62,7 @@ abstract class AbstractEntity
         $type = get_class($this);
 
         if (!isset($config->types->{$type}->entity)) {
-            throw new InvalidArgumentException("Entity config missing for type: {$type}");
+            throw new Exception\InvalidArgumentException("Entity config missing for type: {$type}");
         }
 
         $this->config = $config->types->{$type}->entity;
@@ -72,14 +72,14 @@ abstract class AbstractEntity
 
     /**
      * @return AbstractEntity
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function initChildren()
     {
         foreach ($this->config->get('children', []) as $field => $childrenConfig) {
 
             if (!isset($childrenConfig->type)) {
-                throw new InvalidArgumentException("Type config missing for field: {$field}");
+                throw new Exception\InvalidArgumentException("Type config missing for field: {$field}");
             }
 
             $collection = $this->collectionFactory->create($childrenConfig->type);
@@ -93,12 +93,12 @@ abstract class AbstractEntity
     /**
      * @param string $field
      * @return mixed
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function get($field)
     {
         if (!$this->has($field)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 "Entity does not have field defined: {$field}"
             );
         }
@@ -131,7 +131,7 @@ abstract class AbstractEntity
      * @param string $field
      * @param mixed $value
      * @return AbstractEntity
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function set($field, $value)
     {
@@ -173,7 +173,7 @@ abstract class AbstractEntity
         }
 
         if (null !== $value && $this->strict && !$valid) {
-            throw new InvalidArgumentException("Invalid value for field: {$field}");
+            throw new Exception\InvalidArgumentException("Invalid value for field: {$field}");
         }
 
         $this->fields[$field] = $value;
@@ -189,7 +189,7 @@ abstract class AbstractEntity
      * @param string $field
      * @param Collection $collection
      * @return AbstractEntity
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function setChildren($field, Collection $collection)
     {
@@ -197,7 +197,7 @@ abstract class AbstractEntity
 
         if ($collection->getType() !== $type) {
 
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'The collection must be of type: %s but provided: %s for field: %s',
                 $type,
                 $collection->getType(),
@@ -213,12 +213,12 @@ abstract class AbstractEntity
     /**
      * @param string $field
      * @return string
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function getFieldType($field)
     {
         if (!isset($this->config->fields->{$field}->type)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 "Field type has not been defined for field: {$field}"
             );
         }
@@ -229,12 +229,12 @@ abstract class AbstractEntity
     /**
      * @param string $field
      * @return string
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function getChildType($field)
     {
         if (!isset($this->config->children->{$field}->type)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 "Child type has not been defined for field: {$field}"
             );
         }

@@ -2,8 +2,7 @@
 namespace Boxspaced\EntityManager\Mapper;
 
 use Pimple\Container;
-use UnexpectedValueException;
-use InvalidArgumentException;
+use Boxspaced\EntityManager\Exception;
 
 class MapperFactory
 {
@@ -29,13 +28,13 @@ class MapperFactory
     /**
      * @param string $type
      * @return Mapper
-     * @throws UnexpectedValueException
-     * @throws InvalidArgumentException
+     * @throws Exception\UnexpectedValueException
+     * @throws Exception\InvalidArgumentException
      */
     public function createForType($type)
     {
         if (!isset($this->container['config']->types->{$type})) {
-            throw new InvalidArgumentException("Config not found for type: {$type}");
+            throw new Exception\InvalidArgumentException("Config not found for type: {$type}");
         }
 
         $config = $this->container['config']->types->{$type};
@@ -52,7 +51,7 @@ class MapperFactory
         if (null === $strategy) {
 
             if (null === $this->container['db']) {
-                throw new UnexpectedValueException('Defaulting to SQL mapper but no database available');
+                throw new Exception\UnexpectedValueException('Defaulting to SQL mapper but no database available');
             }
 
             $strategy = new SqlMapperStrategy(

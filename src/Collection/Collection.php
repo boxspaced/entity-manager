@@ -4,7 +4,7 @@ namespace Boxspaced\EntityManager\Collection;
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
-use InvalidArgumentException;
+use Boxspaced\EntityManager\Exception;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
@@ -308,13 +308,13 @@ class Collection implements
     /**
      * @param AbstractEntity $entity
      * @return Collection
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     protected function entityTypeCheck(AbstractEntity $entity)
     {
         if (!($entity instanceof $this->type)) {
 
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Entities passed to this collection must be of type: %s provided: %s',
                 $this->type,
                 get_class($entity)

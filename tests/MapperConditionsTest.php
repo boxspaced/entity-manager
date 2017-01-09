@@ -3,6 +3,7 @@ namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Mapper\Conditions;
 use Boxspaced\EntityManager\Mapper\Expr;
+use Boxspaced\EntityManager\Exception;
 
 class MapperConditionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,14 +17,14 @@ class MapperConditionsTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotStartNewFieldUntilLastIsCompleted()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(Exception\UnexpectedValueException::class);
 
         $this->conditions->field('test')->field('test2');
     }
 
     public function testCannotAddOperatorAndValueUnlessLastFieldIsIncomplete()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(Exception\UnexpectedValueException::class);
 
         $this->conditions->field('test')->eq('value')->eq('value');
     }
@@ -128,7 +129,7 @@ class MapperConditionsTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidOrderDirectionThrowsException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(Exception\InvalidArgumentException::class);
 
         $this->conditions->order('test', 'BAD_DIR');
     }

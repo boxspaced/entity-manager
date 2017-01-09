@@ -3,6 +3,7 @@ namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
+use Boxspaced\EntityManager\Exception;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -115,7 +116,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddWillNotAcceptWrongEntityType()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(Exception\InvalidArgumentException::class);
 
         $badEntity = $this->getMock(
             AbstractEntity::class,

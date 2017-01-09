@@ -4,6 +4,7 @@ namespace Boxspaced\EntityManager\Test;
 use Zend\Config\Config;
 use Boxspaced\EntityManager\Mapper\Select;
 use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Exception;
 
 class SelectTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,7 +24,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testIncorrectForeignFieldConditionThrowsException()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(Exception\UnexpectedValueException::class);
 
         $conditions = new Conditions();
         $conditions->field('notInMap.id')->eq(5);
@@ -33,7 +34,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testIncorrectDeepForeignFieldConditionThrowsException()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(Exception\UnexpectedValueException::class);
 
         $conditions = new Conditions();
         $conditions->field('item.notInMap.id')->eq(5);

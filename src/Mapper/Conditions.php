@@ -1,8 +1,7 @@
 <?php
 namespace Boxspaced\EntityManager\Mapper;
 
-use UnexpectedValueException;
-use InvalidArgumentException;
+use Boxspaced\EntityManager\Exception;
 
 class Conditions
 {
@@ -35,14 +34,14 @@ class Conditions
     /**
      * @param string $fieldName
      * @return Conditions
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     public function field($fieldName)
     {
         $field = end($this->fields);
 
         if ($field && !$field->isComplete()) {
-            throw new UnexpectedValueException('Last field not completed');
+            throw new Exception\UnexpectedValueException('Last field not completed');
         }
 
         $field = new Field($fieldName);
@@ -113,7 +112,7 @@ class Conditions
      * @param string $operator
      * @param mixed $value
      * @return Conditions
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     protected function addOperatorAndValueToLastField($operator, $value)
     {
@@ -122,14 +121,14 @@ class Conditions
         if ($field) {
 
             if ($field->isComplete()) {
-                throw new UnexpectedValueException('Field already completed');
+                throw new Exception\UnexpectedValueException('Field already completed');
             }
 
             $field->setOperator($operator);
             $field->setValue($value);
 
         } else {
-            throw new UnexpectedValueException('No fields found, add a field first');
+            throw new Exception\UnexpectedValueException('No fields found, add a field first');
         }
 
         return $this;
@@ -139,12 +138,12 @@ class Conditions
      * @param string $fieldName
      * @param string $direction
      * @return Conditions
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function order($fieldName, $direction)
     {
         if (!in_array($direction, [self::ORDER_ASC, self::ORDER_DESC])) {
-            throw new InvalidArgumentException('Invalid direction');
+            throw new Exception\InvalidArgumentException('Invalid direction');
         }
 
         $field = new Field($fieldName);

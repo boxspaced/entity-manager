@@ -3,6 +3,7 @@ namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\IdentityMap;
+use Boxspaced\EntityManager\Exception;
 use Zend\Config\Config;
 
 class EntityBuilderTest extends \PHPUnit_Framework_TestCase
@@ -59,7 +60,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildWillNotAcceptEmptyRow()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(Exception\UnexpectedValueException::class);
 
         $data = [];
         $this->builder->build(EntityDouble::class, $data);
@@ -67,7 +68,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildWillNotAcceptRowWithoutId()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(Exception\UnexpectedValueException::class);
 
         $data = ['title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
         $this->builder->build(EntityDouble::class, $data);

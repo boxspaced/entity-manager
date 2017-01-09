@@ -1,7 +1,7 @@
 <?php
 namespace Boxspaced\EntityManager\Mapper;
 
-use UnexpectedValueException;
+use Boxspaced\EntityManager\Exception;
 
 class Field
 {
@@ -125,12 +125,12 @@ class Field
 
     /**
      * @return array
-     * @throws UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     protected function parseForeignFieldName()
     {
         if (!$this->isForeign($this->name)) {
-            throw new UnexpectedValueException('Field is not recognised as foreign');
+            throw new Exception\UnexpectedValueException('Field is not recognised as foreign');
         }
 
         $exploded = explode(self::FOREIGN_SEPARATOR, $this->name);
