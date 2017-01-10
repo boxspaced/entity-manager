@@ -7,6 +7,7 @@ use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions;
 use Boxspaced\EntityManager\Exception;
+use Boxspaced\EntityManager\Mapper\ConditionsFactoryInterface;
 use DateTime;
 
 class EntityBuilder
@@ -202,17 +203,66 @@ class EntityBuilder
 
         foreach (isset($entityConfig['one_to_many']) ? $entityConfig['one_to_many'] : [] as $field => $oneToManyConfig) {
 
-            if (!is_callable($oneToManyConfig['conditions'])) {
-                throw new Exception\UnexpectedValueException("The 'one to many' conditions must be callable");
-            }
-
-            $conditions = call_user_func($oneToManyConfig['conditions'], $entity->get('id'));
+            $conditions = $this->getOneToManyConditions($oneToManyConfig['conditions'], $entity->get('id'));
             $oneToMany = $this->getOneToMany($oneToManyConfig['type'], $conditions);
 
             $entity->set($field, $oneToMany);
         }
 
         return $this;
+    }
+
+    /**
+     * @param mixed $conditionsConfig
+     * @param int $id
+     * @return Conditions
+     */
+    protected function getOneToManyConditions($conditionsConfig, $id)
+    {
+        if (is_callable($conditionsConfig)) {
+            return call_user_func($conditionsConfig, $id);
+        }
+
+        $conditionsFactory = $this->createConditionsFactory($conditionsConfig);
+
+        if (null !== $conditionsFactory) {
+            return call_user_func($conditionsFactory, $id);
+        }
+
+        if (is_array($conditionsConfig) && isset($conditionsConfig['factory'])) {
+
+            $conditionsFactory = $this->createConditionsFactory($conditionsConfig['factory']);
+
+            if (null !== $conditionsFactory) {
+
+                $options = isset($conditionsConfig['options']) ? $conditionsConfig['options'] : null;
+                return call_user_func($conditionsFactory, $id, $options);
+            }
+        }
+
+        throw new Exception\InvalidArgumentException(sprintf(
+            "The 'one to many' conditions must be callable, an instance of: %s "
+            . "or an array providing: 'factory' and 'options'",
+            ConditionsFactoryInterface::class
+        ));
+    }
+
+    /**
+     * @param string $conditionsFactoryClassName
+     * @return ConditionsFactoryInterface
+     */
+    protected function createConditionsFactory($conditionsFactoryClassName)
+    {
+        if (is_string($conditionsFactoryClassName) && class_exists($conditionsFactoryClassName)) {
+
+            $conditionsFactory = new $conditionsFactoryClassName();
+
+            if ($conditionsFactory instanceof ConditionsFactoryInterface) {
+                return $conditionsFactory;
+            }
+        }
+
+        return null;
     }
 
     /**
