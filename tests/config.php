@@ -176,38 +176,5 @@ return [
                 ],
             ],
         ],
-        // @todo probably don't need all the config below as mapper
-        // is specific to entity not generic (can all be in mapper)
-        /*'Customer' => [
-            'mapper' => [
-                'strategy' => function() {
-                    return new \My\Mapper\CustomerStrategy();
-                },
-                'params' => [
-                    'wsdl' => 'https://customer-service.example.com/service.asmx?wsdl',
-                    'methods' => [
-                        'find' => 'Customer_Get',
-                        'findOne' => 'Customer_Search',
-                        'findAll' => 'Customer_Search',
-                        'create' => 'Customer_UpdateCreate',
-                        'update' => 'Customer_UpdateCreate',
-                        'delete' => 'Customer_Delete',
-                    ],
-                    'params' => [
-                        'name' => 'name',
-                        'guid' => 'GUID',
-                        'status' => 'state',
-                        'address' => 'addressID', // @todo would probably have address object embedded in customer response
-                    ],
-                ],
-            ],
-            'builder' => [
-                'references' => [
-                    'address' => [
-                        'type' => 'CustomerAddress',
-                    ],
-                ],
-            ],
-        ],*/
     ],
 ];

@@ -149,17 +149,6 @@ class EntityManager
     }
 
     /**
-     * @todo do we need this anymore?
-     * @param AbstractEntity $entity
-     * @return EntityManager
-     */
-    public function dirty(AbstractEntity $entity)
-    {
-        $this->container['unitOfWork']->dirty($entity);
-        return $this;
-    }
-
-    /**
      * @param AbstractEntity $entity
      * @return EntityManager
      */
