@@ -8,6 +8,12 @@ use Boxspaced\EntityManager\Mapper\Mapper;
 class MapperDouble extends Mapper
 {
 
+    public $id;
+
+    public $type;
+
+    public $conditions;
+
     public $entities = [];
 
     public $inserted = [];
@@ -23,17 +29,32 @@ class MapperDouble extends Mapper
 
     public function find($type, $id)
     {
+        $this->id = $id;
+        $this->type = $type;
         return array_shift($this->entities);
     }
 
     public function findOne($type, Conditions $conditions = null)
     {
+        $this->type = $type;
+        $this->conditions = $conditions;
         return array_shift($this->entities);
     }
 
     public function findAll($type, Conditions $conditions = null)
     {
-        return $this->entities;
+        $this->type = $type;
+        $this->conditions = $conditions;
+
+        $collection = new CollectionDouble(
+            new UnitOfWorkDouble(),
+            new EntityBuilderDouble(),
+            $type
+        );
+
+        $collection->setElements($this->entities);
+
+        return $collection;
     }
 
     public function insert(AbstractEntity $entity)

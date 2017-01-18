@@ -8,9 +8,9 @@ class EntityDouble extends AbstractEntity
 
     private static $counter = 0;
 
-    public function __construct()
+    public function __construct(array $config = null)
     {
-        $this->config = [
+        $this->config = $config ?: [
             'fields' => [
                 'id' => [
                     'type' => static::TYPE_INT,

@@ -6,14 +6,16 @@ use Boxspaced\EntityManager\Entity\EntityFactory;
 class EntityFactoryDouble extends EntityFactory
 {
 
-    public function __construct()
-    {
+    public $config;
 
+    public function __construct(array $config)
+    {
+        $this->config = $config;
     }
 
     public function create($type)
     {
-        return new EntityDouble();
+        return new $type($this->config['types'][$type]['entity']);
     }
 
 }

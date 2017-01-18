@@ -13,6 +13,10 @@ class MapperFactoryDouble extends MapperFactory
 
     }
 
+    /**
+     * @param string $type
+     * @return MapperDouble
+     */
     public function createForType($type)
     {
         if (null === $this->mapper) {
