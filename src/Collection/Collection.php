@@ -264,6 +264,17 @@ class Collection implements
     }
 
     /**
+     * @param callable $callback
+     * @return Collection
+     */
+    public function sort(callable $callback)
+    {
+        $this->loadAllRows();
+        usort($this->elements, $callback);
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getKeys()

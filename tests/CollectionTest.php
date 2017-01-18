@@ -278,4 +278,14 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([1, 5], $actual);
     }
 
+    public function testSortingReturnsCorrectEntities()
+    {
+        $this->collection->sort(function(EntityDouble $a, EntityDouble $b) {
+            return strnatcmp($a->getFname(), $b->getFname());
+        });
+
+        $this->assertEquals('Betty', $this->collection->first()->getFname());
+        $this->assertEquals('Tom', $this->collection->last()->getFname());
+    }
+
 }
