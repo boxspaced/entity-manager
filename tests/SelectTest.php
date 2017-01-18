@@ -14,10 +14,6 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->config = [
-            'db' => [
-                'driver' => 'Pdo_Sqlite',
-                'database' => __DIR__ . '/../data/sqlite/em.db',
-            ],
             'types' => [
                 'Item' => [
                     'mapper' => [
