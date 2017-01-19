@@ -18,11 +18,25 @@ class MapperFactory
     protected $instances = [];
 
     /**
+     * @var MapperStrategyInterface[]
+     */
+    protected $strategies = [];
+
+    /**
      * @param Container $container
      */
     public function __construct(Container $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * @param MapperStrategyInterface $mapperStrategy
+     */
+    public function addMapperStrategy(MapperStrategyInterface $mapperStrategy)
+    {
+        $this->strategies[get_class($mapperStrategy)] = $mapperStrategy;
+        return $this;
     }
 
     /**
@@ -39,16 +53,20 @@ class MapperFactory
 
         $config = $this->container['config']['types'][$type];
 
-        $strategy = null;
+        if (isset($config['mapper']['strategy'])) {
 
-        if (
-            isset($config['mapper']['strategy'])
-            && is_callable($config['mapper']['strategy'])
-        ) {
-            $strategy = call_user_func($config['mapper']['strategy']);
+            if (!isset($this->strategies[$config['mapper']['strategy']])) {
+
+                throw new Exception\InvalidArgumentException(sprintf(
+                    'Mapper strategy not found: %s',
+                    $config['mapper']['strategy'])
+                );
+            }
+
+            $strategy = $this->strategies[$config['mapper']['strategy']];
         }
 
-        if (null === $strategy) {
+        if (!isset($strategy)) {
 
             if (null === $this->container['db']) {
                 throw new Exception\UnexpectedValueException('Defaulting to SQL mapper but no database available');

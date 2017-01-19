@@ -2,7 +2,7 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Mapper\Select;
-use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\Exception;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 
@@ -168,9 +168,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    protected function getSqlFromConditions(Conditions $conditions)
+    protected function getSqlFromQuery(Query $query)
     {
-        $select = new Select($this->config, 'Item', $conditions);
+        $select = new Select($this->config, 'Item', $query);
         return @$select->getSqlString();
     }
 
@@ -178,28 +178,28 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(Exception\UnexpectedValueException::class);
 
-        $conditions = new Conditions();
-        $conditions->field('notInMap.id')->eq(5);
+        $query = new Query();
+        $query->field('notInMap.id')->eq(5);
 
-        $this->getSqlFromConditions($conditions);
+        $this->getSqlFromQuery($query);
     }
 
     public function testIncorrectDeepForeignFieldConditionThrowsException()
     {
         $this->setExpectedException(Exception\UnexpectedValueException::class);
 
-        $conditions = new Conditions();
-        $conditions->field('item.notInMap.id')->eq(5);
+        $query = new Query();
+        $query->field('item.notInMap.id')->eq(5);
 
-        $this->getSqlFromConditions($conditions);
+        $this->getSqlFromQuery($query);
     }
 
     public function testApplySingleFieldCondition()
     {
-        $conditions = new Conditions();
-        $conditions->field('name')->eq('test-page');
+        $query = new Query();
+        $query->field('name')->eq('test-page');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" WHERE item.name = \'test-page\'';
         $this->assertEquals($expected, $sql);
@@ -207,11 +207,11 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplyForeignFieldConditionDirectlyToForiegnKeyColumn()
     {
-        $conditions = new Conditions();
-        $conditions->field('author')->isNull();
-        $conditions->field('author')->eq(8);
+        $query = new Query();
+        $query->field('author')->isNull();
+        $query->field('author')->eq(8);
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" WHERE item.author_id IS NULL AND item.author_id = \'8\'';
         $this->assertEquals($expected, $sql);
@@ -219,11 +219,11 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplyDeepForeignFieldConditionDirectlyToForiegnKeyColumn()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.type')->isNull();
-        $conditions->field('status.type')->eq(8);
+        $query = new Query();
+        $query->field('author.type')->isNull();
+        $query->field('status.type')->eq(8);
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -232,13 +232,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleFieldConditions()
+    public function testApplyMultipleFieldQuery()
     {
-        $conditions = new Conditions();
-        $conditions->field('name')->eq('test-page');
-        $conditions->field('archived')->eq('1');
+        $query = new Query();
+        $query->field('name')->eq('test-page');
+        $query->field('archived')->eq('1');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" WHERE item.name = \'test-page\' AND item.archived = \'1\'';
         $this->assertEquals($expected, $sql);
@@ -246,11 +246,11 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplyMultipleUnmappedCamelCasedFieldNames()
     {
-        $conditions = new Conditions();
-        $conditions->field('nameCamelCase')->eq('test-page');
-        $conditions->field('archivedCamelCase')->eq('1');
+        $query = new Query();
+        $query->field('nameCamelCase')->eq('test-page');
+        $query->field('archivedCamelCase')->eq('1');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" WHERE item.nameCamelCase = \'test-page\' AND item.archivedCamelCase = \'1\'';
         $this->assertEquals($expected, $sql);
@@ -258,10 +258,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplySingleForeignFieldCondition()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.username')->eq('jbloggs');
+        $query = new Query();
+        $query->field('author.username')->eq('jbloggs');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -269,13 +269,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleForeignFieldConditions()
+    public function testApplyMultipleForeignFieldQuery()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.username')->eq('jbloggs');
-        $conditions->field('status.name')->eq('published');
+        $query = new Query();
+        $query->field('author.username')->eq('jbloggs');
+        $query->field('status.name')->eq('published');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -286,10 +286,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplySingleDeepForeignFieldCondition()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.type.name')->eq('admin');
+        $query = new Query();
+        $query->field('author.type.name')->eq('admin');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -298,13 +298,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleDeepForeignFieldConditions()
+    public function testApplyMultipleDeepForeignFieldQuery()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.type.active')->eq('1');
-        $conditions->field('status.type.name')->eq('global');
+        $query = new Query();
+        $query->field('author.type.active')->eq('1');
+        $query->field('status.type.name')->eq('global');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -317,22 +317,22 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplySingleOrderCondition()
     {
-        $conditions = new Conditions();
-        $conditions->order('name', 'ASC');
+        $query = new Query();
+        $query->order('name', 'ASC');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" ORDER BY "item"."name" ASC';
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleOrderConditions()
+    public function testApplyMultipleOrderQuery()
     {
-        $conditions = new Conditions();
-        $conditions->order('name', 'ASC');
-        $conditions->order('date', 'DESC');
+        $query = new Query();
+        $query->order('name', 'ASC');
+        $query->order('date', 'DESC');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" ORDER BY "item"."name" ASC, "item"."date" DESC';
         $this->assertEquals($expected, $sql);
@@ -340,10 +340,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplySingleForeignOrderCondition()
     {
-        $conditions = new Conditions();
-        $conditions->order('author.username', 'ASC');
+        $query = new Query();
+        $query->order('author.username', 'ASC');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -351,13 +351,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleForeignOrderConditions()
+    public function testApplyMultipleForeignOrderQuery()
     {
-        $conditions = new Conditions();
-        $conditions->order('author.username', 'ASC');
-        $conditions->order('status.name', 'DESC');
+        $query = new Query();
+        $query->order('author.username', 'ASC');
+        $query->order('status.name', 'DESC');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -368,10 +368,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplyPagingCondition()
     {
-        $conditions = new Conditions();
-        $conditions->paging(10, 10);
+        $query = new Query();
+        $query->paging(10, 10);
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" LIMIT \'10\' OFFSET \'10\'';
         $this->assertEquals($expected, $sql);
@@ -379,24 +379,24 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplyMappedColumnCondtions()
     {
-        $conditions = new Conditions();
-        $conditions->field('desc')->eq('testing');
-        $conditions->field('longDesc')->eq('testing testing');
+        $query = new Query();
+        $query->field('desc')->eq('testing');
+        $query->field('longDesc')->eq('testing testing');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" WHERE '
                   . 'item.description = \'testing\' AND item.long_description = \'testing testing\'';
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyForeignFieldMappedColumnConditions()
+    public function testApplyForeignFieldMappedColumnQuery()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.desc')->eq('testing');
-        $conditions->field('status.longDesc')->eq('testing testing');
+        $query = new Query();
+        $query->field('author.desc')->eq('testing');
+        $query->field('status.longDesc')->eq('testing testing');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -406,13 +406,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyDeepForeignFieldMappedColumnConditions()
+    public function testApplyDeepForeignFieldMappedColumnQuery()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.type.desc')->eq('testing');
-        $conditions->field('status.type.longDesc')->eq('testing testing');
+        $query = new Query();
+        $query->field('author.type.desc')->eq('testing');
+        $query->field('status.type.longDesc')->eq('testing testing');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -424,13 +424,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyForeignFieldMappedColumnOrderConditions()
+    public function testApplyForeignFieldMappedColumnOrderQuery()
     {
-        $conditions = new Conditions();
-        $conditions->order('author.desc', 'ASC');
-        $conditions->order('status.longDesc', 'DESC');
+        $query = new Query();
+        $query->order('author.desc', 'ASC');
+        $query->order('status.longDesc', 'DESC');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -439,13 +439,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleForeignFieldConditionsOfSameType()
+    public function testApplyMultipleForeignFieldQueryOfSameType()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.username')->eq('jbloggs');
-        $conditions->field('publisher.username')->eq('jbloggs');
+        $query = new Query();
+        $query->field('author.username')->eq('jbloggs');
+        $query->field('publisher.username')->eq('jbloggs');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -454,13 +454,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyMultipleDeepForeignFieldConditionsOfSameType()
+    public function testApplyMultipleDeepForeignFieldQueryOfSameType()
     {
-        $conditions = new Conditions();
-        $conditions->field('author.type.active')->eq('1');
-        $conditions->field('publisher.type.active')->eq('1');
+        $query = new Query();
+        $query->field('author.type.active')->eq('1');
+        $query->field('publisher.type.active')->eq('1');
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '
@@ -473,51 +473,51 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     public function testApplySingleForeignFieldConditionReferencingSameTypeAsSelf()
     {
-        $conditions = new Conditions();
-        $conditions->field('versionOf')->eq(4);
+        $query = new Query();
+        $query->field('versionOf')->eq(4);
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" WHERE item.version_of_id = \'4\'';
         $this->assertEquals($expected, $sql);
     }
 
-    public function testApplyAllConditions()
+    public function testApplyAllQuery()
     {
-        $conditions = new Conditions();
-        $conditions->field('field1')->eq('value1');
-        $conditions->field('field2')->notEq('value2');
-        $conditions->field('field3')->isNull();
-        $conditions->field('field4')->isNotNull();
-        $conditions->field('field5')->gt(5);
-        $conditions->field('field6')->lt(6);
-        $conditions->field('author.username')->eq('jbloggs');
-        $conditions->field('status.name')->eq('published');
-        $conditions->field('author.type.active')->eq('1');
-        $conditions->field('status.type.name')->eq('global');
-        $conditions->field('desc')->eq('testing');
-        $conditions->field('longDesc')->eq('testing testing');
-        $conditions->field('unmappedCamelCase')->eq('testing');
-        $conditions->field('author.desc')->eq('testing');
-        $conditions->field('status.longDesc')->eq('testing testing');
-        $conditions->field('author.type.desc')->eq('testing');
-        $conditions->field('status.type.longDesc')->eq('testing testing');
-        $conditions->field('author')->isNull();
-        $conditions->field('status.Type')->eq(8);
-        $conditions->field('publisher.username')->eq('jbloggs');
-        $conditions->field('publisher.type.active')->eq('1');
-        $conditions->order('name', 'ASC');
-        $conditions->order('date', 'DESC');
-        $conditions->order('author.username', 'ASC');
-        $conditions->order('status.name', 'DESC');
-        $conditions->order('author.desc', 'ASC');
-        $conditions->order('status.longDesc', 'DESC');
-        $conditions->order('author', 'ASC');
-        $conditions->order('status.type', 'DESC');
-        $conditions->order('publisher.username', 'ASC');
-        $conditions->paging(84, 12);
+        $query = new Query();
+        $query->field('field1')->eq('value1');
+        $query->field('field2')->notEq('value2');
+        $query->field('field3')->isNull();
+        $query->field('field4')->isNotNull();
+        $query->field('field5')->gt(5);
+        $query->field('field6')->lt(6);
+        $query->field('author.username')->eq('jbloggs');
+        $query->field('status.name')->eq('published');
+        $query->field('author.type.active')->eq('1');
+        $query->field('status.type.name')->eq('global');
+        $query->field('desc')->eq('testing');
+        $query->field('longDesc')->eq('testing testing');
+        $query->field('unmappedCamelCase')->eq('testing');
+        $query->field('author.desc')->eq('testing');
+        $query->field('status.longDesc')->eq('testing testing');
+        $query->field('author.type.desc')->eq('testing');
+        $query->field('status.type.longDesc')->eq('testing testing');
+        $query->field('author')->isNull();
+        $query->field('status.Type')->eq(8);
+        $query->field('publisher.username')->eq('jbloggs');
+        $query->field('publisher.type.active')->eq('1');
+        $query->order('name', 'ASC');
+        $query->order('date', 'DESC');
+        $query->order('author.username', 'ASC');
+        $query->order('status.name', 'DESC');
+        $query->order('author.desc', 'ASC');
+        $query->order('status.longDesc', 'DESC');
+        $query->order('author', 'ASC');
+        $query->order('status.type', 'DESC');
+        $query->order('publisher.username', 'ASC');
+        $query->paging(84, 12);
 
-        $sql = $this->getSqlFromConditions($conditions);
+        $sql = $this->getSqlFromQuery($query);
 
         $expected = 'SELECT "item".* FROM "item" '
                   . 'INNER JOIN "user" AS "author" ON "item"."author_id" = "author"."u_id" '

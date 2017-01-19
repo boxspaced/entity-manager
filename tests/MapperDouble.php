@@ -2,7 +2,7 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
-use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\Mapper\Mapper;
 
 class MapperDouble extends Mapper
@@ -12,7 +12,7 @@ class MapperDouble extends Mapper
 
     public $type;
 
-    public $conditions;
+    public $query;
 
     public $entities = [];
 
@@ -34,17 +34,17 @@ class MapperDouble extends Mapper
         return array_shift($this->entities);
     }
 
-    public function findOne($type, Conditions $conditions = null)
+    public function findOne($type, Query $query = null)
     {
         $this->type = $type;
-        $this->conditions = $conditions;
+        $this->query = $query;
         return array_shift($this->entities);
     }
 
-    public function findAll($type, Conditions $conditions = null)
+    public function findAll($type, Query $query = null)
     {
         $this->type = $type;
-        $this->conditions = $conditions;
+        $this->query = $query;
 
         $collection = new CollectionDouble(
             new UnitOfWorkDouble(),

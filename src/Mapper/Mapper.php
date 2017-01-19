@@ -73,12 +73,12 @@ class Mapper
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @return AbstractEntity
      */
-    public function findOne($type, Conditions $conditions = null)
+    public function findOne($type, Query $query = null)
     {
-        $data = $this->strategy->findOne($type, $conditions);
+        $data = $this->strategy->findOne($type, $query);
 
         if (!$data) {
             return null;
@@ -89,13 +89,13 @@ class Mapper
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @return Collection
      */
-    public function findAll($type, Conditions $conditions = null)
+    public function findAll($type, Query $query = null)
     {
-        $dataset = function() use ($type, $conditions) {
-            return $this->strategy->findAll($type, $conditions);
+        $dataset = function() use ($type, $query) {
+            return $this->strategy->findAll($type, $query);
         };
         $dataset->bindTo($this);
 

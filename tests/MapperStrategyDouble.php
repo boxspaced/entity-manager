@@ -2,7 +2,7 @@
 namespace Boxspaced\EntityManager\Test;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
-use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\Mapper\MapperStrategyInterface;
 
 class MapperStrategyDouble implements MapperStrategyInterface
@@ -15,12 +15,12 @@ class MapperStrategyDouble implements MapperStrategyInterface
         return array_shift($this->data);
     }
 
-    public function findOne($type, Conditions $conditions = null)
+    public function findOne($type, Query $query = null)
     {
         return array_shift($this->data);
     }
 
-    public function findAll($type, Conditions $conditions = null)
+    public function findAll($type, Query $query = null)
     {
         return $this->data;
     }

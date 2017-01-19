@@ -4,7 +4,7 @@ namespace Boxspaced\EntityManager\Test;
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\Exception;
-use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 
 class EntityBuilderTest extends \PHPUnit_Framework_TestCase
@@ -22,6 +22,9 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
         $this->config = [
             'types' => [
                 EntityDouble::class => [
+                    'mapper' => [
+                        'strategy' => MapperStrategyDouble::class
+                    ],
                     'entity' => [
                         'fields' => [
                             'id' => [
@@ -110,18 +113,18 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
         $this->createBuilder()->build(EntityDouble::class, $data);
     }
 
-    public function testBuildCreatesCorrectConditionsForOneToMany()
+    public function testBuildCreatesCorrectQueryForOneToMany()
     {
         $id = 33;
 
         $data = ['id' => $id, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
         $this->createBuilder()->build(EntityDouble::class, $data);
 
-        $conditions = $this->mapperFactory->mapper->conditions;
+        $query = $this->mapperFactory->mapper->query;
 
-        $this->assertInstanceOf(Conditions::class, $conditions);
+        $this->assertInstanceOf(Query::class, $query);
 
-        $field = $conditions->getFields()[0];
+        $field = $query->getFields()[0];
 
         $this->assertEquals('parent.id', $field->getName());
         $this->assertEquals('=', $field->getOperator());

@@ -20,21 +20,21 @@ class Select extends ZendSelect
     protected $type;
 
     /**
-     * @var Conditions
+     * @var Query
      */
-    protected $conditions;
+    protected $query;
 
     /**
      * @param array $config
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @throws Exception\UnexpectedValueException
      */
-    public function __construct(array $config, $type, Conditions $conditions = null)
+    public function __construct(array $config, $type, Query $query = null)
     {
         $this->config = $config;
         $this->type = $type;
-        $this->conditions = $conditions;
+        $this->query = $query;
 
         if (empty($config['types'][$type]['mapper']['params']['table'])) {
             throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
@@ -50,7 +50,7 @@ class Select extends ZendSelect
      */
     protected function build()
     {
-        if (null !== $this->conditions) {
+        if (null !== $this->query) {
 
             $this->buildJoins();
             $this->buildWhere();
@@ -66,9 +66,9 @@ class Select extends ZendSelect
      */
     protected function buildJoins()
     {
-        $fields = $this->conditions->getFields();
+        $fields = $this->query->getFields();
 
-        foreach ($this->conditions->getOrder() as $order) {
+        foreach ($this->query->getOrder() as $order) {
             $fields[] = $order->getField();
         }
 
@@ -199,7 +199,7 @@ class Select extends ZendSelect
      */
     protected function buildWhere()
     {
-        foreach ($this->conditions->getFields() as $field) {
+        foreach ($this->query->getFields() as $field) {
 
             $value = $field->getValue();
 
@@ -226,11 +226,11 @@ class Select extends ZendSelect
      */
     protected function buildOrderBy()
     {
-        if ($this->conditions->getOrder()) {
+        if ($this->query->getOrder()) {
 
             $orderBy = [];
 
-            foreach ($this->conditions->getOrder() as $order) {
+            foreach ($this->query->getOrder() as $order) {
 
                 $field = $order->getField();
                 $column = $this->getColumnName($field);
@@ -249,10 +249,10 @@ class Select extends ZendSelect
      */
     protected function buildLimit()
     {
-        if ($this->conditions->getPaging()) {
+        if ($this->query->getPaging()) {
 
-            $this->limit($this->conditions->getPaging()->getShowPerPage());
-            $this->offset($this->conditions->getPaging()->getOffset());
+            $this->limit($this->query->getPaging()->getShowPerPage());
+            $this->offset($this->query->getPaging()->getOffset());
         }
 
         return $this;

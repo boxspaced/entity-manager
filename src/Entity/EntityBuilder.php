@@ -5,7 +5,7 @@ use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Collection\Collection;
-use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\Exception;
 use DateTime;
 
@@ -202,8 +202,8 @@ class EntityBuilder
 
         foreach (isset($entityConfig['one_to_many']) ? $entityConfig['one_to_many'] : [] as $field => $oneToManyConfig) {
 
-            $conditions = $this->getOneToManyConditions($entity, $oneToManyConfig['type']);
-            $oneToMany = $this->getOneToMany($oneToManyConfig['type'], $conditions);
+            $query = $this->getOneToManyQuery($entity, $oneToManyConfig['type']);
+            $oneToMany = $this->getOneToMany($oneToManyConfig['type'], $query);
 
             $entity->set($field, $oneToMany);
         }
@@ -214,39 +214,73 @@ class EntityBuilder
     /**
      * @param AbstractEntity $entity
      * @param string $type
-     * @return Conditions
+     * @return Query
      */
-    protected function getOneToManyConditions(AbstractEntity $entity, $type)
+    protected function getOneToManyQuery(AbstractEntity $entity, $type)
     {
-        $manyConfig = $this->getEntityConfig($type);
+        $field = $this->findEntityFieldByFieldType($type, get_class($entity));
 
-        foreach ($manyConfig['fields'] as $field => $fieldConfig) {
-
-            if ($fieldConfig['type'] === get_class($entity)) {
-                $queryField = $field;
-            }
-        }
-
-        if (!isset($queryField)) {
+        if (null === $field) {
 
             throw new Exception\InvalidArgumentException(sprintf(
-                "The 'one to many' conditions for: %s require a 'many to one' field set on: %s",
+                "The 'one to many' query for: %s requires a 'many to one' field set on: %s",
                 get_class($entity),
                 $type
             ));
         }
 
-        return (new Conditions())->field(sprintf('%s.id', $queryField))->eq($entity->get('id'));
+        $queryField = sprintf('%s.id', $field);
+
+        $manyMapperConfig = $this->getMapperConfig($type);
+
+        if (isset($manyMapperConfig['params']['columns'][$field])) {
+            $queryField = $manyMapperConfig['params']['columns'][$field];
+        }
+
+        return (new Query())->field($queryField)->eq($entity->get('id'));
+    }
+
+    /**
+     * @param string $entityType
+     * @param string $fieldType
+     * @return string|null
+     */
+    protected function findEntityFieldByFieldType($entityType, $fieldType)
+    {
+        $entityConfig = $this->getEntityConfig($entityType);
+
+        foreach ($entityConfig['fields'] as $field => $fieldConfig) {
+
+            if ($fieldConfig['type'] === $fieldType) {
+                return $field;
+            }
+        }
+
+        return null;
     }
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @return array
+     * @throws Exception\InvalidArgumentException
+     */
+    protected function getMapperConfig($type)
+    {
+        if (!isset($this->config['types'][$type]['mapper'])) {
+            throw new Exception\InvalidArgumentException("Mapper config missing for type: {$type}");
+        }
+
+        return $this->config['types'][$type]['mapper'];
+    }
+
+    /**
+     * @param string $type
+     * @param Query $query
      * @return Collection
      */
-    protected function getOneToMany($type, Conditions $conditions = null)
+    protected function getOneToMany($type, Query $query = null)
     {
-        return $this->mapperFactory->createForType($type)->findAll($type, $conditions);
+        return $this->mapperFactory->createForType($type)->findAll($type, $query);
     }
 
 }

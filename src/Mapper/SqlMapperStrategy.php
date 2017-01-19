@@ -44,9 +44,9 @@ class SqlMapperStrategy implements MapperStrategyInterface
      */
     public function find($type, $id)
     {
-        $conditions = (new Conditions())->field('id')->eq($id);
+        $query = (new Query())->field('id')->eq($id);
 
-        $select = new Select($this->config, $type, $conditions);
+        $select = new Select($this->config, $type, $query);
         $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $row = $stmt->execute()->current();
@@ -107,12 +107,12 @@ class SqlMapperStrategy implements MapperStrategyInterface
 
     /**
      * @param string
-     * @param Conditions $conditions
+     * @param Query $query
      * @return array
      */
-    public function findOne($type, Conditions $conditions = null)
+    public function findOne($type, Query $query = null)
     {
-        $select = new Select($this->config, $type, $conditions);
+        $select = new Select($this->config, $type, $query);
         $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $row = $stmt->execute()->current();
@@ -126,12 +126,12 @@ class SqlMapperStrategy implements MapperStrategyInterface
 
     /**
      * @param string
-     * @param Conditions $conditions
+     * @param Query $query
      * @return array
      */
-    public function findAll($type, Conditions $conditions = null)
+    public function findAll($type, Query $query = null)
     {
-        $select = new Select($this->config, $type, $conditions);
+        $select = new Select($this->config, $type, $query);
         $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $rows = [];

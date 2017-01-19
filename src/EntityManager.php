@@ -5,13 +5,14 @@ use Pimple\Container;
 use Zend\Db\Adapter\Adapter as Database;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Collection\Collection;
-use Boxspaced\EntityManager\Mapper\Conditions;
+use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Entity\EntityFactory;
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
+use Boxspaced\EntityManager\Mapper\MapperStrategyInterface;
 
 class EntityManager
 {
@@ -81,6 +82,14 @@ class EntityManager
     }
 
     /**
+     * @param MapperStrategyInterface $mapperStrategy
+     */
+    public function addMapperStrategy(MapperStrategyInterface $mapperStrategy)
+    {
+        $this->container['mapperFactory']->addMapperStrategy($mapperStrategy);
+    }
+
+    /**
      * @return Database
      */
     public function getDb()
@@ -98,11 +107,11 @@ class EntityManager
     }
 
     /**
-     * @return Conditions
+     * @return Query
      */
-    public function createConditions()
+    public function createQuery()
     {
-        return new Conditions();
+        return new Query();
     }
 
     /**
@@ -118,24 +127,24 @@ class EntityManager
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @return AbstractEntity
      */
-    public function findOne($type, Conditions $conditions = null)
+    public function findOne($type, Query $query = null)
     {
         $mapper = $this->container['mapperFactory']->createForType($type);
-        return $mapper->findOne($type, $conditions);
+        return $mapper->findOne($type, $query);
     }
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @return Collection
      */
-    public function findAll($type, Conditions $conditions = null)
+    public function findAll($type, Query $query = null)
     {
         $mapper = $this->container['mapperFactory']->createForType($type);
-        return $mapper->findAll($type, $conditions);
+        return $mapper->findAll($type, $query);
     }
 
     /**

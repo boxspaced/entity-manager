@@ -3,7 +3,7 @@ namespace Boxspaced\EntityManager\Mapper;
 
 use Boxspaced\EntityManager\Exception;
 
-class Conditions
+class Query
 {
 
     const OPERATOR_EQUALS = '=';
@@ -33,7 +33,7 @@ class Conditions
 
     /**
      * @param string $fieldName
-     * @return Conditions
+     * @return Query
      * @throws Exception\UnexpectedValueException
      */
     public function field($fieldName)
@@ -52,7 +52,7 @@ class Conditions
 
     /**
      * @param mixed $value
-     * @return Conditions
+     * @return Query
      */
     public function eq($value)
     {
@@ -62,7 +62,7 @@ class Conditions
 
     /**
      * @param mixed $value
-     * @return Conditions
+     * @return Query
      */
     public function notEq($value)
     {
@@ -71,7 +71,7 @@ class Conditions
     }
 
     /**
-     * @return Conditions
+     * @return Query
      */
     public function isNull()
     {
@@ -80,7 +80,7 @@ class Conditions
     }
 
     /**
-     * @return Conditions
+     * @return Query
      */
     public function isNotNull()
     {
@@ -90,7 +90,7 @@ class Conditions
 
     /**
      * @param mixed $value
-     * @return Conditions
+     * @return Query
      */
     public function gt($value)
     {
@@ -100,7 +100,7 @@ class Conditions
 
     /**
      * @param mixed $value
-     * @return Conditions
+     * @return Query
      */
     public function lt($value)
     {
@@ -111,7 +111,7 @@ class Conditions
     /**
      * @param string $operator
      * @param mixed $value
-     * @return Conditions
+     * @return Query
      * @throws Exception\UnexpectedValueException
      */
     protected function addOperatorAndValueToLastField($operator, $value)
@@ -137,7 +137,7 @@ class Conditions
     /**
      * @param string $fieldName
      * @param string $direction
-     * @return Conditions
+     * @return Query
      * @throws Exception\InvalidArgumentException
      */
     public function order($fieldName, $direction)
@@ -155,7 +155,7 @@ class Conditions
     /**
      * @param int $offset
      * @param int $showPerPage
-     * @return Conditions
+     * @return Query
      */
     public function paging($offset, $showPerPage)
     {

@@ -15,17 +15,17 @@ interface MapperStrategyInterface
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @return array
      */
-    public function findOne($type, Conditions $conditions = null);
+    public function findOne($type, Query $query = null);
 
     /**
      * @param string $type
-     * @param Conditions $conditions
+     * @param Query $query
      * @return array
      */
-    public function findAll($type, Conditions $conditions = null);
+    public function findAll($type, Query $query = null);
 
     /**
      * @param AbstractEntity $entity
