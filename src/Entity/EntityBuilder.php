@@ -7,7 +7,6 @@ use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Conditions;
 use Boxspaced\EntityManager\Exception;
-use Boxspaced\EntityManager\Mapper\ConditionsFactoryInterface;
 use DateTime;
 
 class EntityBuilder
@@ -203,7 +202,7 @@ class EntityBuilder
 
         foreach (isset($entityConfig['one_to_many']) ? $entityConfig['one_to_many'] : [] as $field => $oneToManyConfig) {
 
-            $conditions = $this->getOneToManyConditions($oneToManyConfig['conditions'], $entity->get('id'));
+            $conditions = $this->getOneToManyConditions($entity, $oneToManyConfig['type']);
             $oneToMany = $this->getOneToMany($oneToManyConfig['type'], $conditions);
 
             $entity->set($field, $oneToMany);
@@ -213,56 +212,31 @@ class EntityBuilder
     }
 
     /**
-     * @param mixed $conditionsConfig
-     * @param int $id
+     * @param AbstractEntity $entity
+     * @param string $type
      * @return Conditions
      */
-    protected function getOneToManyConditions($conditionsConfig, $id)
+    protected function getOneToManyConditions(AbstractEntity $entity, $type)
     {
-        if (is_callable($conditionsConfig)) {
-            return call_user_func($conditionsConfig, $id);
-        }
+        $manyConfig = $this->getEntityConfig($type);
 
-        $conditionsFactory = $this->createConditionsFactory($conditionsConfig);
+        foreach ($manyConfig['fields'] as $field => $fieldConfig) {
 
-        if (null !== $conditionsFactory) {
-            return call_user_func($conditionsFactory, $id);
-        }
-
-        if (is_array($conditionsConfig) && isset($conditionsConfig['factory'])) {
-
-            $conditionsFactory = $this->createConditionsFactory($conditionsConfig['factory']);
-
-            if (null !== $conditionsFactory) {
-
-                $options = isset($conditionsConfig['options']) ? $conditionsConfig['options'] : null;
-                return call_user_func($conditionsFactory, $id, $options);
+            if ($fieldConfig['type'] === get_class($entity)) {
+                $queryField = $field;
             }
         }
 
-        throw new Exception\InvalidArgumentException(sprintf(
-            "The 'one to many' conditions must be callable, an instance of: %s "
-            . "or an array providing: 'factory' and 'options'",
-            ConditionsFactoryInterface::class
-        ));
-    }
+        if (!isset($queryField)) {
 
-    /**
-     * @param string $conditionsFactoryClassName
-     * @return ConditionsFactoryInterface
-     */
-    protected function createConditionsFactory($conditionsFactoryClassName)
-    {
-        if (is_string($conditionsFactoryClassName) && class_exists($conditionsFactoryClassName)) {
-
-            $conditionsFactory = new $conditionsFactoryClassName();
-
-            if ($conditionsFactory instanceof ConditionsFactoryInterface) {
-                return $conditionsFactory;
-            }
+            throw new Exception\InvalidArgumentException(sprintf(
+                "The 'one to many' conditions for: %s require a 'many to one' field set on: %s",
+                get_class($entity),
+                $type
+            ));
         }
 
-        return null;
+        return (new Conditions())->field(sprintf('%s.id', $queryField))->eq($entity->get('id'));
     }
 
     /**

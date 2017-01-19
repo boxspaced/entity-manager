@@ -36,6 +36,14 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
                             'lname' => [
                                 'type' => AbstractEntity::TYPE_STRING,
                             ],
+                            'parent' => [
+                                'type' => EntityDouble::class,
+                            ],
+                        ],
+                        'one_to_many' => [
+                            'children' => [
+                                'type' => EntityDouble::class,
+                            ],
                         ],
                     ],
                 ],
@@ -102,35 +110,22 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
         $this->createBuilder()->build(EntityDouble::class, $data);
     }
 
-    public function testBuildUsesConditionsInvokableFactoryForOneToMany()
+    public function testBuildCreatesCorrectConditionsForOneToMany()
     {
-        $this->config['types'][EntityDouble::class]['entity']['one_to_many']['children'] = [
-            'type' => EntityDouble::class,
-            'conditions' => [
-                'factory' => ConditionsFactoryDouble::class,
-                'options' => [],
-            ],
-        ];
+        $id = 33;
 
-        $data = ['id' => 33, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
+        $data = ['id' => $id, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
         $this->createBuilder()->build(EntityDouble::class, $data);
 
-        $this->assertInstanceOf(Conditions::class, $this->mapperFactory->mapper->conditions);
-    }
+        $conditions = $this->mapperFactory->mapper->conditions;
 
-    public function testBuildUsesConditionsClosureFactoryForOneToMany()
-    {
-        $this->config['types'][EntityDouble::class]['entity']['one_to_many']['children'] = [
-            'type' => EntityDouble::class,
-            'conditions' => function($id) {
-                return new Conditions();
-            },
-        ];
+        $this->assertInstanceOf(Conditions::class, $conditions);
 
-        $data = ['id' => 33, 'title' => 'Ms', 'fname' => 'Jenny', 'lname' => 'Gumpert'];
-        $this->createBuilder()->build(EntityDouble::class, $data);
+        $field = $conditions->getFields()[0];
 
-        $this->assertInstanceOf(Conditions::class, $this->mapperFactory->mapper->conditions);
+        $this->assertEquals('parent.id', $field->getName());
+        $this->assertEquals('=', $field->getOperator());
+        $this->assertEquals($id, $field->getValue());
     }
 
 }
