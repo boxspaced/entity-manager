@@ -150,8 +150,8 @@ class EntityBuilder
                     break;
 
                 default:
-                    $oneToOne = $this->getOneToOne($fieldConfig['type'], $data[$field]);
-                    $entity->set($field, $oneToOne);
+                    $reference = $this->getReference($fieldConfig['type'], $data[$field]);
+                    $entity->set($field, $reference);
             }
         }
 
@@ -177,7 +177,7 @@ class EntityBuilder
      * @param int $id
      * @return callable
      */
-    protected function getOneToOne($type, $id)
+    protected function getReference($type, $id)
     {
         if (!$id) {
             return null;
@@ -203,9 +203,9 @@ class EntityBuilder
         foreach (isset($entityConfig['one_to_many']) ? $entityConfig['one_to_many'] : [] as $field => $oneToManyConfig) {
 
             $query = $this->getOneToManyQuery($entity, $oneToManyConfig['type']);
-            $oneToMany = $this->getOneToMany($oneToManyConfig['type'], $query);
+            $collection = $this->getOneToManyCollection($oneToManyConfig['type'], $query);
 
-            $entity->set($field, $oneToMany);
+            $entity->set($field, $collection);
         }
 
         return $this;
@@ -278,7 +278,7 @@ class EntityBuilder
      * @param Query $query
      * @return Collection
      */
-    protected function getOneToMany($type, Query $query = null)
+    protected function getOneToManyCollection($type, Query $query = null)
     {
         return $this->mapperFactory->createForType($type)->findAll($type, $query);
     }
