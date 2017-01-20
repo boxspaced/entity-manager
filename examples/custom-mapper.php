@@ -22,8 +22,7 @@ class Customer extends AbstractEntity
 
     public function setName($name)
     {
-        $this->set('name', $name);
-        return $this;
+        return $this->set('name', $name);
     }
 
     public function getOrders()
@@ -48,8 +47,7 @@ class Order extends AbstractEntity
 
     public function setDate(DateTime $date)
     {
-        $this->set('date', $date);
-        return $this;
+        return $this->set('date', $date);
     }
 
     public function getCustomer()
@@ -79,8 +77,7 @@ class OrderItem extends AbstractEntity
 
     public function setDescription($description)
     {
-        $this->set('description', $description);
-        return $this;
+        return $this->set('description', $description);
     }
 
     public function getOrder()
@@ -198,7 +195,7 @@ $config = [
                 'params' => [
                     'table' => 'orders',
                     'columns' => [
-                        // Field to column mapping if different
+                        // Field to column mapping if different or a reference
                         'customer' => 'customer_id',
                     ],
                 ],
@@ -228,7 +225,7 @@ $config = [
                 'params' => [
                     'table' => 'order_items',
                     'columns' => [
-                        // Field to column mapping if different
+                        // Field to column mapping if different or a reference
                         'order' => 'order_id',
                     ],
                 ],
@@ -253,6 +250,10 @@ $config = [
 $em = new EntityManager($config);
 $em->addMapperStrategy(new CustomerMapperStrategy());
 
+// Get customer via custom mapper, then the order data from the db
+
+echo '===========================================' . PHP_EOL;
+
 $customer = $em->find(Customer::class, 2);
 
 echo $customer->getName() . PHP_EOL;
@@ -269,3 +270,10 @@ foreach ($customer->getOrders() as $order) {
     }
 }
 
+// Get order item from db, then find related customer
+
+echo '===========================================' . PHP_EOL;
+
+$orderItem = $em->find(OrderItem::class, 1);
+
+echo $orderItem->getOrder()->getCustomer()->getName() . PHP_EOL;

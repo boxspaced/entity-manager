@@ -1,12 +1,9 @@
-# EntityManager
+<?php
 
-A simple to configure (but limited compared to Doctrine) PHP entity manager. It has the ability to accept custom data mappers, thus allowing your entities to be mapped to various data sources e.g. SOAP service, if you have to.
-
-## Basic usage
-
-```php
 use Boxspaced\EntityManager\EntityManager;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
+
+require __DIR__ . '/../vendor/autoload.php';
 
 class Order extends AbstractEntity
 {
@@ -14,6 +11,11 @@ class Order extends AbstractEntity
     public function getId()
     {
         return $this->get('id');
+    }
+
+    public function setId($id)
+    {
+        return $this->set('id', $id);
     }
 
     public function getDate()
@@ -47,6 +49,11 @@ class OrderItem extends AbstractEntity
         return $this->get('id');
     }
 
+    public function setId($id)
+    {
+        return $this->set('id', $id);
+    }
+
     public function getDescription()
     {
         return $this->get('description');
@@ -71,12 +78,8 @@ class OrderItem extends AbstractEntity
 
 $config = [
     'db' => [
-        // Uses zend-db internally so any driver/platform supported
-        'driver' => 'Pdo_Mysql',
-        'database' => '',
-        'username' => '',
-        'password' => '',
-        'hostname' => '',
+        'driver' => 'Pdo_Sqlite',
+        'database' => __DIR__ . '/../examples/example.db',
     ],
     'types' => [
         Order::class => [
@@ -130,32 +133,51 @@ $config = [
 
 $em = new EntityManager($config);
 
-$order = $em->find(Order::class, 198);
+// Find an order by ID
 
-$query = $em->createQuery()->field('description')->eq('Widget 500');
+$order = $em->find(Order::class, 1);
+
+echo $order->getDate()->format('Y-m-d') . PHP_EOL;
+
+foreach ($order->getItems() as $item) {
+    echo ' +-- ' . $item->getDescription() . PHP_EOL;
+}
+
+// Query for orders but return just one
+
+$query = $em->createQuery()->field('description')->eq('Car');
 $orderItem = $em->findOne(OrderItem::class, $query);
 
-$query = $em->createQuery()->field('description')->eq('Widget 600');
+echo $orderItem->getId() . PHP_EOL;
+
+// Query for all orders returning a collection
+
+$query = $em->createQuery()->field('description')->eq('Car');
 $orderItems = $em->findAll(OrderItem::class, $query);
 
 foreach ($orderItems as $item) {
-    // Iterate over collection
+    echo $item->getOrder()->getId() . PHP_EOL;
 }
 
+// Create an order with an order item
+
 $item = $em->createEntity(OrderItem::class);
-$item->setDescription('Widget 200');
+$item->setId(11)->setDescription('Widget for this and that');
 $em->persist($item);
 
 $order = $em->createEntity(Order::class);
-$order->setDate(new DateTime());
+$order->setId(5)->setDate(new DateTime());
 $order->addItem($item);
 $em->persist($order);
 
 $em->flush();
 
-$em->delete($item); // Can be avoided with cascading deletes
+// Delete previously created order and item
+
+$item = $em->find(OrderItem::class, 11);
+$em->delete($item);
+
+$order = $em->find(Order::class, 5);
 $em->delete($order);
 
 $em->flush();
-```
-
