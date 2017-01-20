@@ -159,3 +159,6 @@ $em->delete($order);
 $em->flush();
 ```
 
+## Advanced usage
+
+Please see the [examples](examples/) provided for advanced usage e.g. custom mappers.
