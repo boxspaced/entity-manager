@@ -250,7 +250,7 @@ $config = [
 $em = new EntityManager($config);
 $em->addMapperStrategy(new CustomerMapperStrategy());
 
-// Get customer via custom mapper, then the order data from the db
+// Get customer (will use custom mapper strategy), then the order data from the db
 
 echo '===========================================' . PHP_EOL;
 
