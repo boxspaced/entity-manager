@@ -161,4 +161,5 @@ $em->flush();
 
 ## Advanced usage
 
-Please see the [examples](examples/) provided for advanced usage e.g. custom mapper strategies.
+- Please see the [examples](examples/) provided for advanced usage including custom mapper strategies.
+- For more advanced queries such as joins and self referencing, please see the [SelectTest](tests/SelectTest.php) unit test.
