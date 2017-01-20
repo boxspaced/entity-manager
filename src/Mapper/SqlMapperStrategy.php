@@ -161,7 +161,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
         $stmt->execute();
 
         $id = $this->db->getDriver()->getConnection()->getLastGeneratedValue();
-        $entity->setId($id);
+        $entity->set('id', $id);
 
         return $this;
     }
