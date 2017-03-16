@@ -1,6 +1,7 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
+use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Exception;
@@ -20,8 +21,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $unitOfWork = $this->getMockBuilder(UnitOfWork::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->collection = new Collection(
-            new UnitOfWorkDouble(),
+            $unitOfWork,
             new EntityBuilderDouble(),
             EntityDouble::class
         );
@@ -118,15 +123,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(Exception\InvalidArgumentException::class);
 
-        $badEntity = $this->getMock(
-            AbstractEntity::class,
-            [],
-            [],
-            'BadEntity',
-            false
-        );
+        $entity = $this->getMockBuilder(AbstractEntity::class)
+            ->disableOriginalConstructor()
+            ->setMockClassName('BadEntity')
+            ->getMock();
 
-        $this->collection->add($badEntity);
+        $this->collection->add($entity);
     }
 
     public function testAddEntityToCollectionIncrementsCountByOne()

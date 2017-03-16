@@ -74,6 +74,7 @@ class MapperFactory
 
             $strategy = new SqlMapperStrategy(
                 $this->container['db'],
+                new SqlSelectBuilder($this->container['config']),
                 $this->container['config']
             );
         }

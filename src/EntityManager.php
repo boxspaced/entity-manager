@@ -2,7 +2,6 @@
 namespace Boxspaced\EntityManager;
 
 use Pimple\Container;
-use Zend\Db\Adapter\Adapter as Database;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Collection\Collection;
 use Boxspaced\EntityManager\Mapper\Query;
@@ -13,6 +12,7 @@ use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Mapper\MapperStrategyInterface;
+use Zend\Db\Adapter\Adapter as Db;
 
 class EntityManager
 {
@@ -36,7 +36,7 @@ class EntityManager
                 return null;
             }
 
-            return new Database($container['config']['db']);
+            return new Db($container['config']['db']);
         };
 
         $container['identityMap'] = function () {
@@ -90,7 +90,7 @@ class EntityManager
     }
 
     /**
-     * @return Database
+     * @return Db
      */
     public function getDb()
     {

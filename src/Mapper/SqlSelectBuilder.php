@@ -1,12 +1,12 @@
 <?php
 namespace Boxspaced\EntityManager\Mapper;
 
-use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Select as ZendSelect;
 use Boxspaced\EntityManager\Exception;
 use DateTime;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
 
-class Select extends ZendSelect
+class SqlSelectBuilder
 {
 
     /**
@@ -15,60 +15,59 @@ class Select extends ZendSelect
     protected $config;
 
     /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @var Query
-     */
-    protected $query;
-
-    /**
      * @param array $config
-     * @param string $type
-     * @param Query $query
-     * @throws Exception\UnexpectedValueException
      */
-    public function __construct(array $config, $type, Query $query = null)
+    public function __construct(array $config)
     {
         $this->config = $config;
-        $this->type = $type;
-        $this->query = $query;
+    }
 
-        if (empty($config['types'][$type]['mapper']['params']['table'])) {
+    /**
+     * @param string $type
+     * @param Query $query
+     * @return Select
+     * @throws Exception\InvalidArgumentException
+     */
+    public function buildFromMapperQuery($type, Query $query = null)
+    {
+        if (empty($this->config['types'][$type]['mapper']['params']['table'])) {
             throw new Exception\InvalidArgumentException("Mapper table missing for type: {$type}");
         }
 
-        parent::__construct($config['types'][$type]['mapper']['params']['table']);
+        $select = new Select($this->config['types'][$type]['mapper']['params']['table']);
 
-        $this->build();
-    }
+        if (null !== $query) {
 
-    /**
-     * @return Select
-     */
-    protected function build()
-    {
-        if (null !== $this->query) {
+            foreach ($this->getJoins($type, $query) as $join) {
+                $select->join([$join['alias'] => $join['table']], $join['fk'], []);
+            }
 
-            $this->buildJoins();
-            $this->buildWhere();
-            $this->buildOrderBy();
-            $this->buildLimit();
+            foreach ($this->getWhere($type, $query) as $where) {
+                $select->where($where);
+            }
+
+            $select->order($this->getOrder($type, $query));
+
+            if ($query->getPaging()) {
+
+                $select->limit($query->getPaging()->getShowPerPage());
+                $select->offset($query->getPaging()->getOffset());
+            }
         }
 
-        return $this;
+        return $select;
     }
 
     /**
-     * @return Select
+     * @param string $type
+     * @param Query $query
+     * @return array
      */
-    protected function buildJoins()
+    protected function getJoins($type, Query $query)
     {
-        $fields = $this->query->getFields();
+        $fields = $query->getFields();
 
-        foreach ($this->query->getOrder() as $order) {
+        foreach ($query->getOrder() as $order) {
             $fields[] = $order->getField();
         }
 
@@ -82,7 +81,7 @@ class Select extends ZendSelect
 
             $mappings = $this->getMappings(sprintf(
                 '%s.%s',
-                $this->type,
+                $type,
                 implode('.', $field->getForeignPath())
             ));
 
@@ -94,11 +93,7 @@ class Select extends ZendSelect
             }
         }
 
-        foreach ($joins as $mapping) {
-            $this->join([$mapping['alias'] => $mapping['table']], $mapping['fk'], []);
-        }
-
-        return $this;
+        return $joins;
     }
 
     /**
@@ -148,6 +143,7 @@ class Select extends ZendSelect
      * @param string $field
      * @param array $previous
      * @return array
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\UnexpectedValueException
      */
     protected function createMapping($type, $field = null, array $previous = null)
@@ -195,11 +191,15 @@ class Select extends ZendSelect
     }
 
     /**
-     * @return Select
+     * @param string $type
+     * @param Query $query
+     * @return array
      */
-    protected function buildWhere()
+    protected function getWhere($type, Query $query)
     {
-        foreach ($this->query->getFields() as $field) {
+        $where = [];
+
+        foreach ($query->getFields() as $field) {
 
             $value = $field->getValue();
 
@@ -211,65 +211,53 @@ class Select extends ZendSelect
                 $value = $value->format('Y-m-d H:i:s');
             }
 
-            $column = $this->getColumnName($field);
+            $column = $this->getColumnName($type, $field);
 
-            $this->where([
+            $where[] = [
                 sprintf('%s %s ?', $column, $field->getOperator()) => $value,
-            ]);
+            ];
         }
 
-        return $this;
+        return $where;
     }
 
     /**
-     * @return Select
+     * @param string $type
+     * @param Query $query
+     * @return array
      */
-    protected function buildOrderBy()
+    protected function getOrder($type, Query $query)
     {
-        if ($this->query->getOrder()) {
+        $orderBy = [];
 
-            $orderBy = [];
+        if ($query->getOrder()) {
 
-            foreach ($this->query->getOrder() as $order) {
+            foreach ($query->getOrder() as $order) {
 
                 $field = $order->getField();
-                $column = $this->getColumnName($field);
+                $column = $this->getColumnName($type, $field);
 
                 $orderBy[$column] = $order->getDirection();
             }
-
-            $this->order($orderBy);
         }
 
-        return $this;
+        return $orderBy;
     }
 
     /**
-     * @return Select
-     */
-    protected function buildLimit()
-    {
-        if ($this->query->getPaging()) {
-
-            $this->limit($this->query->getPaging()->getShowPerPage());
-            $this->offset($this->query->getPaging()->getOffset());
-        }
-
-        return $this;
-    }
-
-    /**
+     * @param string $type
      * @param Field $field
      * @return string
+     * @throws Exception\InvalidArgumentException
      */
-    protected function getColumnName(Field $field)
+    protected function getColumnName($type, Field $field)
     {
         if ($field->isForeign()) {
 
             $fieldName = $field->getForeignField();
             $mappings = $this->getMappings(sprintf(
                 '%s.%s',
-                $this->type,
+                $type,
                 implode('.', $field->getForeignPath())
             ));
             $mapping = array_pop($mappings);
@@ -277,10 +265,19 @@ class Select extends ZendSelect
         } else {
 
             $fieldName = $field->getName();
-            $mapping = $this->getMappings($this->type);
+            $mapping = $this->getMappings($type);
         }
 
         $fieldName = lcfirst($fieldName);
+
+//        if (!isset($mapping['references'][$fieldName])) {
+//
+//            throw new Exception\InvalidArgumentException(sprintf(
+//                'Entity does not have field: %s',
+//                $fieldName
+//            ));
+//        }
+
         $columnName = $fieldName;
 
         if (isset($mapping['columns'][$fieldName])) {

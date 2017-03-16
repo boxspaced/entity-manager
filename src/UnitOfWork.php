@@ -1,7 +1,7 @@
 <?php
 namespace Boxspaced\EntityManager;
 
-use Zend\Db\Adapter\AdapterInterface as Database;
+use Zend\Db\Adapter\AdapterInterface as Db;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Exception;
@@ -10,7 +10,7 @@ class UnitOfWork
 {
 
     /**
-     * @var Database
+     * @var Db
      */
     protected $db;
 
@@ -43,10 +43,10 @@ class UnitOfWork
     }
 
     /**
-     * @param Database $db
+     * @param Db $db
      * @return UnitOfWork
      */
-    public function setDb(Database $db)
+    public function setDb(Db $db)
     {
         $this->db = $db;
         return $this;

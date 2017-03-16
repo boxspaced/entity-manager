@@ -3,7 +3,7 @@ namespace Boxspaced\EntityManager\Mapper;
 
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 use Boxspaced\EntityManager\Exception;
-use Zend\Db\Adapter\AdapterInterface as Database;
+use Zend\Db\Adapter\AdapterInterface as Db;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use DateTime;
@@ -12,9 +12,14 @@ class SqlMapperStrategy implements MapperStrategyInterface
 {
 
     /**
-     * @var Database
+     * @var Db
      */
     protected $db;
+
+    /**
+     * @var SqlSelectBuilder
+     */
+    protected $selectBuilder;
 
     /**
      * @var Sql
@@ -27,14 +32,20 @@ class SqlMapperStrategy implements MapperStrategyInterface
     protected $config;
 
     /**
-     * @param Database $db
+     * @param Db $db
+     * @param SqlSelectBuilder $selectBuilder
      * @param array $config
      */
-    public function __construct(Database $db, array $config)
+    public function __construct(
+        Db $db,
+        SqlSelectBuilder $selectBuilder,
+        array $config
+    )
     {
         $this->db = $db;
-        $this->sql = new Sql($db);
+        $this->selectBuilder = $selectBuilder;
         $this->config = $config;
+        $this->sql = new Sql($db);
     }
 
     /**
@@ -46,7 +57,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
     {
         $query = (new Query())->field('id')->eq($id);
 
-        $select = new Select($this->config, $type, $query);
+        $select = $this->selectBuilder->buildFromMapperQuery($type, $query);
         $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $row = $stmt->execute()->current();
@@ -112,7 +123,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
      */
     public function findOne($type, Query $query = null)
     {
-        $select = new Select($this->config, $type, $query);
+        $select = $this->selectBuilder->buildFromMapperQuery($type, $query);
         $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $row = $stmt->execute()->current();
@@ -131,7 +142,7 @@ class SqlMapperStrategy implements MapperStrategyInterface
      */
     public function findAll($type, Query $query = null)
     {
-        $select = new Select($this->config, $type, $query);
+        $select = $this->selectBuilder->buildFromMapperQuery($type, $query);
         $stmt = $this->sql->prepareStatementForSqlObject($select);
 
         $rows = [];

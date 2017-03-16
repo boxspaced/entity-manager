@@ -1,12 +1,12 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
-use Boxspaced\EntityManager\Mapper\Select;
+use Boxspaced\EntityManager\Mapper\SqlSelectBuilder;
 use Boxspaced\EntityManager\Mapper\Query;
 use Boxspaced\EntityManager\Exception;
 use Boxspaced\EntityManager\Entity\AbstractEntity;
 
-class SelectTest extends \PHPUnit_Framework_TestCase
+class SqlSelectBuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     protected $config;
@@ -170,7 +170,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     protected function getSqlFromQuery(Query $query)
     {
-        $select = new Select($this->config, 'Item', $query);
+        $factory = new SqlSelectBuilder($this->config);
+        $select = $factory->buildFromMapperQuery('Item', $query);
         return @$select->getSqlString();
     }
 

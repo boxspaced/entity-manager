@@ -1,6 +1,7 @@
 <?php
 namespace Boxspaced\EntityManager\Test;
 
+use Boxspaced\EntityManager\UnitOfWork;
 use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\IdentityMap;
 use Boxspaced\EntityManager\Exception;
@@ -56,9 +57,13 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase
 
     protected function createBuilder()
     {
+        $unitOfWork = $this->getMockBuilder(UnitOfWork::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         return new EntityBuilder(
             $this->identityMap,
-            new UnitOfWorkDouble(),
+            $unitOfWork,
             new EntityFactoryDouble($this->config),
             $this->mapperFactory,
             $this->config
