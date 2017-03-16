@@ -13,6 +13,7 @@ use Boxspaced\EntityManager\Entity\EntityBuilder;
 use Boxspaced\EntityManager\Collection\CollectionFactory;
 use Boxspaced\EntityManager\Mapper\MapperFactory;
 use Boxspaced\EntityManager\Mapper\MapperStrategyInterface;
+use MongoDB\Client as MongoDb;
 
 class EntityManager
 {
@@ -37,6 +38,25 @@ class EntityManager
             }
 
             return new Database($container['config']['db']);
+        };
+
+        $container['mongoDb'] = function ($container) {
+
+            if (!isset($container['config']['mongo_db'])) {
+                return null;
+            }
+
+            if (!class_exists(MongoDb::class)) {
+                throw new Exception\RuntimeException('The MongoDB driver library is not installed');
+            }
+
+            $config = $container['config']['mongo_db'];
+
+            return new MongoDb(
+                isset($config['uri']) ? $config['uri'] : null,
+                isset($config['uri_options']) ? $config['uri_options'] : [],
+                isset($config['driver_options']) ? $config['driver_options'] : []
+            );
         };
 
         $container['identityMap'] = function () {
@@ -95,6 +115,14 @@ class EntityManager
     public function getDb()
     {
         return $this->container['db'];
+    }
+
+    /**
+     * @return MongoDb
+     */
+    public function getMongoDb()
+    {
+        return $this->container['mongoDb'];
     }
 
     /**
