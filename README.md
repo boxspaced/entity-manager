@@ -1,5 +1,7 @@
 # EntityManager
 
+[![Build Status](https://travis-ci.org/boxspaced/entity-manager.svg?branch=master)](https://travis-ci.org/boxspaced/entity-manager)
+
 A simple to configure (but limited compared to Doctrine) PHP entity manager. It has the ability to accept custom mapper strategies, thus allowing your entities to be mapped to various data sources e.g. REST service, if you have to.
 
 ## Basic usage
